@@ -44,7 +44,7 @@ func init() {
 		GrantType:    GrantType,
 		ClientId:     AuthID,
 		ClientSecret: AuthSecret,
-		MacAddress:   GetMacAddr(),
+		MacAddress:   GetMACAddr(),
 	}
 }
 

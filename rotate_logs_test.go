@@ -12,7 +12,7 @@ func ExampleGetRotateLogs() {
 		return
 	}
 
-	fmt.Printf("%+v", rotateLogs)
+	fmt.Printf("%+v", rotateLogs.CurrentFileName())
 
-	// output: 1
+	// output:
 }
