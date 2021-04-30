@@ -33,7 +33,7 @@ type Response struct {
 	AccessToken   string `json:"access_token,omitempty"`
 }
 
-type Config struct {
+type AuthConfig struct {
 	Host   string
 	ID     string
 	Secret string
