@@ -1,6 +1,7 @@
 package gocore
 
 import (
+	"fmt"
 	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 	"github.com/pkg/errors"
 	"runtime"
@@ -14,16 +15,16 @@ var (
 // GetRotateLogs 获取文件切割Writer
 // appName：项目名称
 // opts[0]：最大日志保留数量（个），默认：30
-// opts[1]：历史日志路径，默认格式：/xk5/logs/{项目名称}/history/{项目名称}-%Y-%m-%d.log
+// opts[1]：历史日志路径，默认格式：/xk5/logs/{项目名称}/{项目名称}-%Y-%m-%d.log
 // opts[2]：LinuxOS中，配置软链接，默认格式：/xk5/logs/{项目名称}/{项目名称}.log
 func GetRotateLogs(appName string, opts ...string) (*rotatelogs.RotateLogs, error) {
 	if "" == appName {
 		return nil, ErrAppNameEmpty
 	}
 	var (
-		path     string
-		link     string
-		maxFiles uint
+		link          = fmt.Sprintf("/xk5/logs/%s/%s.log", appName, appName)
+		path          = fmt.Sprintf("/xk5/logs/%s/%s-%s", appName, appName, "%Y-%m-%d.log")
+		maxFiles uint = 30
 	)
 
 	for i, opt := range opts {
