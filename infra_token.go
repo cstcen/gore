@@ -16,31 +16,25 @@ const (
 )
 
 var (
-	req *Request
+	req *InfraTokenRequest
 )
 
-type Request struct {
+type InfraTokenRequest struct {
 	GrantType    string `json:"grant_type"`
 	ClientId     string `json:"client_id"`
 	ClientSecret string `json:"client_secret"`
 	MacAddress   string `json:"mac_address"`
 }
 
-type Response struct {
+type InfraTokenResponse struct {
 	ReturnCode    uint   `json:"return_code"`
 	ReturnMessage string `json:"return_message,omitempty"`
 	ExpiresIn     uint   `json:"expires_in,omitempty"`
 	AccessToken   string `json:"access_token,omitempty"`
 }
 
-type AuthConfig struct {
-	Host   string
-	ID     string
-	Secret string
-}
-
 func init() {
-	req = &Request{
+	req = &InfraTokenRequest{
 		GrantType:    GrantType,
 		ClientId:     AuthID,
 		ClientSecret: AuthSecret,
@@ -48,7 +42,7 @@ func init() {
 	}
 }
 
-func GetInfraToken(env string) (*Response, error) {
+func GetInfraToken(env string) (*InfraTokenResponse, error) {
 
 	b, err := json.Marshal(req)
 	if err != nil {
@@ -66,7 +60,7 @@ func GetInfraToken(env string) (*Response, error) {
 
 	body, err := io.ReadAll(resp.Body)
 
-	result := new(Response)
+	result := new(InfraTokenResponse)
 	if err = json.Unmarshal(body, result); err != nil {
 		return nil, err
 	}
