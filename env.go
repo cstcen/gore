@@ -21,7 +21,10 @@ const (
 )
 
 var (
-	CurrentEnv = EnvSDev0
+	// 当前环境
+	EnvCurrent = EnvSDev0
+
+	envCurrentName = "sdev0"
 
 	envMap = map[string]Env{
 		"sdev0":  EnvSDev0,
@@ -36,6 +39,17 @@ var (
 		"xk5":    EnvXk5,
 	}
 )
+
+func SetupEnv(env string) error {
+	e, err := ParseEnv(env)
+	if err != nil {
+		return err
+	}
+
+	envCurrentName = env
+	EnvCurrent = e
+	return nil
+}
 
 func ParseEnv(env string) (Env, error) {
 	if e, ok := envMap[strings.ToLower(env)]; ok {

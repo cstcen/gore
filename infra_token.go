@@ -51,8 +51,7 @@ func GetInfraToken(env string) (*InfraTokenResponse, error) {
 
 	authURL := fmt.Sprintf(AuthHostFormat, env)
 
-	contentType := "application/json; charset=UTF-8"
-	resp, err := http.Post(authURL, contentType, bytes.NewBuffer(b))
+	resp, err := http.Post(authURL, ContentTypeApplicationJSONCharset, bytes.NewBuffer(b))
 	if err != nil {
 		return nil, err
 	}

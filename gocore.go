@@ -17,3 +17,24 @@ var (
 		EnvXk5:    logrus.InfoLevel,
 	}
 )
+
+// Setup 一键配置环境，日志和分解配置文件成struct
+func Setup(env string, appName string, configStruct interface{}) error {
+
+	err := SetupEnv(env)
+	if err != nil {
+		return err
+	}
+
+	err = SetupLog(appName)
+	if err != nil {
+		return err
+	}
+
+	err = UnmarshalConfig(configStruct)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
