@@ -12,8 +12,7 @@ var (
 )
 
 // LogSetup 设置日志
-// opts[0]：日志等级，logrus.ParseLevel
-func LogSetup(appName string, opts ...string) error {
+func LogSetup(appName string) error {
 	err := setLogOutput(appName)
 	if err != nil {
 		return err
@@ -21,10 +20,7 @@ func LogSetup(appName string, opts ...string) error {
 
 	std.SetReportCaller(true)
 
-	err = setLogLevel(opts)
-	if err != nil {
-		return err
-	}
+	setLogLevel()
 
 	setLogFormatter()
 
@@ -112,17 +108,9 @@ func setLogFormatter() {
 		}})
 }
 
-func setLogLevel(opts []string) error {
-	for i, opt := range opts {
-		if opt != "" {
-			if 0 == i {
-				if lvl, err := logrus.ParseLevel(opt); err != nil {
-					return err
-				} else {
-					std.SetLevel(lvl)
-				}
-			}
-		}
+func setLogLevel() {
+	lvl, ok := EnvLevelMap[CurrentEnv]
+	if ok {
+		std.SetLevel(lvl)
 	}
-	return nil
 }
