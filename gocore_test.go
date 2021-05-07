@@ -5,7 +5,7 @@ import "fmt"
 func ExampleSetup() {
 
 	t := new(Tes)
-	err := Setup("sdev0", "gdis", t)
+	err := Setup("sdev0", t)
 	if err != nil {
 		fmt.Println(err)
 		return

@@ -1,10 +1,14 @@
 package log
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+	"strings"
+)
 
 func ExampleSetupLog() {
 
-	err := SetupLog("debug", "gdis")
+	err := SetupLog()
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -16,4 +20,20 @@ func ExampleSetupLog() {
 	fmt.Println(std.ReportCaller)
 
 	// output: true
+}
+
+func ExampleGetRotateLogs() {
+
+	dir, err := os.Getwd()
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	dirNames := strings.Split(dir, string(os.PathSeparator))
+
+	fmt.Printf("%+v\n", dir)
+	fmt.Printf("%+v\n", dirNames[len(dirNames)-1])
+
+	// output: 1
 }

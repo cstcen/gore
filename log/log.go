@@ -6,6 +6,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"io"
+	"os"
 	"runtime"
 	"strings"
 	"sync"
@@ -47,16 +48,11 @@ var (
 )
 
 // SetupLog 设置日志
-func SetupLog(lvl, appName string) error {
-	if "" == appName {
-		return ErrAppNameEmpty
-	}
-	err := setLogOutput(appName)
+func SetupLog() error {
+	err := setLogOutput()
 	if err != nil {
 		return err
 	}
-
-	setLogLevel(lvl)
 
 	setLogFormatter()
 
@@ -152,8 +148,8 @@ func SetMaxFiles(maxFiles uint) error {
 	return nil
 }
 
-func setLogOutput(appName string) error {
-	rotateLogs, err := getRotateLogs(appName)
+func setLogOutput() error {
+	rotateLogs, err := GetRotateLogs()
 	if err != nil {
 		return err
 	}
@@ -169,7 +165,7 @@ func setLogFormatter() {
 	)
 }
 
-func setLogLevel(lvl string) {
+func SetLogLevel(lvl string) {
 	if lvl == "" {
 		return
 	}
@@ -180,7 +176,26 @@ func setLogLevel(lvl string) {
 	std.SetLevel(level)
 }
 
-func getRotateLogs(appName string) (*rotatelogs.RotateLogs, error) {
+func getCurDirName() (string, error) {
+	dir, err := os.Getwd()
+	if err != nil {
+		fmt.Println(err)
+		return "", err
+	}
+
+	dirNames := strings.Split(dir, string(os.PathSeparator))
+	if len(dirNames) == 0 {
+		return "", errors.New("current dir name is empty")
+	}
+	return dirNames[len(dirNames)-1], nil
+}
+
+func GetRotateLogs() (*rotatelogs.RotateLogs, error) {
+
+	appName, err := getCurDirName()
+	if err != nil {
+		return nil, err
+	}
 
 	if "" == logLink {
 		logLink = fmt.Sprintf("/xk5/logs/%s/%s.log", appName, appName)
