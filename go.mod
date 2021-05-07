@@ -1,4 +1,4 @@
-module git.tenvine.cn/backend/gocore
+module git.tenvine.cn/backend/gore
 
 go 1.16
 
