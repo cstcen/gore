@@ -1,4 +1,4 @@
-package gocore
+package gore
 
 import (
 	"fmt"
@@ -10,7 +10,9 @@ import (
 )
 
 var (
-	ErrAppNameEmpty = errors.New("the app name is empty")
+	ErrAppNameEmpty   = errors.New("the app name is empty")
+	ErrEnvEmpty       = errors.New("the env is empty")
+	ErrConfigOutEmpty = errors.New("the config out is empty")
 
 	logLink     string
 	logPath     string
@@ -36,7 +38,7 @@ var (
 )
 
 // SetupLog 设置日志
-func SetupLog(env, appName string) error {
+func SetupLog(appName string) error {
 	if "" == appName {
 		return ErrAppNameEmpty
 	}
@@ -47,7 +49,7 @@ func SetupLog(env, appName string) error {
 
 	std.SetReportCaller(true)
 
-	setLogLevel(env)
+	setLogLevel(conf.Gore.Logger.Level)
 
 	setLogFormatter()
 
@@ -159,11 +161,15 @@ func setLogFormatter() {
 		}})
 }
 
-func setLogLevel(env string) {
-	lvl, ok := LogLevelMap[env]
-	if ok {
-		std.SetLevel(lvl)
+func setLogLevel(lvl string) {
+	if lvl == "" {
+		return
 	}
+	level, err := logrus.ParseLevel(lvl)
+	if err != nil {
+		return
+	}
+	std.SetLevel(level)
 }
 
 func getRotateLogs(appName string) (*rotatelogs.RotateLogs, error) {

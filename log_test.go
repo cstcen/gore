@@ -1,10 +1,10 @@
-package gocore
+package gore
 
 import "fmt"
 
 func ExampleSetupLog() {
 
-	err := SetupLog("sdev0", "gdis")
+	err := SetupLog("gdis")
 	if err != nil {
 		fmt.Println(err)
 		return

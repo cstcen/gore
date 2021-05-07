@@ -1,4 +1,4 @@
-package gocore
+package gore
 
 import (
 	"bytes"
@@ -42,14 +42,14 @@ func init() {
 	}
 }
 
-func GetInfraToken() (*InfraTokenResponse, error) {
+func GetInfraToken(env string) (*InfraTokenResponse, error) {
 
 	b, err := json.Marshal(req)
 	if err != nil {
 		return nil, err
 	}
 
-	authURL := fmt.Sprintf(AuthHostFormat, environment)
+	authURL := fmt.Sprintf(AuthHostFormat, env)
 
 	resp, err := http.Post(authURL, ContentTypeApplicationJSONCharset, bytes.NewBuffer(b))
 	if err != nil {

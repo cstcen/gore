@@ -1,4 +1,4 @@
-package gocore
+package gore
 
 import (
 	"fmt"

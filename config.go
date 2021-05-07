@@ -1,4 +1,4 @@
-package gocore
+package gore
 
 import (
 	"fmt"
@@ -6,37 +6,67 @@ import (
 	"os"
 )
 
-var (
-	ConfigPath = "config/"
+var conf = &Config{
+	Gore: Gore{
+		Path:        "config/",
+		FileName:    "config.yml",
+		FileNameEnv: "config-%s.yml",
+	},
+}
 
-	configFileName    = "config.yml"
-	configFileNameEnv = "config-%s.yml"
-)
+type Config struct {
+	Gore Gore
+}
 
-// UnmarshalConfig 分解配置文件
+type Gore struct {
+	Path        string
+	FileName    string
+	FileNameEnv string
+	Logger      struct {
+		Level string
+	}
+}
+
+// SetupConfig 分解配置文件
 // config/config.yml
 // config/config-{环境名称}.yml
-func UnmarshalConfig(env string, value interface{}) error {
+func SetupConfig(env string, out interface{}) error {
 
-	err := unmarshalFile(value)
-	if err != nil {
+	if "" == env {
+		return ErrEnvEmpty
+	}
+
+	if out == nil {
+		return ErrConfigOutEmpty
+	}
+
+	if err := unmarshalConfigDefault(); err != nil {
 		return err
 	}
 
-	err = unmarshalFileEnv(value, env)
-	if err != nil {
+	if err := unmarshalConfigCustom(out); err != nil {
 		return err
+	}
+
+	if env != "" {
+		if err := unmarshalConfigCustomEnv(out, env); err != nil {
+			return err
+		}
 	}
 
 	return nil
 }
 
-func unmarshalFileEnv(value interface{}, env string) error {
-	return unmarshal(fmt.Sprintf(ConfigPath+configFileNameEnv, env), value)
+func unmarshalConfigCustomEnv(value interface{}, env string) error {
+	return unmarshal(fmt.Sprintf(conf.Gore.Path+conf.Gore.FileNameEnv, env), value)
 }
 
-func unmarshalFile(value interface{}) error {
-	return unmarshal(ConfigPath+configFileName, value)
+func unmarshalConfigDefault() error {
+	return unmarshal(conf.Gore.Path+conf.Gore.FileName, conf)
+}
+
+func unmarshalConfigCustom(value interface{}) error {
+	return unmarshal(conf.Gore.Path+conf.Gore.FileName, value)
 }
 
 func unmarshal(filename string, value interface{}) error {
