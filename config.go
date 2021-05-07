@@ -1,6 +1,7 @@
 package gore
 
 import (
+	"errors"
 	"fmt"
 	"gopkg.in/yaml.v2"
 	"os"
@@ -13,6 +14,11 @@ var conf = &Config{
 		FileNameEnv: "config-%s.yml",
 	},
 }
+
+var (
+	ErrEnvEmpty       = errors.New("the env is empty")
+	ErrConfigOutEmpty = errors.New("the config out is empty")
+)
 
 type Config struct {
 	Gore Gore

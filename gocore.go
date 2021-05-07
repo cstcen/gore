@@ -1,5 +1,7 @@
 package gore
 
+import "git.tenvine.cn/backend/gore/log"
+
 // Setup 一键配置环境，日志和分解配置文件成struct
 //
 // env(required): 环境名称
@@ -11,7 +13,7 @@ func Setup(env, appName string, configOut interface{}) error {
 		return err
 	}
 
-	if err := SetupLog(appName); err != nil {
+	if err := log.SetupLog(conf.Gore.Logger.Level, appName); err != nil {
 		return err
 	}
 
