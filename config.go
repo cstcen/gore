@@ -34,15 +34,17 @@ type Gore struct {
 }
 
 // SetupConfig 分解配置文件
+// env: 环境名称
+// out: 必须是指针
 // config/config.yml
 // config/config-{环境名称}.yml
-func SetupConfig(env string, out interface{}) error {
+func SetupConfig(env string, outPtr interface{}) error {
 
 	if "" == env {
 		return ErrEnvEmpty
 	}
 
-	if out == nil {
+	if outPtr == nil {
 		return ErrConfigOutEmpty
 	}
 
@@ -50,12 +52,12 @@ func SetupConfig(env string, out interface{}) error {
 		return err
 	}
 
-	if err := unmarshalConfigCustom(out); err != nil {
+	if err := unmarshalConfigCustom(outPtr); err != nil {
 		return err
 	}
 
 	if env != "" {
-		if err := unmarshalConfigCustomEnv(out, env); err != nil {
+		if err := unmarshalConfigCustomEnv(outPtr, env); err != nil {
 			return err
 		}
 	}
@@ -71,19 +73,20 @@ func unmarshalConfigDefault() error {
 	return unmarshal(conf.Gore.Path+conf.Gore.FileName, conf)
 }
 
-func unmarshalConfigCustom(value interface{}) error {
-	return unmarshal(conf.Gore.Path+conf.Gore.FileName, value)
+func unmarshalConfigCustom(outPtr interface{}) error {
+	return unmarshal(conf.Gore.Path+conf.Gore.FileName, outPtr)
 }
 
-func unmarshal(filename string, value interface{}) error {
+func unmarshal(filename string, outPtr interface{}) error {
 	yml, err := os.ReadFile(filename)
 	if err != nil {
 		return err
 	}
 
-	err = yaml.Unmarshal(yml, value)
+	err = yaml.Unmarshal(yml, outPtr)
 	if err != nil {
 		return err
 	}
+
 	return nil
 }

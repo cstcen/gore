@@ -2,7 +2,6 @@ package gore
 
 import (
 	"fmt"
-	"reflect"
 )
 
 type Tes struct {
@@ -26,15 +25,11 @@ func ExampleSetupConfig() {
 		return
 	}
 
-	s := reflect.ValueOf(t).Elem().FieldByName("Logger").FieldByName("Level").String()
-
 	fmt.Printf("%+v\n", t.A)
 	fmt.Printf("%+v\n", t.Logger.Level)
 	fmt.Printf("%+v\n", t.Env)
-	fmt.Printf("%+v", s)
 
 	// output: {B:2222 C:1111111 D:98}
 	// debug
 	// sd
-	// debug
 }
