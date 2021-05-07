@@ -42,14 +42,14 @@ func init() {
 	}
 }
 
-func GetInfraToken(env string) (*InfraTokenResponse, error) {
+func GetInfraToken() (*InfraTokenResponse, error) {
 
 	b, err := json.Marshal(req)
 	if err != nil {
 		return nil, err
 	}
 
-	authURL := fmt.Sprintf(AuthHostFormat, env)
+	authURL := fmt.Sprintf(AuthHostFormat, environment)
 
 	resp, err := http.Post(authURL, ContentTypeApplicationJSONCharset, bytes.NewBuffer(b))
 	if err != nil {

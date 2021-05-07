@@ -4,7 +4,7 @@ import "fmt"
 
 func ExampleSetupLog() {
 
-	err := SetupLog("gdis")
+	err := SetupLog("sdev0", "gdis")
 	if err != nil {
 		fmt.Println(err)
 		return

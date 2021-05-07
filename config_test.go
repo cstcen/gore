@@ -13,6 +13,7 @@ type Tes struct {
 	Logger struct {
 		Level string
 	}
+	Env string
 }
 
 func ExampleUnmarshalConfig() {
@@ -26,7 +27,9 @@ func ExampleUnmarshalConfig() {
 
 	fmt.Printf("%+v\n", t.A)
 	fmt.Printf("%+v\n", t.Logger.Level)
+	fmt.Printf("%+v\n", t.Env)
 
 	// output: {B:2222 C:1111111 D:98}
 	// debug
+	// sd
 }
