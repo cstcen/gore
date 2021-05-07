@@ -15,6 +15,20 @@ var (
 	logLink     string
 	logPath     string
 	logMaxFiles uint
+
+	// 各环境对应的日志打印等级
+	LogLevelMap = map[string]logrus.Level{
+		"sdev0":  logrus.DebugLevel,
+		"sdev":   logrus.DebugLevel,
+		"dev":    logrus.DebugLevel,
+		"dev2":   logrus.DebugLevel,
+		"dev3":   logrus.DebugLevel,
+		"ios":    logrus.DebugLevel,
+		"mod":    logrus.DebugLevel,
+		"stg":    logrus.DebugLevel,
+		"xingk5": logrus.DebugLevel,
+		"xk5":    logrus.InfoLevel,
+	}
 )
 
 var (
@@ -22,7 +36,7 @@ var (
 )
 
 // SetupLog 设置日志
-func SetupLog(appName string) error {
+func SetupLog(env, appName string) error {
 	if "" == appName {
 		return ErrAppNameEmpty
 	}
@@ -33,7 +47,7 @@ func SetupLog(appName string) error {
 
 	std.SetReportCaller(true)
 
-	setLogLevel()
+	setLogLevel(env)
 
 	setLogFormatter()
 
@@ -145,8 +159,8 @@ func setLogFormatter() {
 		}})
 }
 
-func setLogLevel() {
-	lvl, ok := EnvLevelMap[EnvCurrent]
+func setLogLevel(env string) {
+	lvl, ok := LogLevelMap[env]
 	if ok {
 		std.SetLevel(lvl)
 	}

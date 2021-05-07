@@ -1,0 +1,17 @@
+package gocore
+
+import "fmt"
+
+func ExampleSetup() {
+
+	t := new(Tes)
+	err := Setup("sdev0", "gdis", t)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Printf("%+v\n", t)
+
+	// output: &{A:{B:2222 C:1111111 D:98} Logger:{Level:debug}}
+}

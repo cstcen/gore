@@ -1,23 +1,5 @@
 package gocore
 
-import "github.com/sirupsen/logrus"
-
-var (
-	// 各环境对应的日志打印等级
-	EnvLevelMap = map[Env]logrus.Level{
-		EnvSDev0:  logrus.DebugLevel,
-		EnvSDev:   logrus.DebugLevel,
-		EnvDev:    logrus.DebugLevel,
-		EnvDev2:   logrus.DebugLevel,
-		EnvDev3:   logrus.DebugLevel,
-		EnvIOS:    logrus.DebugLevel,
-		EnvMod:    logrus.DebugLevel,
-		EnvStg:    logrus.DebugLevel,
-		EnvXingk5: logrus.DebugLevel,
-		EnvXk5:    logrus.InfoLevel,
-	}
-)
-
 // Setup 一键配置环境，日志和分解配置文件成struct
 // env(required): 环境名称
 // appName(required): 项目名称
@@ -25,18 +7,13 @@ var (
 //                      为空，则不读取配置文件
 func Setup(env string, appName string, configOut interface{}) error {
 
-	err := SetupEnv(env)
-	if err != nil {
-		return err
-	}
-
-	err = SetupLog(appName)
+	err := SetupLog(env, appName)
 	if err != nil {
 		return err
 	}
 
 	if configOut != nil {
-		err = UnmarshalConfig(configOut)
+		err = UnmarshalConfig(env, configOut)
 		if err != nil {
 			return err
 		}

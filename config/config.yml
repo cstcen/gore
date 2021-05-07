@@ -1,2 +1,5 @@
 a:
   b: 34
+  d: 98
+logger:
+  level: info
