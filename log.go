@@ -61,6 +61,10 @@ func GetLogWriter() io.Writer {
 	return std.Out
 }
 
+func WithError(err error) *logrus.Entry {
+	return std.WithError(err)
+}
+
 func WithField(key string, value interface{}) *logrus.Entry {
 	return std.WithField(key, value)
 }
@@ -71,6 +75,14 @@ func ErrorE(err error) {
 
 func WarnE(err error) {
 	std.WithError(err).Warn()
+}
+
+func Fatal(args ...interface{}) {
+	std.Fatal(args...)
+}
+
+func Fatalf(format string, args ...interface{}) {
+	std.Fatalf(format, args...)
 }
 
 func Error(args ...interface{}) {
