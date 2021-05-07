@@ -69,6 +69,10 @@ func WithField(key string, value interface{}) *logrus.Entry {
 	return std.WithField(key, value)
 }
 
+func WithFields(fields logrus.Fields) *logrus.Entry {
+	return std.WithFields(fields)
+}
+
 func ErrorE(err error) {
 	std.WithError(err).Error()
 }
