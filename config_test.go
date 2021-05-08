@@ -25,11 +25,7 @@ func ExampleSetupConfig() {
 		return
 	}
 
-	fmt.Printf("%+v\n", t.A)
-	fmt.Printf("%+v\n", t.Logger.Level)
-	fmt.Printf("%+v\n", t.Env)
+	fmt.Printf("%+v\n", t)
 
-	// output: {B:2222 C:1111111 D:98}
-	// debug
-	// sd
+	// output: &{A:{B:2222 C:1111111 D:98} Logger:{Level:debug} Env:sd}
 }

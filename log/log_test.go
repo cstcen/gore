@@ -14,10 +14,9 @@ func ExampleSetupLog() {
 		return
 	}
 
-	//std.Info("test1")
 	Info("test")
 
-	fmt.Println(std.ReportCaller)
+	fmt.Println(std)
 
 	// output: true
 }
