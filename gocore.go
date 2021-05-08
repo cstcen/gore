@@ -16,9 +16,15 @@ func Setup(env string, configOut interface{}) error {
 		return err
 	}
 
+	log.Infof("Current active profile: %s", env)
+
+	log.Infof("Current load config path: %s", conf.Gore.Path)
+
 	if conf.Gore.Logger.Level != "" {
 		log.SetLogLevel(conf.Gore.Logger.Level)
 	}
+
+	log.Infof("Current logger level: %s", log.GetLevel())
 
 	return nil
 }

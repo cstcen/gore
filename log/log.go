@@ -56,12 +56,24 @@ func SetupLog() error {
 
 	setLogFormatter()
 
+	Infof("Current log path: %s", logPath)
+	Infof("Current log link: %s", logLink)
+	Infof("Current log max files: %v", logMaxFiles)
+
 	return nil
 }
 
 // GetLogWriter 获取日志输出Writer
 func GetLogWriter() io.Writer {
 	return std.Out
+}
+
+func StandardLogger() *logrus.Logger {
+	return std
+}
+
+func GetLevel() logrus.Level {
+	return std.GetLevel()
 }
 
 func WithError(err error) *logrus.Entry {
@@ -231,19 +243,6 @@ func getLogEntry() *logrus.Entry {
 	file := shortFile(frame.File)
 	file = fmt.Sprintf("%s:%d", file, frame.Line)
 	return std.WithField("file", file)
-}
-
-func getLogFieldsWithSkip(callerSkip int) *logrus.Fields {
-	if pc, file, line, ok := runtime.Caller(callerSkip); ok {
-		funname := runtime.FuncForPC(pc).Name()
-		logFields := logrus.Fields{}
-		logFields["file"] = file
-		logFields["func"] = funname
-		logFields["line"] = line
-		return &logFields
-	} else {
-		return nil
-	}
 }
 
 // getCaller retrieves the name of the first non-logrus calling function
