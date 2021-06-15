@@ -77,15 +77,15 @@ func GetLevel() logrus.Level {
 }
 
 func WithError(err error) *logrus.Entry {
-	return getLogEntry().WithError(err)
+	return setEntryFileField(std.WithError(err))
 }
 
 func WithField(key string, value interface{}) *logrus.Entry {
-	return getLogEntry().WithField(key, value)
+	return setEntryFileField(std.WithField(key, value))
 }
 
 func WithFields(fields logrus.Fields) *logrus.Entry {
-	return getLogEntry().WithFields(fields)
+	return setEntryFileField(std.WithFields(fields))
 }
 
 func ErrorE(err error) {
@@ -243,6 +243,13 @@ func getLogEntry() *logrus.Entry {
 	file := shortFile(frame.File)
 	file = fmt.Sprintf("%s:%d", file, frame.Line)
 	return std.WithField("file", file)
+}
+
+func setEntryFileField(entry *logrus.Entry) *logrus.Entry {
+	frame := getCaller()
+	file := shortFile(frame.File)
+	file = fmt.Sprintf("%s:%d", file, frame.Line)
+	return entry.WithField("file", file)
 }
 
 // getCaller retrieves the name of the first non-logrus calling function
