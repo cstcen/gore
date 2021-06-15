@@ -172,6 +172,7 @@ func setLogOutput() error {
 func setLogFormatter() {
 	std.SetFormatter(&logrus.TextFormatter{
 		TimestampFormat:  FormatTimestamp,
+		DisableSorting:   true,
 		CallerPrettyfier: callerPrettyfier,
 	},
 	)
