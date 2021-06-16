@@ -1,8 +1,8 @@
-package gore
+package middleware
 
 import "github.com/gin-gonic/gin"
 
-func GinRest() func(c *gin.Context) {
+func Rest() func(c *gin.Context) {
 	return func(c *gin.Context) {
 
 		c.Next()

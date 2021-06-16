@@ -1,4 +1,4 @@
-package gore
+package middleware
 
 import (
 	"bytes"
@@ -22,7 +22,7 @@ func (w ResponseWriter) WriteString(s string) (int, error) {
 	return w.ResponseWriter.WriteString(s)
 }
 
-func GinLogger() gin.HandlerFunc {
+func Logger() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Start timer
 		start := time.Now()

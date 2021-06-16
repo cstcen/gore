@@ -2,13 +2,14 @@ package gore
 
 import (
 	"git.tenvine.cn/backend/gore/log"
+	"git.tenvine.cn/backend/gore/middleware"
 	"github.com/gin-gonic/gin"
 )
 
-// ginMode
-// - gin.DebugMode
-// - gin.ReleaseMode
-// - gin.TestMode
+// ginMode:
+// - gin.DebugMode: 表示开发环境
+// - gin.ReleaseMode: 表示正式环境
+// - gin.TestMode: 暂时不用
 func SetupGin(ginMode string) *gin.Engine {
 
 	gin.SetMode(ginMode)
@@ -25,11 +26,13 @@ func SetupGin(ginMode string) *gin.Engine {
 
 	r.Use(gin.Recovery())
 
-	r.Use(GinLogger())
+	r.Use(middleware.Logger())
 
-	r.Use(GinRequestID())
+	r.Use(middleware.RequestID())
 
-	r.Use(GinRest())
+	r.Use(middleware.Rest())
+
+	r.Use(middleware.Error())
 
 	group := &Group{r: r}
 

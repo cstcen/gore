@@ -8,13 +8,17 @@ import (
 	"net/http"
 )
 
+const (
+	RelativePathHealthCheck = "/healthcheck"
+)
+
 // Group struct
 type Group struct {
 	r *gin.Engine
 }
 
 func (g *Group) ping() {
-	g.r.GET("/healthcheck", func(c *gin.Context) {
+	g.r.GET(RelativePathHealthCheck, func(c *gin.Context) {
 		c.String(http.StatusOK, "Ok")
 	})
 }
