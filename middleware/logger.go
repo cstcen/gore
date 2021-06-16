@@ -47,7 +47,6 @@ func Logger() gin.HandlerFunc {
 			Request: c.Request,
 			Keys:    c.Keys,
 		}
-		errorMsgs := c.Errors.ByType(gin.ErrorTypePrivate)
 
 		// Stop timer
 		param.TimeStamp = time.Now()
@@ -56,7 +55,6 @@ func Logger() gin.HandlerFunc {
 		param.ClientIP = c.ClientIP()
 		param.Method = c.Request.Method
 		param.StatusCode = c.Writer.Status()
-		param.ErrorMessage = errorMsgs.String()
 
 		param.BodySize = c.Writer.Size()
 
@@ -65,19 +63,6 @@ func Logger() gin.HandlerFunc {
 		}
 
 		param.Path = path
-
-		if param.ErrorMessage != "" {
-			requestIDLog.Infof(
-				"%-6s %-25s %-6v %-6v %-12s ---> %+v \n%v",
-				param.Method,
-				param.Path,
-				param.StatusCode,
-				param.Latency,
-				param.ClientIP,
-				blw.body,
-				param.ErrorMessage,
-			)
-		}
 
 		requestIDLog.Infof(
 			"%-6s %-25s %-6v %-6v %-12s ---> %+v",
