@@ -71,7 +71,7 @@ func Logger() gin.HandlerFunc {
 			param.StatusCode,
 			param.Latency,
 			param.ClientIP,
-			blw.body,
+			blw.body.String(),
 		)
 	}
 }
