@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"git.tenvine.cn/backend/gore/util"
 	"io"
 	"net/http"
 )
@@ -38,7 +39,7 @@ func init() {
 		GrantType:    GrantType,
 		ClientId:     AuthID,
 		ClientSecret: AuthSecret,
-		MacAddress:   GetMACAddr(),
+		MacAddress:   util.GetMACAddr(),
 	}
 }
 

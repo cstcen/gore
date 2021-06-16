@@ -25,10 +25,15 @@ type Config struct {
 }
 
 type Gore struct {
-	Path        string
-	FileName    string
+	// 日志存放路径
+	Path string
+	// 日志文件名称
+	FileName string
+	// 环境日志文件名称
 	FileNameEnv string
-	Logger      struct {
+	// 日志配置
+	Logger struct {
+		// 日志打印等级
 		Level string
 	}
 }
