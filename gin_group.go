@@ -20,7 +20,7 @@ func (g *Group) ping() {
 }
 
 func (g *Group) pprof() {
-	if gin.Mode() == gin.ReleaseMode {
+	if !gin.IsDebugging() {
 		return
 	}
 
