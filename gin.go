@@ -32,8 +32,6 @@ func SetupGin(ginMode string) *gin.Engine {
 
 	r.Use(middleware.Rest())
 
-	r.Use(middleware.Error())
-
 	group := &Group{r: r}
 
 	// check health

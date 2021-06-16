@@ -1,9 +1,8 @@
 package middleware
 
 import (
+	"git.tenvine.cn/backend/gore/util"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
-	"strings"
 )
 
 const RequestIDContextKey = "X-Request-ID"
@@ -11,10 +10,11 @@ const RequestIDContextKey = "X-Request-ID"
 func RequestID() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		id := uuid.New()
-
-		c.Set(RequestIDContextKey, strings.ReplaceAll(id.String(), "-", ""))
+		id := util.GetRequestID()
+		c.Set(RequestIDContextKey, id)
 
 		c.Next()
+
+		c.Request.Response.Header.Set(RequestIDContextKey, id)
 	}
 }

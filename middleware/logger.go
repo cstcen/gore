@@ -3,7 +3,10 @@ package middleware
 import (
 	"bytes"
 	"git.tenvine.cn/backend/gore/log"
+	"git.tenvine.cn/backend/gore/model"
+	"git.tenvine.cn/backend/gore/util"
 	"github.com/gin-gonic/gin"
+	"net/http"
 	"time"
 )
 
@@ -34,6 +37,14 @@ func Logger() gin.HandlerFunc {
 		}
 		c.Writer = blw
 
+		// Request ID
+		requestID, exists := c.Get(RequestIDContextKey)
+		if !exists {
+			requestID = util.GetRequestID()
+		}
+
+		requestIDLog := log.WithField(RequestIDContextKey, requestID)
+
 		// Process request
 		c.Next()
 
@@ -41,6 +52,7 @@ func Logger() gin.HandlerFunc {
 			Request: c.Request,
 			Keys:    c.Keys,
 		}
+		errorMsgs := c.Errors.ByType(gin.ErrorTypePrivate)
 
 		// Stop timer
 		param.TimeStamp = time.Now()
@@ -49,7 +61,7 @@ func Logger() gin.HandlerFunc {
 		param.ClientIP = c.ClientIP()
 		param.Method = c.Request.Method
 		param.StatusCode = c.Writer.Status()
-		param.ErrorMessage = c.Errors.ByType(gin.ErrorTypePrivate).String()
+		param.ErrorMessage = errorMsgs.String()
 
 		param.BodySize = c.Writer.Size()
 
@@ -60,8 +72,8 @@ func Logger() gin.HandlerFunc {
 		param.Path = path
 
 		if param.ErrorMessage != "" {
-			log.Infof(
-				"%-6s %-25s %-6v %-6v %-12s ---> %+v \n err=%v",
+			requestIDLog.Infof(
+				"%-6s %-25s %-6v %-6v %-12s ---> %+v \n%v",
 				param.Method,
 				param.Path,
 				param.StatusCode,
@@ -70,16 +82,23 @@ func Logger() gin.HandlerFunc {
 				blw.body,
 				param.ErrorMessage,
 			)
-		} else {
-			log.Infof(
-				"%-6s %-25s %-6v %-6v %-12s ---> %+v",
-				param.Method,
-				param.Path,
-				param.StatusCode,
-				param.Latency,
-				param.ClientIP,
-				blw.body,
-			)
+			var obj interface{} = model.BaseResultService
+			last := errorMsgs.Last()
+			if last != nil {
+				obj = last
+			}
+			c.JSON(http.StatusOK, obj)
+			return
 		}
+
+		requestIDLog.Infof(
+			"%-6s %-25s %-6v %-6v %-12s ---> %+v",
+			param.Method,
+			param.Path,
+			param.StatusCode,
+			param.Latency,
+			param.ClientIP,
+			blw.body,
+		)
 	}
 }
