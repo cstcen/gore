@@ -26,11 +26,13 @@ func SetupGin(ginMode string) *gin.Engine {
 
 	r.Use(gin.Recovery())
 
-	r.Use(middleware.Logger())
-
 	r.Use(middleware.RequestID())
 
+	r.Use(middleware.Logger())
+
 	r.Use(middleware.Rest())
+
+	r.Use(middleware.Error())
 
 	group := &Group{r: r}
 

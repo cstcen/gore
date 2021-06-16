@@ -1,10 +1,21 @@
 package util
 
 import (
+	"context"
 	"github.com/google/uuid"
 	"strings"
 )
 
-func GetRequestID() string {
+const RequestIDContextKey = "X-Request-ID"
+
+func GetRequestID(c context.Context) string {
+	id, ok := c.Value(RequestIDContextKey).(string)
+	if ok {
+		return id
+	}
+	return GenerateRequestID()
+}
+
+func GenerateRequestID() string {
 	return strings.ReplaceAll(uuid.New().String(), "-", "")
 }

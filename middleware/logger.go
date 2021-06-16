@@ -3,10 +3,8 @@ package middleware
 import (
 	"bytes"
 	"git.tenvine.cn/backend/gore/log"
-	"git.tenvine.cn/backend/gore/model"
 	"git.tenvine.cn/backend/gore/util"
 	"github.com/gin-gonic/gin"
-	"net/http"
 	"time"
 )
 
@@ -38,12 +36,9 @@ func Logger() gin.HandlerFunc {
 		c.Writer = blw
 
 		// Request ID
-		requestID, exists := c.Get(RequestIDContextKey)
-		if !exists {
-			requestID = util.GetRequestID()
-		}
+		requestID := util.GetRequestID(c)
 
-		requestIDLog := log.WithField(RequestIDContextKey, requestID)
+		requestIDLog := log.WithField(util.RequestIDContextKey, requestID)
 
 		// Process request
 		c.Next()
@@ -82,12 +77,6 @@ func Logger() gin.HandlerFunc {
 				blw.body,
 				param.ErrorMessage,
 			)
-			var last error = errorMsgs.Last()
-			if last == nil {
-				last = model.BaseResultService
-			}
-			c.JSON(http.StatusOK, last)
-			return
 		}
 
 		requestIDLog.Infof(
