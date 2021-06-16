@@ -1,7 +1,9 @@
 package log
 
 import (
+	"context"
 	"fmt"
+	"git.tenvine.cn/backend/gore/util"
 	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
@@ -76,16 +78,20 @@ func GetLevel() logrus.Level {
 	return std.GetLevel()
 }
 
+func WithContext(c context.Context) *logrus.Entry {
+	return WithField(util.RequestIDContextKey, util.GetRequestID(c))
+}
+
 func WithError(err error) *logrus.Entry {
-	return setEntryFileField(std.WithError(err))
+	return getLogEntry().WithError(err)
 }
 
 func WithField(key string, value interface{}) *logrus.Entry {
-	return setEntryFileField(std.WithField(key, value))
+	return getLogEntry().WithField(key, value)
 }
 
 func WithFields(fields logrus.Fields) *logrus.Entry {
-	return setEntryFileField(std.WithFields(fields))
+	return getLogEntry().WithFields(fields)
 }
 
 func ErrorE(err error) {
@@ -243,13 +249,6 @@ func getLogEntry() *logrus.Entry {
 	file := shortFile(frame.File)
 	file = fmt.Sprintf("%s:%d", file, frame.Line)
 	return std.WithField("file", file)
-}
-
-func setEntryFileField(entry *logrus.Entry) *logrus.Entry {
-	frame := getCaller()
-	file := shortFile(frame.File)
-	file = fmt.Sprintf("%s:%d", file, frame.Line)
-	return entry.WithField("file", file)
 }
 
 // getCaller retrieves the name of the first non-logrus calling function
