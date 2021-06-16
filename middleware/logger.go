@@ -64,16 +64,14 @@ func Logger() gin.HandlerFunc {
 
 		param.Path = path
 
-		requestIDLog.WithField(
-			"resp",
-			blw.body,
-		).Infof(
-			"%-6s %-25s %-6v %-6v %-12s",
+		requestIDLog.Infof(
+			"%-6s %-25s %-6v %-6v %-12s ---> %s",
 			param.Method,
 			param.Path,
 			param.StatusCode,
 			param.Latency,
 			param.ClientIP,
+			blw.body,
 		)
 	}
 }
