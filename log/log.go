@@ -179,6 +179,7 @@ func setLogFormatter() {
 	std.SetFormatter(&logrus.TextFormatter{
 		TimestampFormat:  FormatTimestamp,
 		CallerPrettyfier: callerPrettyfier,
+		DisableQuote:     true,
 	},
 	)
 }
