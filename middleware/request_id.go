@@ -13,6 +13,6 @@ func RequestID() gin.HandlerFunc {
 
 		c.Next()
 
-		c.Request.Response.Header.Set(util.RequestIDContextKey, id)
+		c.Request.Header.Set(util.RequestIDContextKey, id)
 	}
 }
