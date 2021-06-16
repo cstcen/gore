@@ -1,7 +1,6 @@
 package model
 
 import (
-	"encoding/json"
 	"fmt"
 )
 
@@ -66,9 +65,5 @@ type BaseResult struct {
 }
 
 func (r BaseResult) Error() string {
-	bytes, err := json.Marshal(r)
-	if err != nil {
-		return fmt.Sprintf("{code: %v, message: %s}", r.Code, r.Message)
-	}
-	return string(bytes)
+	return fmt.Sprintf("{code: %v, message: %s}", r.Code, r.Message)
 }
