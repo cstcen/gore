@@ -65,7 +65,7 @@ type BaseResult struct {
 	Message string
 }
 
-func (r *BaseResult) Error() string {
+func (r BaseResult) Error() string {
 	bytes, err := json.Marshal(r)
 	if err != nil {
 		return fmt.Sprintf("{code: %v, message: %s}", r.Code, r.Message)

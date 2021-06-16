@@ -82,12 +82,11 @@ func Logger() gin.HandlerFunc {
 				blw.body,
 				param.ErrorMessage,
 			)
-			var obj interface{} = model.BaseResultService
-			last := errorMsgs.Last()
-			if last != nil {
-				obj = last
+			var last error = errorMsgs.Last()
+			if last == nil {
+				last = model.BaseResultService
 			}
-			c.JSON(http.StatusOK, obj)
+			c.JSON(http.StatusOK, last)
 			return
 		}
 
