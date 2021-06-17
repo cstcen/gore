@@ -39,13 +39,11 @@ func Logger() gin.HandlerFunc {
 
 		contextLog.Infof("Request url: %s", c.FullPath())
 		contextLog.Infof("Header: %+v", c.Request.Header)
-		readCloser, err := c.Request.GetBody()
-		if err == nil {
-			body, err := io.ReadAll(readCloser)
-			if err == nil {
-				contextLog.Infof("Body: %+v", string(body))
-			}
-		}
+		var buf bytes.Buffer
+		tee := io.TeeReader(c.Request.Body, &buf)
+		body, _ := io.ReadAll(tee)
+		c.Request.Body = io.NopCloser(&buf)
+		contextLog.Infof("Body: %+v", string(body))
 
 		// Process request
 		c.Next()
