@@ -2,5 +2,5 @@ package model
 
 type DataResult struct {
 	BaseResult
-	Data interface{}
+	Data interface{} `json:"data"`
 }
