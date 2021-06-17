@@ -3,8 +3,8 @@ package middleware
 import (
 	"bytes"
 	"git.tenvine.cn/backend/gore/log"
-	"git.tenvine.cn/backend/gore/util"
 	"github.com/gin-gonic/gin"
+	"io"
 	"time"
 )
 
@@ -35,10 +35,17 @@ func Logger() gin.HandlerFunc {
 		}
 		c.Writer = blw
 
-		// Request ID
-		requestID := util.GetRequestID(c)
+		contextLog := log.WithContext(c)
 
-		requestIDLog := log.WithField(util.RequestIDContextKey, requestID)
+		contextLog.Infof("Request url: %s", c.FullPath())
+		contextLog.Infof("Header: %+v", c.Request.Header)
+		readCloser, err := c.Request.GetBody()
+		if err == nil {
+			body, err := io.ReadAll(readCloser)
+			if err == nil {
+				contextLog.Infof("Body: %+v", string(body))
+			}
+		}
 
 		// Process request
 		c.Next()
@@ -64,7 +71,7 @@ func Logger() gin.HandlerFunc {
 
 		param.Path = path
 
-		requestIDLog.Infof(
+		contextLog.Infof(
 			"%-6s %-25s %-6v %-6v %-12s ---> %s",
 			param.Method,
 			param.Path,
