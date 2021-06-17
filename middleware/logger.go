@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"git.tenvine.cn/backend/gore/log"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 	"io"
 	"time"
 )
@@ -25,25 +26,29 @@ func (w ResponseWriter) WriteString(s string) (int, error) {
 
 func Logger() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		contextLog := log.WithContext(c)
 		// Start timer
 		start := time.Now()
+		header := c.Request.Header
 		path := c.Request.URL.Path
 		raw := c.Request.URL.RawQuery
-		blw := &ResponseWriter{
+		if raw != "" {
+			path = path + "?" + raw
+		}
+		respWriter := &ResponseWriter{
 			ResponseWriter: c.Writer,
 			body:           bytes.NewBufferString(""),
 		}
-		c.Writer = blw
-
-		contextLog := log.WithContext(c)
-
-		contextLog.Infof("Request url: %s", c.Request.RequestURI)
-		contextLog.Infof("Header: %+v", c.Request.Header)
 		var buf bytes.Buffer
 		tee := io.TeeReader(c.Request.Body, &buf)
 		body, _ := io.ReadAll(tee)
 		c.Request.Body = io.NopCloser(&buf)
-		contextLog.Infof("Body: %+v", string(body))
+
+		c.Writer = respWriter
+
+		contextLog.Infof("Request url:    %s", path)
+		contextLog.Infof("Request header: %+v", header)
+		contextLog.Infof("Request body:   %+v", string(body))
 
 		// Process request
 		c.Next()
@@ -63,20 +68,15 @@ func Logger() gin.HandlerFunc {
 
 		param.BodySize = c.Writer.Size()
 
-		if raw != "" {
-			path = path + "?" + raw
-		}
-
 		param.Path = path
 
-		contextLog.Infof(
-			"%-6s %-25s %-6v %-6v %-12s ---> %s",
-			param.Method,
-			param.Path,
-			param.StatusCode,
-			param.Latency,
-			param.ClientIP,
-			blw.body.String(),
-		)
+		contextLog.WithFields(logrus.Fields{
+			"method":  param.Method,
+			"uri":     param.Path,
+			"status":  param.StatusCode,
+			"latency": param.Latency,
+			"ip":      param.ClientIP,
+			"body":    respWriter.body.String(),
+		}).Info()
 	}
 }
