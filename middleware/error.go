@@ -26,11 +26,11 @@ func Error() gin.HandlerFunc {
 
 		last := errorMsgs.Last()
 
-		switch last.Err.(type) {
+		switch x := last.Err.(type) {
 		case model.BaseResult:
-			c.JSON(http.StatusOK, last.Err)
+			c.JSON(http.StatusOK, x)
 		default:
-			c.JSON(http.StatusOK, model.BaseResult{Code: http.StatusBadRequest, Message: last.Err.Error()})
+			c.JSON(http.StatusOK, model.BaseResult{Code: http.StatusBadRequest, Message: x.Error()})
 		}
 		return
 
