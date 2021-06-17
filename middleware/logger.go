@@ -37,7 +37,7 @@ func Logger() gin.HandlerFunc {
 
 		contextLog := log.WithContext(c)
 
-		contextLog.Infof("Request url: %s", c.FullPath())
+		contextLog.Infof("Request url: %s", c.Request.RequestURI)
 		contextLog.Infof("Header: %+v", c.Request.Header)
 		var buf bytes.Buffer
 		tee := io.TeeReader(c.Request.Body, &buf)
