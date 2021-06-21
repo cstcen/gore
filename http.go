@@ -43,9 +43,9 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 	reqBody, _ := io.ReadAll(reqTee)
 	req.Body = io.NopCloser(&reqBuf)
 
-	contextLog.Infof("HTTPClient url:    %s", req.URL.String())
-	contextLog.Infof("HTTPClient header: %+v", header)
-	contextLog.Infof("HTTPClient body:   %+v", string(reqBody))
+	contextLog.Tracef("HTTPClient url:    %s", req.URL.String())
+	contextLog.Tracef("HTTPClient header: %+v", header)
+	contextLog.Tracef("HTTPClient body:   %+v", string(reqBody))
 
 	resp, err := t.RoundTripper.RoundTrip(req)
 	if err != nil {
@@ -69,7 +69,7 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 		"latency": latency,
 		"ip":      req.RemoteAddr,
 		"body":    string(respBody),
-	}).Info("HTTPClient resp")
+	}).Info("HTTPClient")
 
 	return resp, nil
 }

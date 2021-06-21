@@ -1,6 +1,9 @@
 package gore
 
-import "git.tenvine.cn/backend/gore/log"
+import (
+	"git.tenvine.cn/backend/gore/log"
+	"github.com/sirupsen/logrus"
+)
 
 // Setup 一键配置环境，日志和分解配置文件成struct
 //
@@ -22,6 +25,8 @@ func Setup(env string, configOut interface{}) error {
 
 	if conf.Gore.Logger.Level != "" {
 		log.SetLogLevel(conf.Gore.Logger.Level)
+	} else {
+		log.SetLogLevel(logrus.TraceLevel.String())
 	}
 
 	log.Infof("Current logger level: %s", log.GetLevel())

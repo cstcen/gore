@@ -46,9 +46,9 @@ func Logger() gin.HandlerFunc {
 
 		c.Writer = respWriter
 
-		contextLog.Infof("Request url:    %s", path)
-		contextLog.Infof("Request header: %+v", header)
-		contextLog.Infof("Request body:   %+v", string(body))
+		contextLog.Tracef("Request url:    %s", path)
+		contextLog.Tracef("Request header: %+v", header)
+		contextLog.Tracef("Request body:   %+v", string(body))
 
 		// Process request
 		c.Next()

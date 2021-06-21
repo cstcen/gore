@@ -142,6 +142,14 @@ func Debugf(format string, args ...interface{}) {
 	getLogEntry().Debugf(format, args...)
 }
 
+func Trace(args ...interface{}) {
+	getLogEntry().Trace(args...)
+}
+
+func Tracef(format string, args ...interface{}) {
+	getLogEntry().Tracef(format, args...)
+}
+
 func SetLogLink(link string) error {
 	if "" == link {
 		return errors.New("invalid log link")
