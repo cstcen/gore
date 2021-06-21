@@ -25,7 +25,7 @@ type Transport struct {
 func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 	ctx, ok := req.Context().(context.Context)
 	if !ok {
-		return nil, model.BaseResult{Code: http.StatusInternalServerError, Message: "context is not gin.context"}
+		return nil, model.BaseResult{Code: http.StatusInternalServerError, Message: "unknown context"}
 	}
 
 	contextLog := log.WithContext(ctx)
@@ -43,7 +43,7 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 	reqBody, _ := io.ReadAll(reqTee)
 	req.Body = io.NopCloser(&reqBuf)
 
-	contextLog.Infof("HTTPClient url:    %s", path)
+	contextLog.Infof("HTTPClient url:    %s", req.URL.String())
 	contextLog.Infof("HTTPClient header: %+v", header)
 	contextLog.Infof("HTTPClient body:   %+v", string(reqBody))
 
@@ -69,7 +69,7 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 		"latency": latency,
 		"ip":      req.RemoteAddr,
 		"body":    string(respBody),
-	}).Info("HTTPClient")
+	}).Info("HTTPClient resp")
 
 	return resp, nil
 }
