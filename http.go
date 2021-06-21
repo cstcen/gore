@@ -2,9 +2,9 @@ package gore
 
 import (
 	"bytes"
+	"context"
 	"git.tenvine.cn/backend/gore/log"
 	"git.tenvine.cn/backend/gore/model"
-	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"io"
 	"net/http"
@@ -18,16 +18,12 @@ var DefaultHttpClient = &http.Client{
 	Timeout: TimeoutConn,
 }
 
-type ClientIPGetter interface {
-	ClientIP() string
-}
-
 type Transport struct {
 	http.RoundTripper
 }
 
 func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
-	ctx, ok := req.Context().(*gin.Context)
+	ctx, ok := req.Context().(context.Context)
 	if !ok {
 		return nil, model.BaseResult{Code: http.StatusInternalServerError, Message: "context is not gin.context"}
 	}

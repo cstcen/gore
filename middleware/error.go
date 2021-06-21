@@ -30,7 +30,7 @@ func Error() gin.HandlerFunc {
 		case model.BaseResult:
 			c.JSON(http.StatusOK, x)
 		default:
-			c.JSON(http.StatusOK, model.BaseResult{Code: http.StatusBadRequest, Message: x.Error()})
+			c.JSON(http.StatusOK, model.BaseResult{Code: http.StatusInternalServerError, Message: x.Error()})
 		}
 		return
 
