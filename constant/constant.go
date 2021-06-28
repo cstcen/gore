@@ -1,4 +1,4 @@
-package gore
+package constant
 
 import "time"
 
@@ -10,9 +10,4 @@ const (
 
 	ContentTypeApplicationJSON        = "application/json"
 	ContentTypeApplicationJSONCharset = "application/json; charset=UTF-8"
-
-	AppNameGDIS  = "gdis"
-	AppNamePurin = "purin"
-	AppNameZelos = "zelos"
-	AppNameAuth  = "auth"
 )

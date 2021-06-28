@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"git.tenvine.cn/backend/gore/constant"
 	"git.tenvine.cn/backend/gore/util"
 	"io"
 	"net/http"
@@ -52,7 +53,7 @@ func GetInfraToken(env string) (*InfraTokenResponse, error) {
 
 	authURL := fmt.Sprintf(AuthHostFormat, env)
 
-	resp, err := http.Post(authURL, ContentTypeApplicationJSONCharset, bytes.NewBuffer(b))
+	resp, err := http.Post(authURL, constant.ContentTypeApplicationJSONCharset, bytes.NewBuffer(b))
 	if err != nil {
 		return nil, err
 	}

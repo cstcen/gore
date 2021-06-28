@@ -150,6 +150,16 @@ func Tracef(format string, args ...interface{}) {
 	getLogEntry().Tracef(format, args...)
 }
 
+func Print(args ...interface{}) {
+	getLogEntry().Print(args...)
+}
+func Printf(format string, args ...interface{}) {
+	getLogEntry().Printf(format, args...)
+}
+func Println(args ...interface{}) {
+	getLogEntry().Println(args...)
+}
+
 func SetLogLink(link string) error {
 	if "" == link {
 		return errors.New("invalid log link")

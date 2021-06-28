@@ -1,6 +1,0 @@
-a:
-  b: 2222
-  c: 1111111
-logger:
-  level: debug
-env: sd

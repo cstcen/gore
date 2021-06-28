@@ -18,7 +18,7 @@ type Tes struct {
 
 func ExampleSetupConfig() {
 
-	t := new(Tes)
+	t := new(Config)
 	err := SetupConfig("sdev0", t)
 	if err != nil {
 		fmt.Println(err)

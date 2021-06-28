@@ -1,9 +1,0 @@
-a:
-  b: 34
-  d: 98
-logger:
-  level: info
-gore:
-  app:
-    name: gdis
-  env: sdev0

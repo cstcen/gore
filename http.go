@@ -3,6 +3,7 @@ package gore
 import (
 	"bytes"
 	"context"
+	"git.tenvine.cn/backend/gore/constant"
 	"git.tenvine.cn/backend/gore/log"
 	"git.tenvine.cn/backend/gore/model"
 	"github.com/sirupsen/logrus"
@@ -15,7 +16,7 @@ var DefaultHttpClient = &http.Client{
 	Transport: &Transport{
 		RoundTripper: http.DefaultTransport,
 	},
-	Timeout: TimeoutConn,
+	Timeout: constant.TimeoutConn,
 }
 
 type Transport struct {
