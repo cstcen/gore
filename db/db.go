@@ -23,11 +23,11 @@ type Config struct {
 }
 
 type CheckResult struct {
-	Cache         CacheResult
-	Elasticsearch ElasticsearchResult
-	Mongo         MongoResult
-	Mysql         MysqlResult
-	Redis         RedisResult
+	Cache         *CacheResult         `json:"cache,omitempty"`
+	Elasticsearch *ElasticsearchResult `json:"elasticsearch,omitempty"`
+	Mongo         *MongoResult         `json:"mongo,omitempty"`
+	Mysql         *MysqlResult         `json:"mysql,omitempty"`
+	Redis         *RedisResult         `json:"redis,omitempty"`
 }
 
 type ElasticsearchResult struct {
