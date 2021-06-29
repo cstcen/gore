@@ -58,12 +58,14 @@ func Check(cfg Config) *CheckResult {
 
 	ccCli := goreCache.GetInstance()
 	if ccCli != nil {
+		result.Cache = new(CacheResult)
 		result.Cache.Stats = ccCli.Stats()
 	}
 
 	esCli := es.GetInstance()
 	if esCli != nil {
 		info, code, err := esCli.Ping(cfg.Elasticsearch.URL).Do(context.Background())
+		result.Elasticsearch = new(ElasticsearchResult)
 		result.Elasticsearch.Info = info
 		result.Elasticsearch.Code = code
 		result.Elasticsearch.Err = err
@@ -71,11 +73,13 @@ func Check(cfg Config) *CheckResult {
 
 	mgCli := goreMongo.GetInstance()
 	if mgCli != nil {
+		result.Mongo = new(MongoResult)
 		result.Mongo.Err = mgCli.Ping(context.Background(), readpref.Primary())
 	}
 
 	msCli := goreMysql.GetInstance()
 	if msCli != nil {
+		result.Mysql = new(MysqlResult)
 		result.Mysql.Stats = msCli.Stats()
 		err := msCli.Ping()
 		if err != nil {
@@ -85,6 +89,7 @@ func Check(cfg Config) *CheckResult {
 
 	rdCli := goreRedis.GetInstance()
 	if rdCli != nil {
+		result.Redis = new(RedisResult)
 		result.Redis.Stats = rdCli.PoolStats()
 	}
 
