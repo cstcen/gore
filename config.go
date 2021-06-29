@@ -7,6 +7,7 @@ import (
 	goreKafka "git.tenvine.cn/backend/gore/db/kafka"
 	goreMongo "git.tenvine.cn/backend/gore/db/mongo"
 	goreMysql "git.tenvine.cn/backend/gore/db/mysql"
+	goreRedis "git.tenvine.cn/backend/gore/db/redis"
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v2"
 	"os"
@@ -52,6 +53,7 @@ type Gore struct {
 	Mongo         goreMongo.Config
 	Mysql         goreMysql.Config
 	Kafka         goreKafka.Config
+	Redis         goreRedis.Config
 }
 
 // SetupConfig 分解配置文件

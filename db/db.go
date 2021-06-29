@@ -7,23 +7,27 @@ import (
 	"git.tenvine.cn/backend/gore/db/es"
 	goreMongo "git.tenvine.cn/backend/gore/db/mongo"
 	goreMysql "git.tenvine.cn/backend/gore/db/mysql"
+	goreRedis "git.tenvine.cn/backend/gore/db/redis"
 	"github.com/go-redis/cache/v8"
+	"github.com/go-redis/redis/v8"
 	"github.com/olivere/elastic"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 )
 
 type Config struct {
-	Cc   goreCache.Config
-	Es   es.Config
-	Mgo  goreMongo.Config
-	Msql goreMysql.Config
+	Cache         goreCache.Config
+	Elasticsearch es.Config
+	Mongo         goreMongo.Config
+	Mysql         goreMysql.Config
+	Redis         goreRedis.Config
 }
 
 type CheckResult struct {
-	Elasticsearch ElasticsearchResult
 	Cache         CacheResult
+	Elasticsearch ElasticsearchResult
 	Mongo         MongoResult
 	Mysql         MysqlResult
+	Redis         RedisResult
 }
 
 type ElasticsearchResult struct {
@@ -45,6 +49,10 @@ type MysqlResult struct {
 	Err   error `json:"err,omitempty"`
 }
 
+type RedisResult struct {
+	Stats *redis.PoolStats
+}
+
 func Check(cfg Config) *CheckResult {
 	result := new(CheckResult)
 
@@ -55,7 +63,7 @@ func Check(cfg Config) *CheckResult {
 
 	esCli := es.GetInstance()
 	if esCli != nil {
-		info, code, err := esCli.Ping(cfg.Es.URL).Do(context.Background())
+		info, code, err := esCli.Ping(cfg.Elasticsearch.URL).Do(context.Background())
 		result.Elasticsearch.Info = info
 		result.Elasticsearch.Code = code
 		result.Elasticsearch.Err = err
@@ -73,6 +81,11 @@ func Check(cfg Config) *CheckResult {
 		if err != nil {
 			result.Mysql.Err = err
 		}
+	}
+
+	rdCli := goreRedis.GetInstance()
+	if rdCli != nil {
+		result.Redis.Stats = rdCli.PoolStats()
 	}
 
 	return result

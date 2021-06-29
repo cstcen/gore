@@ -19,3 +19,7 @@ gore:
     consumer:
       brokers:
         - 10.251.104.6:9200
+  redis:
+    hosts:
+      - 10.251.43.21:6379
+    password: sdev0#redis#3aPVNy

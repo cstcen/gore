@@ -31,3 +31,6 @@ gore:
     version: 2.5.0
     assignor: range
     oldest: false
+  redis:
+    enable: false
+    disable-cluster: false

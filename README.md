@@ -82,6 +82,12 @@
             brokers:
             topics:
             group:
+      redis:
+        enable: false
+        disable-cluster: false
+        hosts: 
+        username:
+        password:
     
 #### Setup
 

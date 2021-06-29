@@ -2,14 +2,17 @@ package gore
 
 import (
 	"database/sql"
+	"git.tenvine.cn/backend/gore/db"
 	goreCache "git.tenvine.cn/backend/gore/db/cache"
 	goreEs "git.tenvine.cn/backend/gore/db/es"
 	"git.tenvine.cn/backend/gore/db/kafka"
 	goreKafka "git.tenvine.cn/backend/gore/db/kafka"
 	goreMongo "git.tenvine.cn/backend/gore/db/mongo"
 	goreMysql "git.tenvine.cn/backend/gore/db/mysql"
+	goreRedis "git.tenvine.cn/backend/gore/db/redis"
 	"git.tenvine.cn/backend/gore/log"
 	"github.com/go-redis/cache/v8"
+	"github.com/go-redis/redis/v8"
 	"github.com/olivere/elastic"
 	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -45,6 +48,10 @@ func Setup(env string, configOut interface{}) error {
 		return err
 	}
 
+	if err := goreEs.Setup(conf.Gore.Elasticsearch); err != nil {
+		return err
+	}
+
 	if err := goreMongo.Setup(conf.Gore.Mongo); err != nil {
 		return err
 	}
@@ -53,11 +60,21 @@ func Setup(env string, configOut interface{}) error {
 		return err
 	}
 
-	if err := goreEs.Setup(conf.Gore.Elasticsearch); err != nil {
+	if err := goreRedis.Setup(conf.Gore.Redis); err != nil {
 		return err
 	}
 
 	return nil
+}
+
+func CheckDB() *db.CheckResult {
+	return db.Check(db.Config{
+		Cache:         conf.Gore.Cache,
+		Elasticsearch: conf.Gore.Elasticsearch,
+		Mongo:         conf.Gore.Mongo,
+		Mysql:         conf.Gore.Mysql,
+		Redis:         conf.Gore.Redis,
+	})
 }
 
 func Cache() *cache.Cache {
@@ -106,4 +123,12 @@ func KafkaStartConsumers(handlers map[string]kafka.ConsumerMessageHandler) error
 
 func KafkaStartConsumersCustom(fn func(cfg goreKafka.Config) error) error {
 	return fn(conf.Gore.Kafka)
+}
+
+func Redis() redis.UniversalClient {
+	return goreRedis.GetInstance()
+}
+
+func RedisCustom(fn func(cfg goreRedis.Config) redis.UniversalClient) redis.UniversalClient {
+	return fn(conf.Gore.Redis)
 }
