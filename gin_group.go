@@ -18,9 +18,9 @@ type Group struct {
 	r *gin.Engine
 }
 
-func (g *Group) ping() {
+func (g *Group) healthcheck() {
 	g.r.GET(RelativePathHealthCheck, func(c *gin.Context) {
-		c.String(http.StatusOK, "Ok")
+		c.JSON(http.StatusOK, CheckDB())
 	})
 }
 

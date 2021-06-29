@@ -37,7 +37,7 @@ func SetupGin(ginMode string) *gin.Engine {
 	group := &Group{r: r}
 
 	// check health
-	group.ping()
+	group.healthcheck()
 
 	// swagger
 	group.swagger()
