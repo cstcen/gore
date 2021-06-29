@@ -41,8 +41,8 @@ type CacheResult struct {
 }
 
 type MongoResult struct {
-	Ok  bool
-	Err error `json:"err,omitempty"`
+	Stats string
+	Err   error `json:"err,omitempty"`
 }
 
 type MysqlResult struct {
@@ -79,7 +79,7 @@ func Check(cfg Config) *CheckResult {
 		if err != nil {
 			result.Mongo.Err = err
 		} else {
-			result.Mongo.Ok = true
+			result.Mongo.Stats = "Ok"
 		}
 	}
 

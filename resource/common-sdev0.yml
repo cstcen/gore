@@ -1,6 +1,4 @@
 gore:
-  logger:
-    level: trace
   cache:
     hosts:
       - 10.251.43.21:6379
