@@ -15,7 +15,8 @@ var (
 type Config struct {
 	Enable bool
 
-	EnableRing bool `yaml:"enable-ring"`
+	EnableRing   bool `yaml:"enable-ring"`
+	DisableStats bool `yaml:"disable-stats"`
 
 	AppName  string `yaml:"app-name"`
 	Hosts    []string
@@ -35,6 +36,7 @@ func Setup(cfg Config) error {
 
 	options := newOptions(cfg)
 	options.LocalCache = cache.NewTinyLFU(1000, time.Minute)
+	options.StatsEnabled = !cfg.DisableStats
 	cc = cache.New(options)
 
 	return nil

@@ -41,6 +41,7 @@ type CacheResult struct {
 }
 
 type MongoResult struct {
+	Ok  bool
 	Err error `json:"err,omitempty"`
 }
 
@@ -74,7 +75,12 @@ func Check(cfg Config) *CheckResult {
 	mgCli := goreMongo.GetInstance()
 	if mgCli != nil {
 		result.Mongo = new(MongoResult)
-		result.Mongo.Err = mgCli.Ping(context.Background(), readpref.Primary())
+		err := mgCli.Ping(context.Background(), readpref.Primary())
+		if err != nil {
+			result.Mongo.Err = err
+		} else {
+			result.Mongo.Ok = true
+		}
 	}
 
 	msCli := goreMysql.GetInstance()
