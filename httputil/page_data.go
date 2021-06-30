@@ -1,4 +1,4 @@
-package model
+package httputil
 
 type OrderEnum string
 
