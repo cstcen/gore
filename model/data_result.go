@@ -1,4 +1,4 @@
-package httputil
+package model
 
 type DataResult struct {
 	BaseResult

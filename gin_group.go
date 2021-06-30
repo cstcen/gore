@@ -1,7 +1,7 @@
 package gore
 
 import (
-	"git.tenvine.cn/backend/gore/httputil"
+	"git.tenvine.cn/backend/gore/model"
 	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -36,12 +36,12 @@ func (g *Group) status() {
 
 	// 404 Handler.
 	g.r.NoRoute(func(c *gin.Context) {
-		c.JSON(http.StatusNotFound, httputil.BaseResultNotFound)
+		c.JSON(http.StatusNotFound, model.BaseResultNotFound)
 	})
 
 	// 405 Handler.
 	g.r.NoMethod(func(c *gin.Context) {
-		c.JSON(http.StatusMethodNotAllowed, httputil.BaseResultNotFound)
+		c.JSON(http.StatusMethodNotAllowed, model.BaseResultNotFound)
 	})
 
 }
