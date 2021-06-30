@@ -36,7 +36,7 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 	header := req.Header
 	path := req.URL.Path
 	raw := req.URL.RawQuery
-	if raw != "" {
+	if len(raw) > 0 {
 		path = path + "?" + raw
 	}
 	var reqBuf bytes.Buffer

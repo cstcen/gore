@@ -36,7 +36,7 @@ func Setup(env string, configOut interface{}) error {
 
 	log.Infof("Current load config path: %s", conf.Gore.Path)
 
-	if conf.Gore.Logger.Level != "" {
+	if len(conf.Gore.Logger.Level) > 0 {
 		log.SetLogLevel(conf.Gore.Logger.Level)
 	} else {
 		log.SetLogLevel(logrus.TraceLevel.String())

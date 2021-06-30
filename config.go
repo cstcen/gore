@@ -89,7 +89,7 @@ func SetupConfig(env string, outPtr interface{}) error {
 		return err
 	}
 
-	if env != "" {
+	if len(env) > 0 {
 		if err := unmarshalConfigCustomEnv(outPtr, env); err != nil {
 			return err
 		}

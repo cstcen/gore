@@ -32,7 +32,7 @@ func Logger() gin.HandlerFunc {
 		header := c.Request.Header
 		path := c.Request.URL.Path
 		raw := c.Request.URL.RawQuery
-		if raw != "" {
+		if len(raw) > 0 {
 			path = path + "?" + raw
 		}
 		respWriter := &ResponseWriter{

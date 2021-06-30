@@ -28,7 +28,7 @@ func GetLocation(ip string) string {
 	if err != nil {
 		fmt.Println("Unmarshal failed:", err)
 	}
-	if m["province"] == "" {
+	if len(m["province"]) == 0 {
 		return "未知位置"
 	}
 	return m["province"] + "-" + m["city"]

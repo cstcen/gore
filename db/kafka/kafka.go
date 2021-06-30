@@ -39,7 +39,7 @@ func NewKafkaConfig(cfg Config) (*sarama.Config, error) {
 	config := sarama.NewConfig()
 	config.Version = version
 
-	if cfg.Assignor != "" {
+	if len(cfg.Assignor) > 0 {
 		switch cfg.Assignor {
 		case "sticky":
 			config.Consumer.Group.Rebalance.Strategy = sarama.BalanceStrategySticky

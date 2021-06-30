@@ -61,17 +61,17 @@ func Setup(cfg Config) error {
 
 func getDSN(config Config) string {
 	sb := new(strings.Builder)
-	if config.Dsn.Username != "" {
+	if len(config.Dsn.Username) > 0 {
 		sb.WriteString(config.Dsn.Username)
-		if config.Dsn.Password != "" {
+		if len(config.Dsn.Password) > 0 {
 			sb.WriteString(":")
 			sb.WriteString(config.Dsn.Password)
 		}
 		sb.WriteString("@")
 	}
-	if config.Dsn.Protocol != "" {
+	if len(config.Dsn.Protocol) > 0 {
 		sb.WriteString(config.Dsn.Protocol)
-		if config.Dsn.Address != "" {
+		if len(config.Dsn.Address) > 0 {
 			sb.WriteString("(")
 			sb.WriteString(config.Dsn.Address)
 			sb.WriteString(")")
@@ -79,7 +79,7 @@ func getDSN(config Config) string {
 	}
 	sb.WriteString("/")
 	sb.WriteString(config.Dsn.Dbname)
-	if config.Dsn.Params != "" {
+	if len(config.Dsn.Params) > 0 {
 		sb.WriteString(config.Dsn.Params)
 	}
 

@@ -203,7 +203,7 @@ func setLogFormatter() {
 }
 
 func SetLogLevel(lvl string) {
-	if lvl == "" {
+	if len(lvl) == 0 {
 		return
 	}
 	level, err := logrus.ParseLevel(lvl)
