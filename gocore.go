@@ -35,7 +35,7 @@ func Setup(env string, ptrOut interface{}) error {
 
 	log.Infof("Current active profile: %s", env)
 
-	log.Infof("Current load GetConfig()ig path: %s", GetConfig().Gore.Path)
+	log.Infof("Current load config path: %s", GetConfig().Gore.Path)
 
 	if len(GetConfig().Gore.Logger.Level) > 0 {
 		log.SetLogLevel(GetConfig().Gore.Logger.Level)
