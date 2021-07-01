@@ -1,7 +1,8 @@
 package gin
 
 import (
-	"git.tenvine.cn/backend/gore"
+	"git.tenvine.cn/backend/gore/db"
+	"git.tenvine.cn/backend/gore/gonfig"
 	"git.tenvine.cn/backend/gore/model"
 	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
@@ -14,6 +15,16 @@ const (
 	RelativePathHealthCheck = "/healthcheck"
 )
 
+func CheckDB() *db.CheckResult {
+	return db.Check(db.Config{
+		Cache:         gonfig.GetInstance().Gore.Cache,
+		Elasticsearch: gonfig.GetInstance().Gore.Elasticsearch,
+		Mongo:         gonfig.GetInstance().Gore.Mongo,
+		Mysql:         gonfig.GetInstance().Gore.Mysql,
+		Redis:         gonfig.GetInstance().Gore.Redis,
+	})
+}
+
 // Group struct
 type Group struct {
 	r *gin.Engine
@@ -21,7 +32,7 @@ type Group struct {
 
 func (g *Group) healthcheck() {
 	g.r.GET(RelativePathHealthCheck, func(c *gin.Context) {
-		c.JSON(http.StatusOK, gore.CheckDB())
+		c.JSON(http.StatusOK, CheckDB())
 	})
 }
 

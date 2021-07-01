@@ -2,7 +2,6 @@ package gore
 
 import (
 	"database/sql"
-	"git.tenvine.cn/backend/gore/db"
 	goreCache "git.tenvine.cn/backend/gore/db/cache"
 	goreEs "git.tenvine.cn/backend/gore/db/es"
 	"git.tenvine.cn/backend/gore/db/kafka"
@@ -71,16 +70,6 @@ func Setup(env string, ptrOut interface{}) error {
 	}
 
 	return nil
-}
-
-func CheckDB() *db.CheckResult {
-	return db.Check(db.Config{
-		Cache:         GetConfig().Gore.Cache,
-		Elasticsearch: GetConfig().Gore.Elasticsearch,
-		Mongo:         GetConfig().Gore.Mongo,
-		Mysql:         GetConfig().Gore.Mysql,
-		Redis:         GetConfig().Gore.Redis,
-	})
 }
 
 func GetConfig() *gonfig.Config {
