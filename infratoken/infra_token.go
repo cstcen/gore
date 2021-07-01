@@ -1,4 +1,4 @@
-package gore
+package infratoken
 
 import (
 	"bytes"
@@ -18,17 +18,17 @@ const (
 )
 
 var (
-	req *InfraTokenRequest
+	req *Request
 )
 
-type InfraTokenRequest struct {
+type Request struct {
 	GrantType    string `json:"grant_type"`
 	ClientId     string `json:"client_id"`
 	ClientSecret string `json:"client_secret"`
 	MacAddress   string `json:"mac_address"`
 }
 
-type InfraTokenResponse struct {
+type Response struct {
 	ReturnCode    uint   `json:"return_code"`
 	ReturnMessage string `json:"return_message,omitempty"`
 	ExpiresIn     uint   `json:"expires_in,omitempty"`
@@ -36,7 +36,7 @@ type InfraTokenResponse struct {
 }
 
 func init() {
-	req = &InfraTokenRequest{
+	req = &Request{
 		GrantType:    GrantType,
 		ClientId:     AuthID,
 		ClientSecret: AuthSecret,
@@ -44,7 +44,7 @@ func init() {
 	}
 }
 
-func GetInfraToken(env string) (*InfraTokenResponse, error) {
+func GetInstance(env string) (*Response, error) {
 
 	b, err := json.Marshal(req)
 	if err != nil {
@@ -61,7 +61,7 @@ func GetInfraToken(env string) (*InfraTokenResponse, error) {
 
 	body, err := io.ReadAll(resp.Body)
 
-	result := new(InfraTokenResponse)
+	result := new(Response)
 	if err = json.Unmarshal(body, result); err != nil {
 		return nil, err
 	}

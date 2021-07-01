@@ -1,4 +1,4 @@
-package gore
+package http
 
 import (
 	"bytes"
@@ -12,11 +12,19 @@ import (
 	"time"
 )
 
-var DefaultHttpClient = &http.Client{
-	Transport: &Transport{
-		RoundTripper: http.DefaultTransport,
-	},
-	Timeout: constant.TimeoutConn,
+var cli *http.Client
+
+func GetInstance() *http.Client {
+	return cli
+}
+
+func init() {
+	cli = &http.Client{
+		Transport: &Transport{
+			RoundTripper: http.DefaultTransport,
+		},
+		Timeout: constant.TimeoutConn,
+	}
 }
 
 type Transport struct {

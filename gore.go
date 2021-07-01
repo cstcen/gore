@@ -10,13 +10,18 @@ import (
 	goreMongo "git.tenvine.cn/backend/gore/db/mongo"
 	goreMysql "git.tenvine.cn/backend/gore/db/mysql"
 	goreRedis "git.tenvine.cn/backend/gore/db/redis"
+	goreGin "git.tenvine.cn/backend/gore/gin"
 	"git.tenvine.cn/backend/gore/gonfig"
+	goreHttp "git.tenvine.cn/backend/gore/http"
+	"git.tenvine.cn/backend/gore/infratoken"
 	"git.tenvine.cn/backend/gore/log"
+	"github.com/gin-gonic/gin"
 	"github.com/go-redis/cache/v8"
 	"github.com/go-redis/redis/v8"
 	"github.com/olivere/elastic"
 	"github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/mongo"
+	"net/http"
 )
 
 // Setup 一键配置环境，日志和分解配置文件成struct
@@ -68,10 +73,6 @@ func Setup(env string, ptrOut interface{}) error {
 	return nil
 }
 
-func GetConfig() *gonfig.Config {
-	return gonfig.GetInstance()
-}
-
 func CheckDB() *db.CheckResult {
 	return db.Check(db.Config{
 		Cache:         GetConfig().Gore.Cache,
@@ -80,6 +81,22 @@ func CheckDB() *db.CheckResult {
 		Mysql:         GetConfig().Gore.Mysql,
 		Redis:         GetConfig().Gore.Redis,
 	})
+}
+
+func GetConfig() *gonfig.Config {
+	return gonfig.GetInstance()
+}
+
+func GetInfraToken(env string) (*infratoken.Response, error) {
+	return infratoken.GetInstance(env)
+}
+
+func Gin(ginMode string) *gin.Engine {
+	return goreGin.Setup(ginMode)
+}
+
+func HttpClient() *http.Client {
+	return goreHttp.GetInstance()
 }
 
 func Cache() *cache.Cache {

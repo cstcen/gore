@@ -1,6 +1,7 @@
-package gore
+package gin
 
 import (
+	"git.tenvine.cn/backend/gore"
 	"git.tenvine.cn/backend/gore/model"
 	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
@@ -20,7 +21,7 @@ type Group struct {
 
 func (g *Group) healthcheck() {
 	g.r.GET(RelativePathHealthCheck, func(c *gin.Context) {
-		c.JSON(http.StatusOK, CheckDB())
+		c.JSON(http.StatusOK, gore.CheckDB())
 	})
 }
 

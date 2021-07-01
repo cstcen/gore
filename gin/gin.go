@@ -1,4 +1,4 @@
-package gore
+package gin
 
 import (
 	"git.tenvine.cn/backend/gore/log"
@@ -10,7 +10,7 @@ import (
 // - gin.DebugMode: 表示开发环境
 // - gin.ReleaseMode: 表示正式环境
 // - gin.TestMode: 暂时不用
-func SetupGin(ginMode string) *gin.Engine {
+func Setup(ginMode string) *gin.Engine {
 
 	gin.SetMode(ginMode)
 

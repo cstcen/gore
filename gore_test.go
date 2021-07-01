@@ -1,10 +1,13 @@
 package gore
 
-import "fmt"
+import (
+	"fmt"
+	"git.tenvine.cn/backend/gore/gonfig"
+)
 
 func ExampleSetup() {
 
-	t := new(Tes)
+	t := new(gonfig.Config)
 	err := Setup("sdev0", t)
 	if err != nil {
 		fmt.Println(err)
@@ -12,7 +15,7 @@ func ExampleSetup() {
 	}
 
 	fmt.Printf("%+v\n", t)
-	fmt.Printf("%+v\n", conf)
+	fmt.Printf("%+v\n", gonfig.GetInstance())
 
 	// output: &{A:{B:2222 C:1111111 D:98} Logger:{Level:debug}}
 }
