@@ -23,7 +23,7 @@ type Config struct {
 	Consumers map[string]ConsumerConfig
 }
 
-func NewKafkaConfig(cfg Config) (*sarama.Config, error) {
+func NewKafkaConfig(cfg *Config) (*sarama.Config, error) {
 
 	if !cfg.Enable {
 		return nil, ErrDisable

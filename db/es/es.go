@@ -20,7 +20,7 @@ func GetInstance() *elastic.Client {
 	return es
 }
 
-func Setup(cfg Config) error {
+func Setup(cfg *Config) error {
 	if !cfg.Enable {
 		return nil
 	}

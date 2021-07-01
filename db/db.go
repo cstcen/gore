@@ -15,11 +15,11 @@ import (
 )
 
 type Config struct {
-	Cache         goreCache.Config
-	Elasticsearch es.Config
-	Mongo         goreMongo.Config
-	Mysql         goreMysql.Config
-	Redis         goreRedis.Config
+	Cache         *goreCache.Config
+	Elasticsearch *es.Config
+	Mongo         *goreMongo.Config
+	Mysql         *goreMysql.Config
+	Redis         *goreRedis.Config
 }
 
 type CheckResult struct {

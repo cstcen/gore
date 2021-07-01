@@ -49,6 +49,10 @@ var (
 	std = logrus.New()
 )
 
+type Config struct {
+	Level string
+}
+
 // SetupLog 设置日志
 func SetupLog() error {
 	err := setLogOutput()

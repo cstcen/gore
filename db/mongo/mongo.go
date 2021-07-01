@@ -27,7 +27,7 @@ func GetInstance() *mongo.Client {
 	return mgo
 }
 
-func Setup(cfg Config) error {
+func Setup(cfg *Config) error {
 	if !cfg.Enable {
 		return nil
 	}
@@ -56,7 +56,7 @@ func Setup(cfg Config) error {
 	return nil
 }
 
-func newOptions(c Config) *options.ClientOptions {
+func newOptions(c *Config) *options.ClientOptions {
 	clientOptions := options.Client()
 	clientOptions.SetAppName(c.AppName)
 	clientOptions.SetAuth(options.Credential{

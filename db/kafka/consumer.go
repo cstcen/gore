@@ -23,7 +23,7 @@ type ConsumerConfig struct {
 	Group   string
 }
 
-func StartConsumer(cfg Config, handler ConsumerMessageHandler) error {
+func StartConsumer(cfg *Config, handler ConsumerMessageHandler) error {
 	config, err := NewKafkaConfig(cfg)
 	if err != nil {
 		return err

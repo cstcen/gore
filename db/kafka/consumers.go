@@ -8,7 +8,7 @@ var (
 	ErrConsumerConfigNotFound = errors.New("consumer config not found")
 )
 
-func SetupConsumers(cfg Config, handlers map[string]ConsumerMessageHandler) error {
+func SetupConsumers(cfg *Config, handlers map[string]ConsumerMessageHandler) error {
 	config, err := NewKafkaConfig(cfg)
 	if err != nil {
 		return err

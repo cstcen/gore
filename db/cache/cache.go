@@ -28,7 +28,7 @@ func GetInstance() *cache.Cache {
 	return cc
 }
 
-func Setup(cfg Config) error {
+func Setup(cfg *Config) error {
 
 	if !cfg.Enable {
 		return nil
@@ -42,7 +42,7 @@ func Setup(cfg Config) error {
 	return nil
 }
 
-func newOptions(cfg Config) *cache.Options {
+func newOptions(cfg *Config) *cache.Options {
 	options := new(cache.Options)
 	if cfg.EnableRing {
 		addrs := make(map[string]string)

@@ -20,26 +20,28 @@ type Config struct {
 	// [username[:password]@][protocol[(address)]]/dbname[?param1=value&...&paramN=valueN]
 	// Example:
 	//     username:password@protocol(address)/dbname?param=value
-	Dsn struct {
-		Username string
-		Password string
-		// `tcp` or `unix`
-		Protocol string
-		// Example:
-		//     localhost:1111
-		Address string
-		Dbname  string
-		// Example:
-		//     ?charset=UTF8&loc=UTC
-		Params string
-	}
+	Dsn DataSourceName
+}
+
+type DataSourceName struct {
+	Username string
+	Password string
+	// `tcp` or `unix`
+	Protocol string
+	// Example:
+	//     localhost:1111
+	Address string
+	Dbname  string
+	// Example:
+	//     ?charset=UTF8&loc=UTC
+	Params string
 }
 
 func GetInstance() *sql.DB {
 	return sdb
 }
 
-func Setup(cfg Config) error {
+func Setup(cfg *Config) error {
 	if !cfg.Enable {
 		return nil
 	}
@@ -59,7 +61,7 @@ func Setup(cfg Config) error {
 	return nil
 }
 
-func getDSN(config Config) string {
+func getDSN(config *Config) string {
 	sb := new(strings.Builder)
 	if len(config.Dsn.Username) > 0 {
 		sb.WriteString(config.Dsn.Username)

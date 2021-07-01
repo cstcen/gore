@@ -24,7 +24,7 @@ func GetInstance() redis.UniversalClient {
 	return cli
 }
 
-func Setup(cfg Config) error {
+func Setup(cfg *Config) error {
 	if !cfg.Enable {
 		return nil
 	}
