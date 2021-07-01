@@ -8,7 +8,7 @@ func SetOps() {
 
 	g.Elasticsearch.URL = "http://10.252.1.13:9200"
 
-	g.Mongo.Hosts = []string{"10.252.1.13:27017"}
+	g.Mongo.Hosts = []string{"10.252.1.13:27027"}
 
 	g.Mysql.Dsn.Address = "10.252.1.15:4725"
 
