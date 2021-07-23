@@ -41,12 +41,12 @@ func Setup(env string, outPtr ...interface{}) error {
 		return err
 	}
 
-	if err := unmarshalConfigCustom(outPtr); err != nil {
+	if err := unmarshalConfigCustom(outPtr...); err != nil {
 		return err
 	}
 
 	if len(env) > 0 {
-		if err := unmarshalConfigCustomEnv(outPtr, env); err != nil {
+		if err := unmarshalConfigCustomEnv(env, outPtr...); err != nil {
 			return err
 		}
 	}
@@ -130,15 +130,15 @@ func init() {
 }
 
 func unmarshalConfigDefault() error {
-	return unmarshal(filepath.Join(conf.Gore.Path, conf.Gore.FileName), confMap, conf)
+	return unmarshal(filepath.Join(conf.Gore.Path, conf.Gore.FileName))
 }
 
-func unmarshalConfigCustom(outPtr interface{}) error {
-	return unmarshal(filepath.Join(conf.Gore.Path, conf.Gore.FileName), confMap, conf, outPtr)
+func unmarshalConfigCustom(outPtr ...interface{}) error {
+	return unmarshal(filepath.Join(conf.Gore.Path, conf.Gore.FileName), outPtr...)
 }
 
-func unmarshalConfigCustomEnv(outPtr interface{}, env string) error {
-	return unmarshal(filepath.Join(conf.Gore.Path, fmt.Sprintf(conf.Gore.FileNameEnv, env)), confMap, conf, outPtr)
+func unmarshalConfigCustomEnv(env string, outPtr ...interface{}) error {
+	return unmarshal(filepath.Join(conf.Gore.Path, fmt.Sprintf(conf.Gore.FileNameEnv, env)), outPtr...)
 }
 
 func unmarshal(filename string, outPtr ...interface{}) error {
@@ -146,6 +146,8 @@ func unmarshal(filename string, outPtr ...interface{}) error {
 	if err != nil {
 		return err
 	}
+
+	outPtr = append(outPtr, conf, confMap)
 
 	if len(outPtr) > 0 {
 		for i, p := range outPtr {
