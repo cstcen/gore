@@ -27,9 +27,9 @@ import (
 //
 // env(required): 环境名称
 // ptrOut(required): 配置文件实例，ptrOut必须为指针，例如：new(GetConfig().C)
-func Setup(env string, ptrOut interface{}) error {
+func Setup(env string, ptrOut ...interface{}) error {
 
-	if err := gonfig.Setup(env, ptrOut); err != nil {
+	if err := gonfig.Setup(env, ptrOut...); err != nil {
 		return err
 	}
 
