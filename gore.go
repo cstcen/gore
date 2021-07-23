@@ -76,6 +76,10 @@ func GetConfig() *gonfig.Config {
 	return gonfig.GetInstance()
 }
 
+func GetConfigValue(key string) (interface{}, bool) {
+	return gonfig.GetInstanceMap(key)
+}
+
 func GetInfraToken(env string) (*infratoken.Response, error) {
 	return infratoken.GetInstance(env)
 }

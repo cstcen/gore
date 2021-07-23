@@ -21,10 +21,11 @@ var (
 	ErrEnvEmpty       = errors.New("the env is empty")
 	ErrConfigOutEmpty = errors.New("the config out is empty")
 
-	conf *Config
+	conf    *Config
+	confMap = make(map[string]interface{})
 )
 
-func Setup(env string, outPtr interface{}) error {
+func Setup(env string, outPtr ...interface{}) error {
 
 	if "" == env {
 		return ErrEnvEmpty
@@ -73,6 +74,11 @@ type Gore struct {
 
 func GetInstance() *Config {
 	return conf
+}
+
+func GetInstanceMap(key string) (interface{}, bool) {
+	v, ok := confMap[key]
+	return v, ok
 }
 
 func init() {
@@ -124,15 +130,15 @@ func init() {
 }
 
 func unmarshalConfigDefault() error {
-	return unmarshal(filepath.Join(conf.Gore.Path, conf.Gore.FileName), conf)
+	return unmarshal(filepath.Join(conf.Gore.Path, conf.Gore.FileName), confMap, conf)
 }
 
 func unmarshalConfigCustom(outPtr interface{}) error {
-	return unmarshal(filepath.Join(conf.Gore.Path, conf.Gore.FileName), conf, outPtr)
+	return unmarshal(filepath.Join(conf.Gore.Path, conf.Gore.FileName), confMap, conf, outPtr)
 }
 
 func unmarshalConfigCustomEnv(outPtr interface{}, env string) error {
-	return unmarshal(filepath.Join(conf.Gore.Path, fmt.Sprintf(conf.Gore.FileNameEnv, env)), conf, outPtr)
+	return unmarshal(filepath.Join(conf.Gore.Path, fmt.Sprintf(conf.Gore.FileNameEnv, env)), confMap, conf, outPtr)
 }
 
 func unmarshal(filename string, outPtr ...interface{}) error {
