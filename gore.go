@@ -24,7 +24,7 @@ import (
 	"net/http"
 )
 
-var e string
+var environment string
 
 // Setup 一键配置环境，日志和分解配置文件成struct
 //
@@ -32,7 +32,7 @@ var e string
 // ptrOut(required): 配置文件实例，ptrOut必须为指针，例如：new(GetConfig().C)
 func Setup(env string, ptrOut ...interface{}) error {
 
-	e = env
+	environment = env
 
 	if err := gonfig.Setup(env, ptrOut...); err != nil {
 		return err
@@ -86,11 +86,15 @@ func GetConfigValue(key string) (interface{}, bool) {
 }
 
 func GetInfraToken(c context.Context, appName string) (string, error) {
-	return infratoken.Get(c, appName, e)
+	return infratoken.Get(c, appName, environment)
 }
 
-func Gin(ginMode string) *gin.Engine {
-	return goreGin.Setup(ginMode)
+func Gin() *gin.Engine {
+	mode := gin.DebugMode
+	if "xk5" == environment {
+		mode = gin.ReleaseMode
+	}
+	return goreGin.Setup(mode)
 }
 
 func HttpClient() *http.Client {
