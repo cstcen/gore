@@ -1,6 +1,7 @@
 package gore
 
 import (
+	"context"
 	"database/sql"
 	goreCache "git.tenvine.cn/backend/gore/db/cache"
 	goreEs "git.tenvine.cn/backend/gore/db/es"
@@ -23,11 +24,15 @@ import (
 	"net/http"
 )
 
+var e string
+
 // Setup 一键配置环境，日志和分解配置文件成struct
 //
 // env(required): 环境名称
 // ptrOut(required): 配置文件实例，ptrOut必须为指针，例如：new(GetConfig().C)
 func Setup(env string, ptrOut ...interface{}) error {
+
+	e = env
 
 	if err := gonfig.Setup(env, ptrOut...); err != nil {
 		return err
@@ -80,8 +85,8 @@ func GetConfigValue(key string) (interface{}, bool) {
 	return gonfig.GetInstanceMap(key)
 }
 
-func GetInfraToken(env string) (*infratoken.Response, error) {
-	return infratoken.GetInstance(env)
+func GetInfraToken(c context.Context, appName string) (string, error) {
+	return infratoken.Get(c, appName, e)
 }
 
 func Gin(ginMode string) *gin.Engine {

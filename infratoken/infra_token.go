@@ -2,12 +2,17 @@ package infratoken
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
+	"git.tenvine.cn/backend/gore"
 	"git.tenvine.cn/backend/gore/constant"
+	"git.tenvine.cn/backend/gore/log"
 	"git.tenvine.cn/backend/gore/util"
+	"github.com/go-redis/cache/v8"
 	"io"
 	"net/http"
+	"time"
 )
 
 const (
@@ -44,7 +49,31 @@ func init() {
 	}
 }
 
-func GetInstance(env string) (*Response, error) {
+func Get(c context.Context, appName, env string) (string, error) {
+	cacheKey := fmt.Sprintf("%s:%s:infra_token", env, appName)
+
+	contextLog := log.WithContext(c)
+
+	response, err := get(c, cacheKey)
+	if response != nil {
+		return response.AccessToken, nil
+	}
+
+	response, err = request(env)
+	if err != nil {
+		contextLog.WithError(err).Warn("get infra token fail")
+		return "", err
+	}
+
+	if err = save(response, cacheKey); err != nil {
+		contextLog.WithError(err).Warn("cache infra token fail")
+		return "", err
+	}
+
+	return response.AccessToken, nil
+}
+
+func request(env string) (*Response, error) {
 
 	b, err := json.Marshal(req)
 	if err != nil {
@@ -67,4 +96,34 @@ func GetInstance(env string) (*Response, error) {
 	}
 
 	return result, nil
+}
+
+func get(c context.Context, key string) (*Response, error) {
+
+	var wanted Response
+	ctx, cancelFunc := context.WithTimeout(c, constant.TimeoutConn)
+	if err := gore.Cache().Get(ctx, key, &wanted); err != nil {
+		return nil, err
+	}
+	defer cancelFunc()
+	return &wanted, nil
+
+}
+
+func save(response *Response, key string) error {
+	if response != nil {
+		ttl := time.Duration(response.ExpiresIn)
+		ctx, cancelFunc := context.WithTimeout(context.Background(), constant.TimeoutConn)
+		defer cancelFunc()
+		if err := gore.Cache().Set(&cache.Item{
+			Ctx:   ctx,
+			Key:   key,
+			Value: response,
+			TTL:   ttl,
+		}); err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
