@@ -86,7 +86,7 @@ func GetConfigValue(key string) (interface{}, bool) {
 }
 
 func GetInfraToken(c context.Context, appName string) (string, error) {
-	return infratoken.Get(c, appName, environment)
+	return infratoken.Get(c, appName, environment, Cache())
 }
 
 func Gin() *gin.Engine {

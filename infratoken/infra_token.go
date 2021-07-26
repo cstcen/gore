@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"git.tenvine.cn/backend/gore"
 	"git.tenvine.cn/backend/gore/constant"
 	"git.tenvine.cn/backend/gore/log"
 	"git.tenvine.cn/backend/gore/util"
@@ -49,12 +48,12 @@ func init() {
 	}
 }
 
-func Get(c context.Context, appName, env string) (string, error) {
+func Get(c context.Context, appName, env string, cc *cache.Cache) (string, error) {
 	cacheKey := fmt.Sprintf("%s:%s:infra_token", env, appName)
 
 	contextLog := log.WithContext(c)
 
-	response, err := get(c, cacheKey)
+	response, err := get(c, cacheKey, cc)
 	if response != nil {
 		return response.AccessToken, nil
 	}
@@ -65,7 +64,7 @@ func Get(c context.Context, appName, env string) (string, error) {
 		return "", err
 	}
 
-	if err = save(response, cacheKey); err != nil {
+	if err = save(response, cacheKey, cc); err != nil {
 		contextLog.WithError(err).Warn("cache infra token fail")
 		return "", err
 	}
@@ -98,11 +97,11 @@ func request(env string) (*Response, error) {
 	return result, nil
 }
 
-func get(c context.Context, key string) (*Response, error) {
+func get(c context.Context, key string, cc *cache.Cache) (*Response, error) {
 
 	var wanted Response
 	ctx, cancelFunc := context.WithTimeout(c, constant.TimeoutConn)
-	if err := gore.Cache().Get(ctx, key, &wanted); err != nil {
+	if err := cc.Get(ctx, key, &wanted); err != nil {
 		return nil, err
 	}
 	defer cancelFunc()
@@ -110,12 +109,12 @@ func get(c context.Context, key string) (*Response, error) {
 
 }
 
-func save(response *Response, key string) error {
+func save(response *Response, key string, cc *cache.Cache) error {
 	if response != nil {
 		ttl := time.Duration(response.ExpiresIn)
 		ctx, cancelFunc := context.WithTimeout(context.Background(), constant.TimeoutConn)
 		defer cancelFunc()
-		if err := gore.Cache().Set(&cache.Item{
+		if err := cc.Set(&cache.Item{
 			Ctx:   ctx,
 			Key:   key,
 			Value: response,
