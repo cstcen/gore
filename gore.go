@@ -20,6 +20,7 @@ import (
 	"github.com/go-redis/redis/v8"
 	"github.com/olivere/elastic"
 	"github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/mongo"
 	"net/http"
 )
@@ -30,11 +31,11 @@ var environment string
 //
 // env(required): 环境名称
 // ptrOut(required): 配置文件实例，ptrOut必须为指针，例如：new(GetConfig().C)
-func Setup(env string, ptrOut ...interface{}) error {
+func Setup(env string) error {
 
 	environment = env
 
-	if err := gonfig.Setup(env, ptrOut...); err != nil {
+	if err := gonfig.Setup(env); err != nil {
 		return err
 	}
 
@@ -81,12 +82,12 @@ func GetConfig() *gonfig.Config {
 	return gonfig.GetInstance()
 }
 
-func GetConfigValue(key string) (interface{}, bool) {
-	return gonfig.GetInstanceMap(key)
-}
-
 func GetInfraToken(c context.Context, appName string) (string, error) {
 	return infratoken.Get(c, appName, environment, Cache())
+}
+
+func Viper() *viper.Viper {
+	return gonfig.GetViper()
 }
 
 func Gin() *gin.Engine {

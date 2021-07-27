@@ -15,10 +15,10 @@ var (
 type Config struct {
 	Enable bool
 
-	EnableRing   bool `yaml:"enable-ring"`
-	DisableStats bool `yaml:"disable-stats"`
+	EnableRing   bool
+	DisableStats bool
 
-	AppName  string `yaml:"app-name"`
+	AppName  string
 	Hosts    []string
 	Username string
 	Password string

@@ -16,6 +16,8 @@ require (
 	github.com/olivere/elastic v6.2.35+incompatible
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.8.1
+	github.com/spf13/viper v1.8.1
+	github.com/stretchr/testify v1.7.0
 	github.com/swaggo/gin-swagger v1.3.0
 	github.com/vmihailenco/go-tinylfu v0.2.1 // indirect
 	go.mongodb.org/mongo-driver v1.5.3

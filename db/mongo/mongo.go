@@ -16,7 +16,7 @@ var (
 type Config struct {
 	Enable bool
 
-	AppName  string `yaml:"app-name"`
+	AppName  string
 	Username string
 	Password string
 	Hosts    []string

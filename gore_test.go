@@ -8,7 +8,7 @@ import (
 func ExampleSetup() {
 
 	t := new(gonfig.Config)
-	err := Setup("sdev0", t)
+	err := Setup("sdev0")
 	if err != nil {
 		fmt.Println(err)
 		return

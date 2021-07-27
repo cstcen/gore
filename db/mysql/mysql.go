@@ -12,9 +12,9 @@ var sdb *sql.DB
 type Config struct {
 	Enable bool
 
-	ConnMaxLifeTime time.Duration `yaml:"conn-max-life-time"`
-	MaxOpenConns    int           `yaml:"max-open-conns"`
-	MaxIdleConns    int           `yaml:"max-idle-conns"`
+	ConnMaxLifeTime time.Duration
+	MaxOpenConns    int
+	MaxIdleConns    int
 
 	// DSN(Data Source Name)
 	// [username[:password]@][protocol[(address)]]/dbname[?param1=value&...&paramN=valueN]

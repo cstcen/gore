@@ -14,7 +14,7 @@ var (
 type Config struct {
 	Enable bool
 
-	DisableCluster bool `yaml:"disable-cluster"`
+	DisableCluster bool
 	Hosts          []string
 	Username       string
 	Password       string
