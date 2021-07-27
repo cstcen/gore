@@ -98,6 +98,9 @@ func request(env string) (*Response, error) {
 }
 
 func get(c context.Context, key string, cc *cache.Cache) (*Response, error) {
+	if cc == nil {
+		return nil, nil
+	}
 
 	var wanted Response
 	ctx, cancelFunc := context.WithTimeout(c, constant.TimeoutConn)
