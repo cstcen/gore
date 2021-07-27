@@ -8,14 +8,14 @@ var (
 )
 
 type PageData struct {
-	PageNo             int           `json:"pageNo"`
-	PageSize           int           `json:"pageSize"`
-	Order              OrderEnum     `json:"order"`
-	OrderBy            string        `json:"orderBy"`
+	PageNo             int           `json:"pageNo,omitempty"`
+	PageSize           int           `json:"pageSize,omitempty"`
+	Order              OrderEnum     `json:"order,omitempty"`
+	OrderBy            string        `json:"orderBy,omitempty"`
 	NeedlessData       bool          `json:"-"`
 	NeedlessTotalCount bool          `json:"-"`
-	List               []interface{} `json:"list"`
-	Total              int           `json:"total"`
+	List               []interface{} `json:"list,omitempty"`
+	Total              int           `json:"total,omitempty"`
 }
 
 func (d *PageData) GetFirst() int {
