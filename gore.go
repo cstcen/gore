@@ -82,8 +82,8 @@ func GetConfig() *gonfig.Config {
 	return gonfig.GetInstance()
 }
 
-func GetInfraToken(c context.Context, appName string) (string, error) {
-	return infratoken.Get(c, appName, environment, Cache())
+func GetInfraToken(c context.Context) (string, error) {
+	return infratoken.Get(c, environment, Cache())
 }
 
 func Viper() *viper.Viper {

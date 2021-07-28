@@ -48,8 +48,8 @@ func init() {
 	}
 }
 
-func Get(c context.Context, appName, env string, cc *cache.Cache) (string, error) {
-	cacheKey := fmt.Sprintf("%s:%s:infra_token", env, appName)
+func Get(c context.Context, env string, cc *cache.Cache) (string, error) {
+	cacheKey := fmt.Sprintf("%s:infra_token", env)
 
 	contextLog := log.WithContext(c)
 
