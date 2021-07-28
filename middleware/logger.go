@@ -24,7 +24,7 @@ func (w ResponseWriter) WriteString(s string) (int, error) {
 	return w.ResponseWriter.WriteString(s)
 }
 
-func Logger() gin.HandlerFunc {
+func Logger(skipLogResp func(path string) bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		contextLog := log.WithContext(c)
 		// Start timer
@@ -70,13 +70,17 @@ func Logger() gin.HandlerFunc {
 
 		param.Path = path
 
-		contextLog.WithFields(logrus.Fields{
+		fields := logrus.Fields{
 			"method":  param.Method,
 			"uri":     param.Path,
 			"status":  param.StatusCode,
 			"latency": param.Latency,
 			"ip":      param.ClientIP,
 			"body":    respWriter.body.String(),
-		}).Info()
+		}
+		if skipLogResp(path) {
+			fields["body"] = ""
+		}
+		contextLog.WithFields(fields).Info()
 	}
 }

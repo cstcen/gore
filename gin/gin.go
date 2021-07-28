@@ -4,6 +4,7 @@ import (
 	"git.tenvine.cn/backend/gore/log"
 	"git.tenvine.cn/backend/gore/middleware"
 	"github.com/gin-gonic/gin"
+	"strings"
 )
 
 // ginMode:
@@ -28,7 +29,9 @@ func Setup(ginMode string) *gin.Engine {
 
 	r.Use(middleware.RequestID())
 
-	r.Use(middleware.Logger())
+	r.Use(middleware.Logger(func(path string) bool {
+		return strings.Contains(path, "/swagger/") || strings.Contains(path, "/pprof/")
+	}))
 
 	r.Use(middleware.Rest())
 
