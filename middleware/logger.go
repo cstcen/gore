@@ -79,7 +79,7 @@ func Logger(skipLogResp func(path string) bool) gin.HandlerFunc {
 			"body":    respWriter.body.String(),
 		}
 		if skipLogResp(path) {
-			fields["body"] = ""
+			delete(fields, "body")
 		}
 		contextLog.WithFields(fields).Info()
 	}
