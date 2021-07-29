@@ -60,8 +60,8 @@ var (
 )
 
 type BaseResult struct {
-	Code    int    `json:",omitempty"`
-	Message string `json:",omitempty"`
+	Code    int    `json:"code,omitempty"`
+	Message string `json:"message,omitempty"`
 }
 
 func (r BaseResult) Error() string {

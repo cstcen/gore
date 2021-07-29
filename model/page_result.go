@@ -2,5 +2,5 @@ package model
 
 type PageResult struct {
 	BaseResult
-	Data []PageData `json:",omitempty"`
+	Data []PageData `json:"data,omitempty"`
 }
