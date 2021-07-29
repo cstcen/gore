@@ -27,13 +27,13 @@ var (
 	conf *Config
 )
 
-func Setup(env string) error {
+func Setup(env, appName string) error {
 
 	if len(env) == 0 {
 		return ErrEnvEmpty
 	}
 
-	Initialize(env)
+	Initialize(env, appName)
 
 	vp.SetConfigType("yaml")
 

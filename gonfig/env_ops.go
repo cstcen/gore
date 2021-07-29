@@ -1,6 +1,6 @@
 package gonfig
 
-func SetOps() {
+func SetOps(env, appName string) {
 	g := GetInstance().Gore
 	g.Cache.EnableRing = true
 	g.Cache.Hosts = []string{"10.252.1.11:6379"}
