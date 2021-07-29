@@ -27,15 +27,15 @@ import (
 
 var environment string
 
-// Setup 一键配置环境，日志和分解配置文件成struct
+// Setup 一键配置环境
 //
 // env(required): 环境名称
-// ptrOut(required): 配置文件实例，ptrOut必须为指针，例如：new(GetConfig().C)
-func Setup(env string) error {
+// appName(required): 项目名称
+func Setup(env, appName string) error {
 
 	environment = env
 
-	if err := gonfig.Setup(env); err != nil {
+	if err := gonfig.Setup(env, appName); err != nil {
 		return err
 	}
 
