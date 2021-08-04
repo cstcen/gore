@@ -1,2 +1,109 @@
-messenger:
-  host: 0.0.0.0
+gore:
+  logger:
+    # 日志等级， trace, debug, info, warning, error, fatal, panic
+    level: trace
+  cache:
+    # 是否开启缓存功能
+    enable: false
+    # 是否开启单点连接
+    enableRing: false
+    # 是否关闭状态检查
+    disableStats: false
+    # 实例名称
+    appName: ${application}
+    # host:port，如果开启单点连接模式，则请保持数组为一个元素
+    hosts:
+      - "localhost:6379"
+    # 用户名
+    username:
+    # 密码
+    password:
+  elasticsearch:
+    # 是否开启es功能
+    enable: false
+    config:
+      # scheme://host:port
+      url: http://localhost:9200
+      # 用户名
+      username:
+      # 密码
+      password:
+  kafka:
+    # 是否开启kafka功能
+    enable: false
+    # kafka版本
+    version: 2.5.0
+    # 负载均衡的策略, sticky, roundrobin, range
+    assignor: range
+    # 是否按最老排序
+    oldest: false
+    # 单个消费者时使用
+    consumer:
+      # host:port
+      brokers:
+        - "localhost:9092"
+      # 主题
+      topics:
+        - ${application}
+      # 分组
+      group:
+    # 多个消费者时使用，注意：`aaaa`要与代码中传入的处理消息方法的map-key对应，即map[string]kafka.ConsumerMessageHandler{"aaaa": ...}
+    consumers:
+      aaaa:
+        # host:port
+        brokers:
+          - "localhost:9092"
+        # 主题
+        topics:
+          - ${application}
+        # 分组
+        group:
+  mongo:
+    # 是否启用mongo功能
+    enable: false
+    # 实例名称
+    appName: ${application}
+    # 连接超时时间
+    timeout: 30s
+    # 用户名
+    username:
+    # 密码
+    password:
+    # host:port
+    hosts:
+      - "localhost:27017"
+  mysql:
+    # 是否开启mysql功能
+    enable: false
+    # 连接最大生命周期
+    connMaxLifeTime: 3m
+    # 最大打开的连接数
+    maxOpenConns: 10
+    # 最大空闲的连接数
+    maxIdleConns: 10
+    # DataSourceName
+    Dsn:
+      # `tcp` or `unix`
+      protocol: tcp
+      # 用户名
+      username:
+      # 密码
+      password:
+      # host:port
+      address:
+      # 数据库名称
+      dbname:
+      # 连接参数，例如：`?charset=UTF8&loc=UTC`
+      params:
+  redis:
+    # 是否启用redis功能
+    enable: false
+    # 是否关闭集群模式
+    disableCluster: false
+    # host:port
+    hosts:
+      - "localhost:6379"
+    # 用户名
+    username:
+    # 密码
+    password:

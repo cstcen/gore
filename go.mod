@@ -4,6 +4,7 @@ go 1.16
 
 require (
 	github.com/Shopify/sarama v1.29.1
+	github.com/bketelsen/crypt v0.0.4
 	github.com/gin-contrib/pprof v1.3.0
 	github.com/gin-gonic/gin v1.7.2
 	github.com/go-redis/cache/v8 v8.4.1
