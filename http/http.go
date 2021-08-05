@@ -5,7 +5,7 @@ import (
 	"context"
 	"git.tenvine.cn/backend/gore/constant"
 	"git.tenvine.cn/backend/gore/log"
-	"git.tenvine.cn/backend/gore/model"
+	"git.tenvine.cn/backend/gore/vo"
 	"github.com/sirupsen/logrus"
 	"io"
 	"net/http"
@@ -34,7 +34,7 @@ type Transport struct {
 func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 	ctx, ok := req.Context().(context.Context)
 	if !ok {
-		return nil, model.BaseResult{Code: http.StatusInternalServerError, Message: "unknown context"}
+		return nil, vo.BaseResult{Code: http.StatusInternalServerError, Message: "unknown context"}
 	}
 
 	contextLog := log.WithContext(ctx)

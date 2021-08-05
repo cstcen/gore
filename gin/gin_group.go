@@ -3,7 +3,7 @@ package gin
 import (
 	"git.tenvine.cn/backend/gore/db"
 	"git.tenvine.cn/backend/gore/gonfig"
-	"git.tenvine.cn/backend/gore/model"
+	"git.tenvine.cn/backend/gore/vo"
 	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -48,12 +48,12 @@ func (g *Group) status() {
 
 	// 404 Handler.
 	g.r.NoRoute(func(c *gin.Context) {
-		c.JSON(http.StatusNotFound, model.BaseResultNotFound)
+		c.JSON(http.StatusNotFound, vo.BaseResultNotFound)
 	})
 
 	// 405 Handler.
 	g.r.NoMethod(func(c *gin.Context) {
-		c.JSON(http.StatusMethodNotAllowed, model.BaseResultNotFound)
+		c.JSON(http.StatusMethodNotAllowed, vo.BaseResultNotFound)
 	})
 
 }

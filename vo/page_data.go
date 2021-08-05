@@ -1,4 +1,4 @@
-package model
+package vo
 
 type OrderEnum string
 
