@@ -109,6 +109,18 @@ func HttpClient() *http.Client {
 	return goreHttp.GetInstance()
 }
 
+func HttpPost(url, contentType string, body interface{}, expectedPtr interface{}) error {
+	return goreHttp.Post(url, contentType, body, expectedPtr)
+}
+
+func HttpGet(url string, expectedPtr interface{}) error {
+	return goreHttp.Get(url, expectedPtr)
+}
+
+func HttpHead(url string, expectedPtr interface{}) error {
+	return goreHttp.Get(url, expectedPtr)
+}
+
 func Cache() *cache.Cache {
 	return goreCache.GetInstance()
 }

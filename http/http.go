@@ -3,6 +3,7 @@ package http
 import (
 	"bytes"
 	"context"
+	"encoding/json"
 	"git.tenvine.cn/backend/gore/constant"
 	"git.tenvine.cn/backend/gore/log"
 	"git.tenvine.cn/backend/gore/vo"
@@ -25,6 +26,61 @@ func init() {
 		},
 		Timeout: constant.TimeoutConn,
 	}
+}
+
+func Post(url, contentType string, body interface{}, expectedPtr interface{}) error {
+	p, err := json.Marshal(body)
+	if err != nil {
+		return err
+	}
+	resp, err := cli.Post(url, contentType, bytes.NewReader(p))
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if err := RespHandler(resp, expectedPtr); err != nil {
+		return err
+	}
+	return nil
+}
+
+func Get(url string, expectedPtr interface{}) error {
+	resp, err := cli.Get(url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if err := RespHandler(resp, expectedPtr); err != nil {
+		return err
+	}
+	return nil
+}
+
+func Head(url string, expectedPtr interface{}) error {
+	resp, err := cli.Head(url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if err := RespHandler(resp, expectedPtr); err != nil {
+		return err
+	}
+	return nil
+}
+
+func RespHandler(resp *http.Response, expectedPtr interface{}) error {
+	bodyBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+
+	if err := json.Unmarshal(bodyBytes, expectedPtr); err != nil {
+		return err
+	}
+	return nil
 }
 
 type Transport struct {
