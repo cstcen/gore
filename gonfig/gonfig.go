@@ -48,11 +48,13 @@ var (
 // 1. config/config.yml
 // 2. config/config-dev.yml
 // 越靠后，配置优先级越高
-func Setup(env, appName string) error {
+func Setup() error {
 
+	env := vp.GetString("env")
 	if len(env) == 0 {
 		return ErrEnvEmpty
 	}
+	appName := vp.GetString("name")
 
 	endpoint := "10.251.110.122:8500"
 

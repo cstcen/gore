@@ -3,6 +3,8 @@ package gore
 import (
 	"context"
 	"database/sql"
+	"git.tenvine.cn/backend/gore/cmd"
+	"git.tenvine.cn/backend/gore/consul"
 	goreCache "git.tenvine.cn/backend/gore/db/cache"
 	goreEs "git.tenvine.cn/backend/gore/db/es"
 	"git.tenvine.cn/backend/gore/db/kafka"
@@ -20,22 +22,15 @@ import (
 	"github.com/go-redis/redis/v8"
 	"github.com/olivere/elastic"
 	"github.com/sirupsen/logrus"
+	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/mongo"
 	"net/http"
 )
 
-var environment string
+func Setup() error {
 
-// Setup 一键配置环境
-//
-// env(required): 环境名称
-// appName(required): 项目名称
-func Setup(env, appName string) error {
-
-	environment = env
-
-	if err := gonfig.Setup(env, appName); err != nil {
+	if err := gonfig.Setup(); err != nil {
 		return err
 	}
 
@@ -43,47 +38,63 @@ func Setup(env, appName string) error {
 		return err
 	}
 
-	log.Infof("Current active profile: %s", env)
+	log.Infof("Current active profile: %s", Viper().GetString("env"))
 
-	log.Infof("Current load config path: %s", GetConfig().Gore.Path)
+	log.Infof("Current load config path: %s", getConfig().Gore.Path)
 
-	if len(GetConfig().Gore.Logger.Level) > 0 {
-		log.SetLogLevel(GetConfig().Gore.Logger.Level)
+	if len(getConfig().Gore.Logger.Level) > 0 {
+		log.SetLogLevel(getConfig().Gore.Logger.Level)
 	} else {
 		log.SetLogLevel(logrus.TraceLevel.String())
 	}
 
 	log.Infof("Current logger level: %s", log.GetLevel())
 
-	if err := goreCache.Setup(GetConfig().Gore.Cache); err != nil {
+	if err := goreCache.Setup(getConfig().Gore.Cache); err != nil {
 		return err
 	}
 
-	if err := goreEs.Setup(GetConfig().Gore.Elasticsearch); err != nil {
+	if err := goreEs.Setup(getConfig().Gore.Elasticsearch); err != nil {
 		return err
 	}
 
-	if err := goreMongo.Setup(GetConfig().Gore.Mongo); err != nil {
+	if err := goreMongo.Setup(getConfig().Gore.Mongo); err != nil {
 		return err
 	}
 
-	if err := goreMysql.Setup(GetConfig().Gore.Mysql); err != nil {
+	if err := goreMysql.Setup(getConfig().Gore.Mysql); err != nil {
 		return err
 	}
 
-	if err := goreRedis.Setup(GetConfig().Gore.Redis); err != nil {
+	if err := goreRedis.Setup(getConfig().Gore.Redis); err != nil {
 		return err
+	}
+
+	if Viper().GetBool("gore.consul.enable") {
+		if err := consul.Register(); err != nil {
+			return err
+		}
 	}
 
 	return nil
 }
 
-func GetConfig() *gonfig.Config {
-	return gonfig.GetInstance()
+// Cmd return a root Command.
+// preStartup is between gore.setup and server startup.
+func Cmd(preStartup func(engine *gin.Engine) error) *cobra.Command {
+	return cmd.New(func() error {
+		if err := Setup(); err != nil {
+			return err
+		}
+		if err := preStartup(goreGin.GetInstance()); err != nil {
+			return err
+		}
+		return nil
+	})
 }
 
-func GetInfraToken(c context.Context) (string, error) {
-	return infratoken.Get(c, environment, Cache())
+func InfraToken(c context.Context) (string, error) {
+	return infratoken.Get(c, Viper().GetString("env"), Cache())
 }
 
 func Viper() *viper.Viper {
@@ -91,11 +102,7 @@ func Viper() *viper.Viper {
 }
 
 func Gin() *gin.Engine {
-	mode := gin.DebugMode
-	if "xk5" == environment {
-		mode = gin.ReleaseMode
-	}
-	return goreGin.Setup(mode)
+	return goreGin.GetInstance()
 }
 
 func HttpClient() *http.Client {
@@ -107,7 +114,7 @@ func Cache() *cache.Cache {
 }
 
 func CacheCustom(fn func(cfg *goreCache.Config) *cache.Cache) *cache.Cache {
-	return fn(GetConfig().Gore.Cache)
+	return fn(getConfig().Gore.Cache)
 }
 
 func Mongo() *mongo.Client {
@@ -115,7 +122,7 @@ func Mongo() *mongo.Client {
 }
 
 func MongoCustom(fn func(cfg *goreMongo.Config) *mongo.Client) *mongo.Client {
-	return fn(GetConfig().Gore.Mongo)
+	return fn(getConfig().Gore.Mongo)
 }
 
 func Mysql() *sql.DB {
@@ -123,7 +130,7 @@ func Mysql() *sql.DB {
 }
 
 func MysqlCustom(fn func(cfg *goreMysql.Config) *sql.DB) *sql.DB {
-	return fn(GetConfig().Gore.Mysql)
+	return fn(getConfig().Gore.Mysql)
 }
 
 func Elasticsearch() *elastic.Client {
@@ -131,23 +138,23 @@ func Elasticsearch() *elastic.Client {
 }
 
 func ElasticsearchCustom(fn func(cfg *goreEs.Config) *elastic.Client) *elastic.Client {
-	return fn(GetConfig().Gore.Elasticsearch)
+	return fn(getConfig().Gore.Elasticsearch)
 }
 
 func KafkaStartConsumer(handler kafka.ConsumerMessageHandler) error {
-	return goreKafka.StartConsumer(GetConfig().Gore.Kafka, handler)
+	return goreKafka.StartConsumer(getConfig().Gore.Kafka, handler)
 }
 
 func KafkaStartConsumerCustom(fn func(cfg *goreKafka.Config) error) error {
-	return fn(GetConfig().Gore.Kafka)
+	return fn(getConfig().Gore.Kafka)
 }
 
 func KafkaStartConsumers(handlers map[string]kafka.ConsumerMessageHandler) error {
-	return goreKafka.SetupConsumers(GetConfig().Gore.Kafka, handlers)
+	return goreKafka.SetupConsumers(getConfig().Gore.Kafka, handlers)
 }
 
 func KafkaStartConsumersCustom(fn func(cfg *goreKafka.Config) error) error {
-	return fn(GetConfig().Gore.Kafka)
+	return fn(getConfig().Gore.Kafka)
 }
 
 func Redis() redis.UniversalClient {
@@ -155,5 +162,9 @@ func Redis() redis.UniversalClient {
 }
 
 func RedisCustom(fn func(cfg *goreRedis.Config) redis.UniversalClient) redis.UniversalClient {
-	return fn(GetConfig().Gore.Redis)
+	return fn(getConfig().Gore.Redis)
+}
+
+func getConfig() *gonfig.Config {
+	return gonfig.GetInstance()
 }
