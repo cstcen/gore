@@ -1,110 +1,87 @@
 package infratoken
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
-	"fmt"
 	"git.tenvine.cn/backend/gore/constant"
+	goreCache "git.tenvine.cn/backend/gore/db/cache"
+	"git.tenvine.cn/backend/gore/gonfig"
+	goreHttp "git.tenvine.cn/backend/gore/http"
 	"git.tenvine.cn/backend/gore/log"
 	"git.tenvine.cn/backend/gore/util"
 	"github.com/go-redis/cache/v8"
-	"io"
-	"net/http"
+	"github.com/sirupsen/logrus"
 	"time"
 )
 
-const (
-	GrantType      = "client_credentials"
-	AuthID         = "infra_billing_server"
-	AuthSecret     = "alkjsdf8jsf9n3onf78s9dhfjlk398f9hlksdfuihaoisdhf"
-	AuthHostFormat = "https://m-apis-%s.xk5.com/auth/v2/infra_server/init"
-)
-
 var (
-	req *Request
+	macAddr = util.GetMACAddr()
 )
 
 type Request struct {
 	GrantType    string `json:"grant_type"`
 	ClientId     string `json:"client_id"`
 	ClientSecret string `json:"client_secret"`
-	MacAddress   string `json:"mac_address"`
+	MacAddress   string `json:"macaddress"`
 }
 
 type Response struct {
 	ReturnCode    uint   `json:"return_code"`
 	ReturnMessage string `json:"return_message,omitempty"`
 	ExpiresIn     uint   `json:"expires_in,omitempty"`
+	ExpiresDt     uint   `json:"expires_dt,omitempty"`
 	AccessToken   string `json:"access_token,omitempty"`
+	TokenType     string `json:"token_type,omitempty"`
 }
 
-func init() {
-	req = &Request{
-		GrantType:    GrantType,
-		ClientId:     AuthID,
-		ClientSecret: AuthSecret,
-		MacAddress:   util.GetMACAddr(),
-	}
-}
+func Get(c context.Context) (string, error) {
+	cacheKey := gonfig.GetViper().GetString("gore.tenvine.keyPrefix") + gonfig.GetViper().GetString("gore.tenvine.infraToken.clientId")
 
-func Get(c context.Context, env string, cc *cache.Cache) (string, error) {
-	cacheKey := fmt.Sprintf("%s:infra_token", env)
+	ctxLog := log.WithContext(c)
 
-	contextLog := log.WithContext(c)
+	var response *Response
+	var err error
 
-	response, err := get(c, cacheKey, cc)
-	if response != nil {
-		return response.AccessToken, nil
+	if goreCache.GetInstance() != nil {
+		response, err = get(c, cacheKey)
+		if response != nil {
+			return response.AccessToken, nil
+		}
 	}
 
-	response, err = request(env)
+	response, err = request()
 	if err != nil {
-		contextLog.WithError(err).Warn("get infra token fail")
+		ctxLog.WithError(err).Warn("get infra token fail")
 		return "", err
 	}
 
-	if err = save(response, cacheKey, cc); err != nil {
-		contextLog.WithError(err).Warn("cache infra token fail")
-		return "", err
-	}
+	// async
+	go save(response, cacheKey, goreCache.GetInstance(), ctxLog)
 
 	return response.AccessToken, nil
 }
 
-func request(env string) (*Response, error) {
+func request() (*Response, error) {
 
-	b, err := json.Marshal(req)
-	if err != nil {
-		return nil, err
+	url := gonfig.GetViper().GetString("gore.tenvine.infraToken.url")
+	req := Request{
+		GrantType:    gonfig.GetViper().GetString("gore.tenvine.infraToken.grantType"),
+		ClientId:     gonfig.GetViper().GetString("gore.tenvine.infraToken.clientId"),
+		ClientSecret: gonfig.GetViper().GetString("gore.tenvine.infraToken.clientSecret"),
+		MacAddress:   macAddr,
 	}
-
-	authURL := fmt.Sprintf(AuthHostFormat, env)
-
-	resp, err := http.Post(authURL, constant.ContentTypeApplicationJSONCharset, bytes.NewBuffer(b))
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	body, err := io.ReadAll(resp.Body)
 
 	result := new(Response)
-	if err = json.Unmarshal(body, result); err != nil {
+	if err := goreHttp.Post(url, constant.ContentTypeApplicationJSON, req, result); err != nil {
 		return nil, err
 	}
 
 	return result, nil
 }
 
-func get(c context.Context, key string, cc *cache.Cache) (*Response, error) {
-	if cc == nil {
-		return nil, nil
-	}
-
+func get(c context.Context, key string) (*Response, error) {
 	var wanted Response
 	ctx, cancelFunc := context.WithTimeout(c, constant.TimeoutConn)
-	if err := cc.Get(ctx, key, &wanted); err != nil {
+	if err := goreCache.GetInstance().Get(ctx, key, &wanted); err != nil {
 		return nil, err
 	}
 	defer cancelFunc()
@@ -112,20 +89,24 @@ func get(c context.Context, key string, cc *cache.Cache) (*Response, error) {
 
 }
 
-func save(response *Response, key string, cc *cache.Cache) error {
-	if response != nil {
-		ttl := time.Duration(response.ExpiresIn)
-		ctx, cancelFunc := context.WithTimeout(context.Background(), constant.TimeoutConn)
-		defer cancelFunc()
-		if err := cc.Set(&cache.Item{
-			Ctx:   ctx,
-			Key:   key,
-			Value: response,
-			TTL:   ttl,
-		}); err != nil {
-			return err
-		}
+func save(response *Response, key string, cc *cache.Cache, ctxLog *logrus.Entry) {
+	if cc == nil {
+		return
+	}
+	if response == nil {
+		return
 	}
 
-	return nil
+	ttl := time.Duration(response.ExpiresIn)
+	ctx, cancelFunc := context.WithTimeout(context.Background(), constant.TimeoutConn)
+	defer cancelFunc()
+	if err := goreCache.GetInstance().Set(&cache.Item{
+		Ctx:   ctx,
+		Key:   key,
+		Value: response,
+		TTL:   ttl,
+	}); err != nil {
+		ctxLog.WithError(err).Warn("cache infra token fail")
+	}
+
 }

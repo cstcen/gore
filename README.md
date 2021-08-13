@@ -26,80 +26,125 @@
 #### Config Example
 
     gore:
-      path: config
-      file-name: config.yml
-      file-name-env: config-%s.yml
-      common-path: config
-      common-file-name: common.yml
-      common-file-name-env: common-%s.yml
       logger:
+        # 日志等级， trace, debug, info, warning, error, fatal, panic
         level: trace
       cache:
+        # 是否开启缓存功能
         enable: false
-        enable-ring: false
-        app-name: gore
-        hosts: 10.251.43.21:6379
+        # 是否开启单点连接
+        enableRing: false
+        # 是否关闭状态检查
+        disableStats: false
+        # 实例名称
+        appName: ${application}
+        # host:port，如果开启单点连接模式，则请保持数组为一个元素
+        hosts:
+          - "localhost:6379"
+        # 用户名
         username:
-        password: sdev0#redis#3aPVNy
+        # 密码
+        password:
       elasticsearch:
+        # 是否开启es功能
         enable: false
-        url: http://10.251.104.6:9200
-        index:
-        username:
-        shards: 1
-        replicas: 0
-        password: allDev#es#3aPVNy
-      mongo:
-        enable: false
-        app-name: gore
-        username:
-        password:
-        hosts: 10.251.104.15:27017
-        timeout: 30s
-      mysql:
-        enable: false
-        conn-max-life-time: 3m
-        max-open-conns: 10
-        max-idle-conns: 10
-        dsn:
+        config:
+          # scheme://host:port
+          url: http://localhost:9200
+          # 用户名
           username:
+          # 密码
           password:
-          protocol: tcp
-          address: localhost:4725
-          dbname:
-          params: ?charset=UTF8&loc=UTC
       kafka:
+        # 是否开启kafka功能
         enable: false
+        # kafka版本
         version: 2.5.0
+        # 负载均衡的策略, sticky, roundrobin, range
         assignor: range
+        # 是否按最老排序
         oldest: false
+        # 单个消费者时使用
         consumer:
+          # host:port
           brokers:
+            - "localhost:9092"
+          # 主题
           topics:
+            - ${application}
+          # 分组
           group:
+        # 多个消费者时使用，注意：`aaaa`要与代码中传入的处理消息方法的map-key对应，即map[string]kafka.ConsumerMessageHandler{"aaaa": ...}
         consumers:
-          member:
+          aaaa:
+            # host:port
             brokers:
+              - "localhost:9092"
+            # 主题
             topics:
+              - ${application}
+            # 分组
             group:
-      redis:
+      mongo:
+        # 是否启用mongo功能
         enable: false
-        disable-cluster: false
-        hosts: 
+        # 实例名称
+        appName: ${application}
+        # 连接超时时间
+        timeout: 30s
+        # 用户名
         username:
+        # 密码
         password:
+        # host:port
+        hosts:
+          - "localhost:27017"
+      mysql:
+        # 是否开启mysql功能
+        enable: false
+        # 连接最大生命周期
+        connMaxLifeTime: 3m
+        # 最大打开的连接数
+        maxOpenConns: 10
+        # 最大空闲的连接数
+        maxIdleConns: 10
+        # DataSourceName
+        Dsn:
+          # `tcp` or `unix`
+          protocol: tcp
+          # 用户名
+          username:
+          # 密码
+          password:
+          # host:port
+          address:
+          # 数据库名称
+          dbname:
+          # 连接参数，例如：`?charset=UTF8&loc=UTC`
+          params:
+      redis:
+        # 是否启用redis功能
+        enable: false
+        # 是否关闭集群模式
+        disableCluster: false
+        # host:port
+        hosts:
+          - "localhost:6379"
+        # 用户名
+        username:
+        # 密码
+        password:
+      consul:
+        enable: true
+        host: https://i-consul-${profile}.xk5.com
     
 #### Setup
 
-    Setup(env string, configOut interface{}) error
+    gore.Cmd(preStartup func(engine *gin.Engine) error) *cobra.Command
 
 #### Infra Token
 
-    // Setup 一键配置环境，日志和分解配置文件成struct
-    //
-    // env(required): 环境名称
-    // configOut(required): 配置文件实例，configOut必须为指针，例如：new(conf.C)
-    gore.GetInfraToken() (*gore.InfraTokenResponse, error)
+    gore.InfraToken(c context.Context) (string, error)
     
 #### Config context
 
@@ -117,14 +162,6 @@
 在程序执行时，自动加载以下文件
 
     ./config/config.yml 和 ./config/config-{环境名称}.yml
-    
-
-需要传两个参数，环境名称和配置文件输出对象的**指针**
-
-    gore.SetupConfig(env string, outPtr interface{}) error
-    
-    t := new(Tes)
-	err := gore.SetupConfig("sdev0", t)
 
 #### Setup Logger
 

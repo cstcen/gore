@@ -6,12 +6,13 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var rootCmd = &cobra.Command{Example: "-e sdev0 -n gdis -p 8080"}
+var rootCmd = &cobra.Command{Example: "-n gdis -e sdev0"}
 
 func init() {
 	rootCmd.PersistentFlags().StringP("name", "n", "", "Application name")
 	rootCmd.PersistentFlags().StringP("env", "e", "", "Environment name")
-	rootCmd.PersistentFlags().StringP("port", "p", "", "Tcp port server listening on")
+	rootCmd.PersistentFlags().StringP("port", "p", "8000", "Tcp port server listening on")
+	rootCmd.PersistentFlags().StringP("consul", "c", "https://i-consul-${profile}.xk5.com", "Tcp port server listening on")
 	_ = gonfig.GetViper().BindPFlags(rootCmd.PersistentFlags())
 }
 

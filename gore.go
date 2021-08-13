@@ -94,7 +94,7 @@ func Cmd(preStartup func(engine *gin.Engine) error) *cobra.Command {
 }
 
 func InfraToken(c context.Context) (string, error) {
-	return infratoken.Get(c, Viper().GetString("env"), Cache())
+	return infratoken.Get(c)
 }
 
 func Viper() *viper.Viper {

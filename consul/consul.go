@@ -29,7 +29,8 @@ func Register() error {
 
 	appName := gonfig.GetViper().GetString("name")
 	env := gonfig.GetViper().GetString("env")
-	registration := &api.AgentServiceRegistration{Name: appName, Tags: []string{env}}
+	addr := gonfig.GetViper().GetString("SERVER_ID")
+	registration := &api.AgentServiceRegistration{Name: appName, Tags: []string{env}, Address: addr}
 	if err := cli.Agent().ServiceRegister(registration); err != nil {
 		return err
 	}

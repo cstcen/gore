@@ -13,15 +13,13 @@ var (
 )
 
 type Config struct {
-	Enable bool
-
+	Enable       bool
 	EnableRing   bool
 	DisableStats bool
-
-	AppName  string
-	Hosts    []string
-	Username string
-	Password string
+	AppName      string
+	Hosts        []string
+	Username     string
+	Password     string
 }
 
 func GetInstance() *cache.Cache {

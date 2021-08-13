@@ -12,8 +12,7 @@ var (
 )
 
 type Config struct {
-	Enable bool
-
+	Enable         bool
 	DisableCluster bool
 	Hosts          []string
 	Username       string

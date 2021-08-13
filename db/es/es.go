@@ -12,7 +12,6 @@ var (
 
 type Config struct {
 	Enable bool
-
 	config.Config
 }
 
