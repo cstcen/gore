@@ -17,6 +17,7 @@ import (
 	goreHttp "git.tenvine.cn/backend/gore/http"
 	"git.tenvine.cn/backend/gore/infratoken"
 	"git.tenvine.cn/backend/gore/log"
+	"git.tenvine.cn/backend/gore/usertoken"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/cache/v8"
 	"github.com/go-redis/redis/v8"
@@ -95,6 +96,10 @@ func Cmd(preStartup func(engine *gin.Engine) error) *cobra.Command {
 
 func InfraToken(c context.Context) (string, error) {
 	return infratoken.Get(c)
+}
+
+func UserTokenVerification(token string) (*usertoken.Member, error) {
+	return usertoken.Check(token)
 }
 
 func Viper() *viper.Viper {
