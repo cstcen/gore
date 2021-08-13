@@ -40,9 +40,12 @@ func Logger(skipLogResp func(path string) bool) gin.HandlerFunc {
 			body:           bytes.NewBufferString(""),
 		}
 		var buf bytes.Buffer
-		tee := io.TeeReader(c.Request.Body, &buf)
-		body, _ := io.ReadAll(tee)
-		c.Request.Body = io.NopCloser(&buf)
+		var body []byte
+		if c.Request.Body != nil {
+			tee := io.TeeReader(c.Request.Body, &buf)
+			body, _ = io.ReadAll(tee)
+			c.Request.Body = io.NopCloser(&buf)
+		}
 
 		c.Writer = respWriter
 

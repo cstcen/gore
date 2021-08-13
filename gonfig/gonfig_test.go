@@ -23,7 +23,7 @@ func TestSetup(t *testing.T) {
 				t.Errorf("Setup() error = %v, wantErr %v", err, tt.wantErr)
 			}
 
-			assert.NotEmpty(t, vp.GetString("gore.tenvine.infraToken.url"))
+			assert.NotEmpty(t, vp.GetString("tenvine.infraToken.url"))
 			assert.NotEmpty(t, conf.Gore.Redis)
 		})
 	}

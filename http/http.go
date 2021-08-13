@@ -104,9 +104,13 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 		path = path + "?" + raw
 	}
 	var reqBuf bytes.Buffer
-	reqTee := io.TeeReader(req.Body, &reqBuf)
-	reqBody, _ := io.ReadAll(reqTee)
-	req.Body = io.NopCloser(&reqBuf)
+	var reqBody []byte
+	var err error
+	if req.Body != nil {
+		reqTee := io.TeeReader(req.Body, &reqBuf)
+		reqBody, _ = io.ReadAll(reqTee)
+		req.Body = io.NopCloser(&reqBuf)
+	}
 
 	contextLog.Tracef("HTTPClient url:    %s", req.URL.String())
 	contextLog.Tracef("HTTPClient header: %+v", header)

@@ -34,7 +34,7 @@ type Response struct {
 }
 
 func Get(c context.Context) (string, error) {
-	cacheKey := gonfig.GetViper().GetString("gore.tenvine.keyPrefix") + gonfig.GetViper().GetString("gore.tenvine.infraToken.clientId")
+	cacheKey := gonfig.GetViper().GetString("tenvine.keyPrefix") + gonfig.GetViper().GetString("tenvine.infraToken.clientId")
 
 	ctxLog := log.WithContext(c)
 
@@ -62,11 +62,11 @@ func Get(c context.Context) (string, error) {
 
 func request() (*Response, error) {
 
-	url := gonfig.GetViper().GetString("gore.tenvine.infraToken.url")
+	url := gonfig.GetViper().GetString("tenvine.infraToken.url")
 	req := Request{
-		GrantType:    gonfig.GetViper().GetString("gore.tenvine.infraToken.grantType"),
-		ClientId:     gonfig.GetViper().GetString("gore.tenvine.infraToken.clientId"),
-		ClientSecret: gonfig.GetViper().GetString("gore.tenvine.infraToken.clientSecret"),
+		GrantType:    gonfig.GetViper().GetString("tenvine.infraToken.grantType"),
+		ClientId:     gonfig.GetViper().GetString("tenvine.infraToken.clientId"),
+		ClientSecret: gonfig.GetViper().GetString("tenvine.infraToken.clientSecret"),
 		MacAddress:   macAddr,
 	}
 
