@@ -1,6 +1,7 @@
 package cache
 
 import (
+	"git.tenvine.cn/backend/gore/gonfig"
 	"git.tenvine.cn/backend/gore/log"
 	"github.com/go-redis/cache/v8"
 	"github.com/go-redis/redis/v8"
@@ -22,11 +23,13 @@ type Config struct {
 	Password     string
 }
 
-func GetInstance() *cache.Cache {
+func Instance() *cache.Cache {
 	return cc
 }
 
-func Setup(cfg *Config) error {
+func Setup() error {
+
+	cfg := NewConfig()
 
 	if !cfg.Enable {
 		return nil
@@ -38,6 +41,20 @@ func Setup(cfg *Config) error {
 	cc = cache.New(options)
 
 	return nil
+}
+
+func NewConfig() *Config {
+	viper := gonfig.Instance()
+	cfg := &Config{
+		Enable:       viper.GetBool("gore.cache.enable"),
+		EnableRing:   viper.GetBool("gore.cache.enableRing"),
+		DisableStats: viper.GetBool("gore.cache.disableStats"),
+		AppName:      viper.GetString("gore.cache.appName"),
+		Hosts:        viper.GetStringSlice("gore.cache.hosts"),
+		Username:     viper.GetString("gore.cache.username"),
+		Password:     viper.GetString("gore.cache.password"),
+	}
+	return cfg
 }
 
 func newOptions(cfg *Config) *cache.Options {

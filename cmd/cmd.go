@@ -13,7 +13,7 @@ func init() {
 	rootCmd.PersistentFlags().StringP("env", "e", "", "Environment name")
 	rootCmd.PersistentFlags().StringP("port", "p", "8000", "Tcp port server listening on")
 	rootCmd.PersistentFlags().StringP("consul", "c", "https://i-consul-${profile}.xk5.com", "Tcp port server listening on")
-	_ = gonfig.GetViper().BindPFlags(rootCmd.PersistentFlags())
+	_ = gonfig.Instance().BindPFlags(rootCmd.PersistentFlags())
 }
 
 func New(setup func() error) *cobra.Command {

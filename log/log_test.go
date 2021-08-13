@@ -8,7 +8,7 @@ import (
 
 func ExampleSetupLog() {
 
-	err := SetupLog()
+	err := Setup()
 	if err != nil {
 		fmt.Println(err)
 		return

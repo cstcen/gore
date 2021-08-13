@@ -9,7 +9,7 @@ import (
 )
 
 func Check(token string) (*Member, error) {
-	url := gonfig.GetViper().GetString("tenvine.api.host") + gonfig.GetViper().GetString("tenvine.api.verifyToken")
+	url := gonfig.Instance().GetString("tenvine.api.host") + gonfig.Instance().GetString("tenvine.api.verifyToken")
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err

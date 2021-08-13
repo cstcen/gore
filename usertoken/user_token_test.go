@@ -7,7 +7,7 @@ import (
 )
 
 func init() {
-	gonfig.GetViper().Set("env", "sdev0")
+	gonfig.Instance().Set("env", "sdev0")
 	gonfig.Setup()
 }
 

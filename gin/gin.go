@@ -24,7 +24,7 @@ func GetInstance() *gin.Engine {
 
 func Startup() error {
 
-	port := gonfig.GetViper().GetString("port")
+	port := gonfig.Instance().GetString("port")
 	addr := fmt.Sprintf(":%s", port)
 
 	srv := &http.Server{
@@ -62,7 +62,7 @@ func Startup() error {
 	defer cancel()
 	log.Info("Server exiting")
 
-	if gonfig.GetViper().GetBool("gore.consul.enable") {
+	if consul.Enable() {
 		if err := consul.Deregister(); err != nil {
 			return err
 		}
@@ -74,7 +74,7 @@ func Startup() error {
 func setup() {
 
 	mode := gin.DebugMode
-	if "xk5" == gonfig.GetViper().GetString("env") {
+	if "xk5" == gonfig.Instance().GetString("env") {
 		mode = gin.ReleaseMode
 	}
 

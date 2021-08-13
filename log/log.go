@@ -3,6 +3,7 @@ package log
 import (
 	"context"
 	"fmt"
+	"git.tenvine.cn/backend/gore/gonfig"
 	"git.tenvine.cn/backend/gore/util"
 	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 	"github.com/pkg/errors"
@@ -53,14 +54,21 @@ type Config struct {
 	Level string
 }
 
-// SetupLog 设置日志
-func SetupLog() error {
+func Setup() error {
+
 	err := setLogOutput()
 	if err != nil {
 		return err
 	}
 
 	setLogFormatter()
+
+	level := gonfig.Instance().GetString("gore.logger.level")
+	if len(level) > 0 {
+		SetLogLevel(level)
+	} else {
+		SetLogLevel(logrus.TraceLevel.String())
+	}
 
 	Infof("Current log path: %s", logPath)
 	Infof("Current log link: %s", logLink)

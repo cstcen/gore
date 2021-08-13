@@ -2,7 +2,9 @@ package kafka
 
 import (
 	"context"
+	"encoding/json"
 	"git.tenvine.cn/backend/gore/constant"
+	"git.tenvine.cn/backend/gore/gonfig"
 	"git.tenvine.cn/backend/gore/log"
 	"github.com/Shopify/sarama"
 	"github.com/sirupsen/logrus"
@@ -23,12 +25,46 @@ type ConsumerConfig struct {
 	Group   string
 }
 
-func StartConsumer(cfg *Config, handler ConsumerMessageHandler) error {
+func StartConsumer(handler ConsumerMessageHandler) error {
+	cfg := NewConfig()
+
 	config, err := NewKafkaConfig(cfg)
 	if err != nil {
 		return err
 	}
 	return SetupConsumer("gore", cfg.Consumer, config, handler)
+}
+
+func NewConfig() *Config {
+	viper := gonfig.Instance()
+	cfg := &Config{
+		Enable:   viper.GetBool("gore.kafka.enable"),
+		Version:  viper.GetString("gore.kafka.version"),
+		Assignor: viper.GetString("gore.kafka.assignor"),
+		Oldest:   viper.GetBool("gore.kafka.oldest"),
+		Consumer: ConsumerConfig{
+			Brokers: viper.GetStringSlice("gore.kafka.consumer.brokers"),
+			Topics:  viper.GetStringSlice("gore.kafka.consumer.topics"),
+			Group:   viper.GetString("gore.kafka.consumer.group"),
+		},
+	}
+	consumers := viper.GetStringMap("gore.kafka.consumers")
+	if len(consumers) == 0 {
+		return cfg
+	}
+	cfg.Consumers = make(map[string]ConsumerConfig)
+	for key, consumer := range consumers {
+		b, err := json.Marshal(consumer)
+		if err != nil {
+			continue
+		}
+		c := ConsumerConfig{}
+		if err := json.Unmarshal(b, &c); err != nil {
+			continue
+		}
+		cfg.Consumers[key] = c
+	}
+	return cfg
 }
 
 func SetupConsumer(name string, cfg ConsumerConfig, config *sarama.Config, handler ConsumerMessageHandler) error {

@@ -1,21 +1,28 @@
 package gore
 
 import (
-	"fmt"
-	"git.tenvine.cn/backend/gore/gonfig"
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
-func ExampleSetup() {
+func init() {
+	Viper().Set("env", "sdev0")
+}
 
-	t := new(gonfig.Config)
-	err := Setup("sdev0")
-	if err != nil {
-		fmt.Println(err)
-		return
+func TestSetup(t *testing.T) {
+	tests := []struct {
+		name    string
+		wantErr bool
+	}{
+		{name: "setup", wantErr: false},
 	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if err := Setup(); (err != nil) != tt.wantErr {
+				t.Errorf("Setup() error = %v, wantErr %v", err, tt.wantErr)
+			}
 
-	fmt.Printf("%+v\n", t)
-	fmt.Printf("%+v\n", gonfig.GetInstance())
-
-	// output: &{A:{B:2222 C:1111111 D:98} Logger:{Level:debug}}
+			assert.NotNil(t, Cache())
+		})
+	}
 }

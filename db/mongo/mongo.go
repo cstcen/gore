@@ -2,6 +2,7 @@ package mongo
 
 import (
 	"context"
+	"git.tenvine.cn/backend/gore/gonfig"
 	"git.tenvine.cn/backend/gore/log"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -23,11 +24,13 @@ type Config struct {
 	Timeout  time.Duration
 }
 
-func GetInstance() *mongo.Client {
+func Instance() *mongo.Client {
 	return mgo
 }
 
-func Setup(cfg *Config) error {
+func Setup() error {
+	cfg := NewConfig()
+
 	if !cfg.Enable {
 		return nil
 	}
@@ -54,6 +57,19 @@ func Setup(cfg *Config) error {
 	}
 
 	return nil
+}
+
+func NewConfig() *Config {
+	viper := gonfig.Instance()
+	cfg := &Config{
+		Enable:   viper.GetBool("gore.mongo.enable"),
+		AppName:  viper.GetString("gore.mongo.appName"),
+		Username: viper.GetString("gore.mongo.username"),
+		Password: viper.GetString("gore.mongo.password"),
+		Hosts:    viper.GetStringSlice("gore.mongo.hosts"),
+		Timeout:  viper.GetDuration("gore.mongo.timeout"),
+	}
+	return cfg
 }
 
 func newOptions(c *Config) *options.ClientOptions {

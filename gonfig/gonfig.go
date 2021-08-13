@@ -3,13 +3,6 @@ package gonfig
 import (
 	"bytes"
 	"fmt"
-	goreCache "git.tenvine.cn/backend/gore/db/cache"
-	goreEs "git.tenvine.cn/backend/gore/db/es"
-	goreKafka "git.tenvine.cn/backend/gore/db/kafka"
-	goreMongo "git.tenvine.cn/backend/gore/db/mongo"
-	goreMysql "git.tenvine.cn/backend/gore/db/mysql"
-	goreRedis "git.tenvine.cn/backend/gore/db/redis"
-	"git.tenvine.cn/backend/gore/log"
 	crypt "github.com/bketelsen/crypt/config"
 	"github.com/spf13/viper"
 	_ "github.com/spf13/viper/remote"
@@ -20,8 +13,6 @@ import (
 
 var (
 	vp = viper.New()
-
-	conf *Config
 
 	storeKeyFns = []func(env, appName string) string{
 		func(env, appName string) string {
@@ -35,6 +26,9 @@ var (
 
 func init() {
 	vp.SetConfigType("yaml")
+	vp.Set("gore.path", "config")
+	vp.Set("gore.filename", "config.yml")
+	vp.Set("gore.filenameEnv", "config-${profile}.yml")
 	vp.Set("consul", "http://i-consul-${profile}.xk5.com")
 	vp.AutomaticEnv()
 }
@@ -86,10 +80,6 @@ func Setup() error {
 		vp.Set(key, val)
 	}
 
-	if err := vp.UnmarshalKey("gore", conf.Gore); err != nil {
-		return err
-	}
-
 	return nil
 }
 
@@ -115,47 +105,16 @@ func readRemoteConfig(env string, appName string, endpoint string) error {
 	return nil
 }
 
-type Config struct {
-	Gore *Gore
-}
-
-type Gore struct {
-	Path          string
-	Filename      string
-	FilenameEnv   string
-	Logger        *log.Config
-	Cache         *goreCache.Config
-	Elasticsearch *goreEs.Config
-	Kafka         *goreKafka.Config
-	Mongo         *goreMongo.Config
-	Mysql         *goreMysql.Config
-	Redis         *goreRedis.Config
-}
-
-func GetInstance() *Config {
-	return conf
-}
-
-func GetViper() *viper.Viper {
+func Instance() *viper.Viper {
 	return vp
 }
 
-func init() {
-	conf = &Config{
-		Gore: &Gore{
-			Path:        "config",
-			Filename:    "config.yml",
-			FilenameEnv: "config-%s.yml",
-		},
-	}
-}
-
 func unmarshalConfigCustom() error {
-	return unmarshal(filepath.Join(conf.Gore.Path, conf.Gore.Filename))
+	return unmarshal(filepath.Join(vp.GetString("gore.path"), vp.GetString("gore.filename")))
 }
 
 func unmarshalConfigCustomEnv(env string) error {
-	return unmarshal(filepath.Join(conf.Gore.Path, fmt.Sprintf(conf.Gore.FilenameEnv, env)))
+	return unmarshal(filepath.Join(vp.GetString("gore.path"), fmt.Sprintf(vp.GetString("gore.filenameEnv"), env)))
 }
 
 func unmarshal(filename string) error {

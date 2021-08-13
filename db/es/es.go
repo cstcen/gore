@@ -1,6 +1,7 @@
 package es
 
 import (
+	"git.tenvine.cn/backend/gore/gonfig"
 	"git.tenvine.cn/backend/gore/log"
 	"github.com/olivere/elastic"
 	"github.com/olivere/elastic/config"
@@ -15,11 +16,13 @@ type Config struct {
 	config.Config
 }
 
-func GetInstance() *elastic.Client {
+func Instance() *elastic.Client {
 	return es
 }
 
-func Setup(cfg *Config) error {
+func Setup() error {
+	cfg := NewConfig()
+
 	if !cfg.Enable {
 		return nil
 	}
@@ -44,4 +47,17 @@ func Setup(cfg *Config) error {
 	}
 
 	return nil
+}
+
+func NewConfig() *Config {
+	viper := gonfig.Instance()
+	cfg := &Config{
+		Enable: viper.GetBool("gore.elasticsearch.enable"),
+		Config: config.Config{
+			URL:      viper.GetString("gore.elasticsearch.url"),
+			Username: viper.GetString("gore.elasticsearch.username"),
+			Password: viper.GetString("gore.elasticsearch.password"),
+		},
+	}
+	return cfg
 }

@@ -22,7 +22,6 @@ import (
 	"github.com/go-redis/cache/v8"
 	"github.com/go-redis/redis/v8"
 	"github.com/olivere/elastic"
-	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -35,43 +34,41 @@ func Setup() error {
 		return err
 	}
 
-	if err := log.SetupLog(); err != nil {
+	if err := log.Setup(); err != nil {
 		return err
 	}
 
 	log.Infof("Current active profile: %s", Viper().GetString("env"))
 
-	log.Infof("Current load config path: %s", getConfig().Gore.Path)
-
-	if len(getConfig().Gore.Logger.Level) > 0 {
-		log.SetLogLevel(getConfig().Gore.Logger.Level)
-	} else {
-		log.SetLogLevel(logrus.TraceLevel.String())
-	}
+	log.Infof("Current load config path: %s", Viper().GetString("gore.path"))
 
 	log.Infof("Current logger level: %s", log.GetLevel())
 
-	if err := goreCache.Setup(getConfig().Gore.Cache); err != nil {
+	if err := goreCache.Setup(); err != nil {
 		return err
 	}
 
-	if err := goreEs.Setup(getConfig().Gore.Elasticsearch); err != nil {
+	if err := goreEs.Setup(); err != nil {
 		return err
 	}
 
-	if err := goreMongo.Setup(getConfig().Gore.Mongo); err != nil {
+	if err := goreMongo.Setup(); err != nil {
 		return err
 	}
 
-	if err := goreMysql.Setup(getConfig().Gore.Mysql); err != nil {
+	if err := goreMysql.Setup(); err != nil {
 		return err
 	}
 
-	if err := goreRedis.Setup(getConfig().Gore.Redis); err != nil {
+	if err := goreRedis.Setup(); err != nil {
 		return err
 	}
 
-	if Viper().GetBool("gore.consul.enable") {
+	if err := consul.Setup(); err != nil {
+		return err
+	}
+
+	if consul.Enable() {
 		if err := consul.Register(); err != nil {
 			return err
 		}
@@ -103,7 +100,7 @@ func UserTokenVerification(token string) (*usertoken.Member, error) {
 }
 
 func Viper() *viper.Viper {
-	return gonfig.GetViper()
+	return gonfig.Instance()
 }
 
 func Gin() *gin.Engine {
@@ -127,61 +124,57 @@ func HttpHead(url string, expectedPtr interface{}) error {
 }
 
 func Cache() *cache.Cache {
-	return goreCache.GetInstance()
+	return goreCache.Instance()
 }
 
-func CacheCustom(fn func(cfg *goreCache.Config) *cache.Cache) *cache.Cache {
-	return fn(getConfig().Gore.Cache)
+func CacheCustom(setup func() *cache.Cache) *cache.Cache {
+	return setup()
 }
 
 func Mongo() *mongo.Client {
-	return goreMongo.GetInstance()
+	return goreMongo.Instance()
 }
 
-func MongoCustom(fn func(cfg *goreMongo.Config) *mongo.Client) *mongo.Client {
-	return fn(getConfig().Gore.Mongo)
+func MongoCustom(setup func() *mongo.Client) *mongo.Client {
+	return setup()
 }
 
 func Mysql() *sql.DB {
-	return goreMysql.GetInstance()
+	return goreMysql.Instance()
 }
 
-func MysqlCustom(fn func(cfg *goreMysql.Config) *sql.DB) *sql.DB {
-	return fn(getConfig().Gore.Mysql)
+func MysqlCustom(setup func() *sql.DB) *sql.DB {
+	return setup()
 }
 
 func Elasticsearch() *elastic.Client {
-	return goreEs.GetInstance()
+	return goreEs.Instance()
 }
 
-func ElasticsearchCustom(fn func(cfg *goreEs.Config) *elastic.Client) *elastic.Client {
-	return fn(getConfig().Gore.Elasticsearch)
+func ElasticsearchCustom(setup func() *elastic.Client) *elastic.Client {
+	return setup()
 }
 
 func KafkaStartConsumer(handler kafka.ConsumerMessageHandler) error {
-	return goreKafka.StartConsumer(getConfig().Gore.Kafka, handler)
+	return goreKafka.StartConsumer(handler)
 }
 
-func KafkaStartConsumerCustom(fn func(cfg *goreKafka.Config) error) error {
-	return fn(getConfig().Gore.Kafka)
+func KafkaStartConsumerCustom(setup func() error) error {
+	return setup()
 }
 
 func KafkaStartConsumers(handlers map[string]kafka.ConsumerMessageHandler) error {
-	return goreKafka.SetupConsumers(getConfig().Gore.Kafka, handlers)
+	return goreKafka.SetupConsumers(handlers)
 }
 
-func KafkaStartConsumersCustom(fn func(cfg *goreKafka.Config) error) error {
-	return fn(getConfig().Gore.Kafka)
+func KafkaStartConsumersCustom(setup func() error) error {
+	return setup()
 }
 
 func Redis() redis.UniversalClient {
-	return goreRedis.GetInstance()
+	return goreRedis.Instance()
 }
 
-func RedisCustom(fn func(cfg *goreRedis.Config) redis.UniversalClient) redis.UniversalClient {
-	return fn(getConfig().Gore.Redis)
-}
-
-func getConfig() *gonfig.Config {
-	return gonfig.GetInstance()
+func RedisCustom(setup func() redis.UniversalClient) redis.UniversalClient {
+	return setup()
 }

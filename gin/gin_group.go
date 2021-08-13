@@ -2,7 +2,11 @@ package gin
 
 import (
 	"git.tenvine.cn/backend/gore/db"
-	"git.tenvine.cn/backend/gore/gonfig"
+	goreCache "git.tenvine.cn/backend/gore/db/cache"
+	goreEs "git.tenvine.cn/backend/gore/db/es"
+	goreMongo "git.tenvine.cn/backend/gore/db/mongo"
+	goreMysql "git.tenvine.cn/backend/gore/db/mysql"
+	goreRedis "git.tenvine.cn/backend/gore/db/redis"
 	"git.tenvine.cn/backend/gore/vo"
 	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
@@ -17,11 +21,11 @@ const (
 
 func CheckDB() *db.CheckResult {
 	return db.Check(db.Config{
-		Cache:         gonfig.GetInstance().Gore.Cache,
-		Elasticsearch: gonfig.GetInstance().Gore.Elasticsearch,
-		Mongo:         gonfig.GetInstance().Gore.Mongo,
-		Mysql:         gonfig.GetInstance().Gore.Mysql,
-		Redis:         gonfig.GetInstance().Gore.Redis,
+		Cache:         goreCache.NewConfig(),
+		Elasticsearch: goreEs.NewConfig(),
+		Mongo:         goreMongo.NewConfig(),
+		Mysql:         goreMysql.NewConfig(),
+		Redis:         goreRedis.NewConfig(),
 	})
 }
 

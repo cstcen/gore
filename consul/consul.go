@@ -11,13 +11,13 @@ var (
 	conf *api.Config
 )
 
-func init() {
-	url := gonfig.GetViper().GetString("gore.consul.host")
+func Setup() error {
+	url := gonfig.Instance().GetString("gore.consul.discovery.host")
 	conf = &api.Config{
 		Address:    url,
-		Scheme:     "https",
 		HttpClient: goreHttp.GetInstance(),
 	}
+	return nil
 }
 
 func Register() error {
@@ -27,9 +27,9 @@ func Register() error {
 		return err
 	}
 
-	appName := gonfig.GetViper().GetString("name")
-	env := gonfig.GetViper().GetString("env")
-	addr := gonfig.GetViper().GetString("SERVER_ID")
+	appName := gonfig.Instance().GetString("name")
+	env := gonfig.Instance().GetString("env")
+	addr := gonfig.Instance().GetString("SERVER_ID")
 	registration := &api.AgentServiceRegistration{Name: appName, Tags: []string{env}, Address: addr}
 	if err := cli.Agent().ServiceRegister(registration); err != nil {
 		return err
@@ -47,11 +47,15 @@ func Deregister() error {
 		return err
 	}
 
-	appName := gonfig.GetViper().GetString("name")
+	appName := gonfig.Instance().GetString("name")
 	if err := cli.Agent().ServiceDeregister(appName); err != nil {
 		return err
 	}
 
 	log.Infof("consul deregister service: %s", appName)
 	return nil
+}
+
+func Enable() bool {
+	return gonfig.Instance().GetBool("gore.consul.enable")
 }

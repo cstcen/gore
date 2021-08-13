@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"database/sql"
+	"git.tenvine.cn/backend/gore/gonfig"
 	_ "github.com/go-sql-driver/mysql"
 	"strings"
 	"time"
@@ -37,11 +38,13 @@ type DataSourceName struct {
 	Params string
 }
 
-func GetInstance() *sql.DB {
+func Instance() *sql.DB {
 	return sdb
 }
 
-func Setup(cfg *Config) error {
+func Setup() error {
+	cfg := NewConfig()
+
 	if !cfg.Enable {
 		return nil
 	}
@@ -59,6 +62,25 @@ func Setup(cfg *Config) error {
 	sdb.SetMaxIdleConns(cfg.MaxIdleConns)
 
 	return nil
+}
+
+func NewConfig() *Config {
+	viper := gonfig.Instance()
+	cfg := &Config{
+		Enable:          viper.GetBool("gore.mysql.enable"),
+		ConnMaxLifeTime: viper.GetDuration("gore.mysql.connMaxLifeTime"),
+		MaxOpenConns:    viper.GetInt("gore.mysql.maxOpenConns"),
+		MaxIdleConns:    viper.GetInt("gore.mysql.maxIdleConns"),
+		Dsn: DataSourceName{
+			Username: viper.GetString("gore.mysql.dsn.username"),
+			Password: viper.GetString("gore.mysql.dsn.password"),
+			Protocol: viper.GetString("gore.mysql.dsn.protocol"),
+			Address:  viper.GetString("gore.mysql.dsn.address"),
+			Dbname:   viper.GetString("gore.mysql.dsn.dbname"),
+			Params:   viper.GetString("gore.mysql.dsn.params"),
+		},
+	}
+	return cfg
 }
 
 func getDSN(config *Config) string {

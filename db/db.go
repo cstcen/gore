@@ -57,13 +57,13 @@ type RedisResult struct {
 func Check(cfg Config) *CheckResult {
 	result := new(CheckResult)
 
-	ccCli := goreCache.GetInstance()
+	ccCli := goreCache.Instance()
 	if ccCli != nil {
 		result.Cache = new(CacheResult)
 		result.Cache.Stats = ccCli.Stats()
 	}
 
-	esCli := es.GetInstance()
+	esCli := es.Instance()
 	if esCli != nil {
 		info, code, err := esCli.Ping(cfg.Elasticsearch.URL).Do(context.Background())
 		result.Elasticsearch = new(ElasticsearchResult)
@@ -72,7 +72,7 @@ func Check(cfg Config) *CheckResult {
 		result.Elasticsearch.Err = err
 	}
 
-	mgCli := goreMongo.GetInstance()
+	mgCli := goreMongo.Instance()
 	if mgCli != nil {
 		result.Mongo = new(MongoResult)
 		err := mgCli.Ping(context.Background(), readpref.Primary())
@@ -83,7 +83,7 @@ func Check(cfg Config) *CheckResult {
 		}
 	}
 
-	msCli := goreMysql.GetInstance()
+	msCli := goreMysql.Instance()
 	if msCli != nil {
 		result.Mysql = new(MysqlResult)
 		result.Mysql.Stats = msCli.Stats()
@@ -93,7 +93,7 @@ func Check(cfg Config) *CheckResult {
 		}
 	}
 
-	rdCli := goreRedis.GetInstance()
+	rdCli := goreRedis.Instance()
 	if rdCli != nil {
 		result.Redis = new(RedisResult)
 		result.Redis.Stats = rdCli.PoolStats()

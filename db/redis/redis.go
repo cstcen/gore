@@ -1,6 +1,7 @@
 package redis
 
 import (
+	"git.tenvine.cn/backend/gore/gonfig"
 	"github.com/go-redis/redis/v8"
 	"github.com/pkg/errors"
 )
@@ -19,11 +20,13 @@ type Config struct {
 	Password       string
 }
 
-func GetInstance() redis.UniversalClient {
+func Instance() redis.UniversalClient {
 	return cli
 }
 
-func Setup(cfg *Config) error {
+func Setup() error {
+	cfg := NewConfig()
+
 	if !cfg.Enable {
 		return nil
 	}
@@ -48,4 +51,16 @@ func Setup(cfg *Config) error {
 	})
 
 	return nil
+}
+
+func NewConfig() *Config {
+	viper := gonfig.Instance()
+	cfg := &Config{
+		Enable:         viper.GetBool("gore.redis.enable"),
+		DisableCluster: viper.GetBool("gore.redis.disableCluster"),
+		Hosts:          viper.GetStringSlice("gore.redis.hosts"),
+		Username:       viper.GetString("gore.redis.username"),
+		Password:       viper.GetString("gore.redis.password"),
+	}
+	return cfg
 }

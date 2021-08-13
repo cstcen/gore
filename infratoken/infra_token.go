@@ -34,14 +34,14 @@ type Response struct {
 }
 
 func Get(c context.Context) (string, error) {
-	cacheKey := gonfig.GetViper().GetString("tenvine.keyPrefix") + gonfig.GetViper().GetString("tenvine.infraToken.clientId")
+	cacheKey := gonfig.Instance().GetString("tenvine.keyPrefix") + gonfig.Instance().GetString("tenvine.infraToken.clientId")
 
 	ctxLog := log.WithContext(c)
 
 	var response *Response
 	var err error
 
-	if goreCache.GetInstance() != nil {
+	if goreCache.Instance() != nil {
 		response, err = get(c, cacheKey)
 		if response != nil {
 			return response.AccessToken, nil
@@ -55,18 +55,18 @@ func Get(c context.Context) (string, error) {
 	}
 
 	// async
-	go save(response, cacheKey, goreCache.GetInstance(), ctxLog)
+	go save(response, cacheKey, goreCache.Instance(), ctxLog)
 
 	return response.AccessToken, nil
 }
 
 func request() (*Response, error) {
 
-	url := gonfig.GetViper().GetString("tenvine.infraToken.url")
+	url := gonfig.Instance().GetString("tenvine.infraToken.url")
 	req := Request{
-		GrantType:    gonfig.GetViper().GetString("tenvine.infraToken.grantType"),
-		ClientId:     gonfig.GetViper().GetString("tenvine.infraToken.clientId"),
-		ClientSecret: gonfig.GetViper().GetString("tenvine.infraToken.clientSecret"),
+		GrantType:    gonfig.Instance().GetString("tenvine.infraToken.grantType"),
+		ClientId:     gonfig.Instance().GetString("tenvine.infraToken.clientId"),
+		ClientSecret: gonfig.Instance().GetString("tenvine.infraToken.clientSecret"),
 		MacAddress:   macAddr,
 	}
 
@@ -81,7 +81,7 @@ func request() (*Response, error) {
 func get(c context.Context, key string) (*Response, error) {
 	var wanted Response
 	ctx, cancelFunc := context.WithTimeout(c, constant.TimeoutConn)
-	if err := goreCache.GetInstance().Get(ctx, key, &wanted); err != nil {
+	if err := goreCache.Instance().Get(ctx, key, &wanted); err != nil {
 		return nil, err
 	}
 	defer cancelFunc()
@@ -100,7 +100,7 @@ func save(response *Response, key string, cc *cache.Cache, ctxLog *logrus.Entry)
 	ttl := time.Duration(response.ExpiresIn)
 	ctx, cancelFunc := context.WithTimeout(context.Background(), constant.TimeoutConn)
 	defer cancelFunc()
-	if err := goreCache.GetInstance().Set(&cache.Item{
+	if err := goreCache.Instance().Set(&cache.Item{
 		Ctx:   ctx,
 		Key:   key,
 		Value: response,
