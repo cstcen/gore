@@ -23,6 +23,7 @@ func TestSetup(t *testing.T) {
 			}
 
 			assert.NotNil(t, Cache())
+			assert.NotNil(t, Redis())
 		})
 	}
 }

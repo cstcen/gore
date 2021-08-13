@@ -49,8 +49,9 @@ func Setup() error {
 	env := vp.GetString("env")
 	appName := vp.GetString("name")
 	replacer := strings.NewReplacer("${profile}", env, "${application}", appName)
+	placeholder(replacer)
 
-	endpoint := replacer.Replace(vp.GetString("consul"))
+	endpoint := vp.GetString("consul")
 
 	name := "application"
 	if err := readRemoteConfig(env, name, endpoint); err != nil {
@@ -71,6 +72,12 @@ func Setup() error {
 		}
 	}
 
+	placeholder(replacer)
+
+	return nil
+}
+
+func placeholder(replacer *strings.Replacer) {
 	for _, key := range vp.AllKeys() {
 		val, ok := vp.Get(key).(string)
 		if !ok {
@@ -79,8 +86,6 @@ func Setup() error {
 		val = replacer.Replace(val)
 		vp.Set(key, val)
 	}
-
-	return nil
 }
 
 func readRemoteConfig(env string, appName string, endpoint string) error {
@@ -114,7 +119,7 @@ func unmarshalConfigCustom() error {
 }
 
 func unmarshalConfigCustomEnv(env string) error {
-	return unmarshal(filepath.Join(vp.GetString("gore.path"), fmt.Sprintf(vp.GetString("gore.filenameEnv"), env)))
+	return unmarshal(filepath.Join(vp.GetString("gore.path"), vp.GetString("gore.filenameEnv")))
 }
 
 func unmarshal(filename string) error {
