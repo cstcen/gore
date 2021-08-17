@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"git.tenvine.cn/backend/gore/constant"
+	"git.tenvine.cn/backend/gore/infratoken"
 	"git.tenvine.cn/backend/gore/log"
 	"git.tenvine.cn/backend/gore/vo"
 	"github.com/sirupsen/logrus"
@@ -28,12 +29,65 @@ func init() {
 	}
 }
 
+func InternalPost(c context.Context, url, contentType string, body interface{}, expectedPtr interface{}) error {
+	p, err := json.Marshal(body)
+	if err != nil {
+		return err
+	}
+
+	req, err := http.NewRequest(http.MethodPost, url, bytes.NewReader(p))
+	if err != nil {
+		return err
+	}
+
+	infraToken, err := infratoken.Get(c)
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", contentType)
+	req.Header.Set("Authorization", infraToken)
+	resp, err := cli.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if err := RespHandler(resp, expectedPtr); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func Post(url, contentType string, body interface{}, expectedPtr interface{}) error {
 	p, err := json.Marshal(body)
 	if err != nil {
 		return err
 	}
 	resp, err := cli.Post(url, contentType, bytes.NewReader(p))
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	if err := RespHandler(resp, expectedPtr); err != nil {
+		return err
+	}
+	return nil
+}
+
+func InternalGet(c context.Context, url string, expectedPtr interface{}) error {
+	req, err := http.NewRequest(http.MethodGet, url, nil)
+	if err != nil {
+		return err
+	}
+
+	infraToken, err := infratoken.Get(c)
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Authorization", infraToken)
+	resp, err := cli.Do(req)
 	if err != nil {
 		return err
 	}
