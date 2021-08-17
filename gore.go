@@ -116,7 +116,7 @@ func HttpClient() *http.Client {
 }
 
 func HttpInternalPost(c context.Context, url, contentType string, body interface{}, expectedPtr interface{}) error {
-	return goreHttp.InternalPost(c, url, contentType, body, expectedPtr)
+	return goreHttp.InternalPost(c, url, contentType, body, expectedPtr, InfraToken)
 }
 
 func HttpPost(url, contentType string, body interface{}, expectedPtr interface{}) error {
@@ -124,7 +124,7 @@ func HttpPost(url, contentType string, body interface{}, expectedPtr interface{}
 }
 
 func HttpInternalGet(c context.Context, url string, expectedPtr interface{}) error {
-	return goreHttp.InternalGet(c, url, expectedPtr)
+	return goreHttp.InternalGet(c, url, expectedPtr, InfraToken)
 }
 
 func HttpGet(url string, expectedPtr interface{}) error {

@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/json"
 	"git.tenvine.cn/backend/gore/constant"
-	"git.tenvine.cn/backend/gore/infratoken"
 	"git.tenvine.cn/backend/gore/log"
 	"git.tenvine.cn/backend/gore/vo"
 	"github.com/sirupsen/logrus"
@@ -29,7 +28,7 @@ func init() {
 	}
 }
 
-func InternalPost(c context.Context, url, contentType string, body interface{}, expectedPtr interface{}) error {
+func InternalPost(c context.Context, url, contentType string, body interface{}, expectedPtr interface{}, getInfraToken func(c context.Context) (string, error)) error {
 	p, err := json.Marshal(body)
 	if err != nil {
 		return err
@@ -40,7 +39,7 @@ func InternalPost(c context.Context, url, contentType string, body interface{}, 
 		return err
 	}
 
-	infraToken, err := infratoken.Get(c)
+	infraToken, err := getInfraToken(c)
 	if err != nil {
 		return err
 	}
@@ -76,13 +75,13 @@ func Post(url, contentType string, body interface{}, expectedPtr interface{}) er
 	return nil
 }
 
-func InternalGet(c context.Context, url string, expectedPtr interface{}) error {
+func InternalGet(c context.Context, url string, expectedPtr interface{}, getInfraToken func(c context.Context) (string, error)) error {
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return err
 	}
 
-	infraToken, err := infratoken.Get(c)
+	infraToken, err := getInfraToken(c)
 	if err != nil {
 		return err
 	}
