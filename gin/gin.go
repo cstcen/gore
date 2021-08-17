@@ -16,7 +16,7 @@ import (
 	"time"
 )
 
-var engine = gin.New()
+var engine *gin.Engine
 
 func GetInstance() *gin.Engine {
 	return engine
@@ -71,7 +71,7 @@ func Startup() error {
 	return nil
 }
 
-func Setup() {
+func Setup() error {
 
 	mode := gin.DebugMode
 	if "xk5" == gonfig.Instance().GetString("env") {
@@ -87,6 +87,8 @@ func Setup() {
 	gin.DebugPrintRouteFunc = func(httpMethod, absolutePath, handlerName string, nuHandlers int) {
 		log.Debugf("%-6s %-25s --> %s (%d handlers)", httpMethod, absolutePath, handlerName, nuHandlers)
 	}
+
+	engine = gin.New()
 
 	engine.Use(gin.Recovery())
 
@@ -113,4 +115,5 @@ func Setup() {
 
 	group.status()
 
+	return nil
 }

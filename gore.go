@@ -44,6 +44,10 @@ func Setup() error {
 
 	log.Infof("Current logger level: %s", log.GetLevel())
 
+	if err := goreGin.Setup(); err != nil {
+		return err
+	}
+
 	if err := goreCache.Setup(); err != nil {
 		return err
 	}
@@ -84,7 +88,6 @@ func Cmd(preStartup func(engine *gin.Engine) error) *cobra.Command {
 		if err := Setup(); err != nil {
 			return err
 		}
-		goreGin.Setup()
 		if err := preStartup(goreGin.GetInstance()); err != nil {
 			return err
 		}
