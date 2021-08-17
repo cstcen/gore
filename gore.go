@@ -84,6 +84,7 @@ func Cmd(preStartup func(engine *gin.Engine) error) *cobra.Command {
 		if err := Setup(); err != nil {
 			return err
 		}
+		goreGin.Setup()
 		if err := preStartup(goreGin.GetInstance()); err != nil {
 			return err
 		}

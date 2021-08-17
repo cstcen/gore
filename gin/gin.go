@@ -24,9 +24,6 @@ func GetInstance() *gin.Engine {
 
 func Startup() error {
 
-	gin.DefaultWriter = log.GetLogWriter()
-	gin.DefaultErrorWriter = log.GetLogWriter()
-
 	port := gonfig.Instance().GetString("port")
 	addr := fmt.Sprintf(":%s", port)
 
@@ -44,13 +41,13 @@ func Startup() error {
 	}()
 
 	log.Infof("Server run port: %s", port)
-	log.Infof("  #####  ####### ######  ####### ")
-	log.Infof(" #     # #     # #     # #       ")
-	log.Infof(" #       #     # #     # #       ")
-	log.Infof(" #  #### #     # ######  #####   ")
-	log.Infof(" #     # #     # #   #   #       ")
-	log.Infof(" #     # #     # #    #  #       ")
-	log.Infof("  #####  ####### #     # ####### ")
+	log.Infof("        #####    #######   ######    #######        ")
+	log.Infof("       #     #   #     #   #     #   #              ")
+	log.Infof("       #         #     #   #     #   #              ")
+	log.Infof("       #  ####   #     #   ######    #####          ")
+	log.Infof("       #     #   #     #   #   #     #              ")
+	log.Infof("       #     #   #     #   #    #    #              ")
+	log.Infof("        #####    #######   #     #   #######        ")
 
 	// 等待中断信号以优雅地关闭服务器（设置 5 秒的超时时间）
 	quit := make(chan os.Signal)
@@ -74,7 +71,7 @@ func Startup() error {
 	return nil
 }
 
-func setup() {
+func Setup() {
 
 	mode := gin.DebugMode
 	if "xk5" == gonfig.Instance().GetString("env") {
