@@ -24,6 +24,9 @@ func GetInstance() *gin.Engine {
 
 func Startup() error {
 
+	gin.DefaultWriter = log.GetLogWriter()
+	gin.DefaultErrorWriter = log.GetLogWriter()
+
 	port := gonfig.Instance().GetString("port")
 	addr := fmt.Sprintf(":%s", port)
 
