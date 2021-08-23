@@ -151,6 +151,10 @@ func MongoCustom(setup func() *mongo.Client) *mongo.Client {
 	return setup()
 }
 
+func MongoDatabase() *mongo.Database {
+	return goreMongo.Database()
+}
+
 func Mysql() *sql.DB {
 	return goreMysql.Instance()
 }

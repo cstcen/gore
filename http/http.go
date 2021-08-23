@@ -191,7 +191,7 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 		"latency": latency,
 		"ip":      req.RemoteAddr,
 		"body":    string(respBody),
-	}).Info("HTTPClient")
+	}).Info("HTTPClient resp: ")
 
 	return resp, nil
 }

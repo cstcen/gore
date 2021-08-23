@@ -12,6 +12,7 @@ import (
 
 var (
 	mgo *mongo.Client
+	db  *mongo.Database
 )
 
 type Config struct {
@@ -21,11 +22,30 @@ type Config struct {
 	Username string
 	Password string
 	Hosts    []string
+	Dbname   string
 	Timeout  time.Duration
 }
 
 func Instance() *mongo.Client {
 	return mgo
+}
+
+func Database() *mongo.Database {
+	return db
+}
+
+func NewConfig() *Config {
+	viper := gonfig.Instance()
+	cfg := &Config{
+		Enable:   viper.GetBool("gore.mongo.enable"),
+		AppName:  viper.GetString("gore.mongo.appName"),
+		Username: viper.GetString("gore.mongo.username"),
+		Password: viper.GetString("gore.mongo.password"),
+		Hosts:    viper.GetStringSlice("gore.mongo.hosts"),
+		Dbname:   viper.GetString("gore.mongo.dbname"),
+		Timeout:  viper.GetDuration("gore.mongo.timeout"),
+	}
+	return cfg
 }
 
 func Setup() error {
@@ -56,20 +76,9 @@ func Setup() error {
 		return err
 	}
 
-	return nil
-}
+	db = mgo.Database(cfg.Dbname)
 
-func NewConfig() *Config {
-	viper := gonfig.Instance()
-	cfg := &Config{
-		Enable:   viper.GetBool("gore.mongo.enable"),
-		AppName:  viper.GetString("gore.mongo.appName"),
-		Username: viper.GetString("gore.mongo.username"),
-		Password: viper.GetString("gore.mongo.password"),
-		Hosts:    viper.GetStringSlice("gore.mongo.hosts"),
-		Timeout:  viper.GetDuration("gore.mongo.timeout"),
-	}
-	return cfg
+	return nil
 }
 
 func newOptions(c *Config) *options.ClientOptions {
