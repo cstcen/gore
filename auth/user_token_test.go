@@ -1,4 +1,4 @@
-package usertoken
+package auth
 
 import (
 	"git.tenvine.cn/backend/gore/gonfig"
@@ -11,7 +11,7 @@ func init() {
 	gonfig.Setup()
 }
 
-func TestCheck(t *testing.T) {
+func TestCheckUser(t *testing.T) {
 	type args struct {
 		token string
 	}
@@ -25,15 +25,15 @@ func TestCheck(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := Check(tt.args.token)
+			got, err := CheckUser(tt.args.token)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("Check() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("CheckUser() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 
 			assert.NotNil(t, got)
 			if got != nil {
-				assert.Equal(t, "XK5_SERVER", got.Agent)
+				assert.Equal(t, "USER", got.Agent)
 			}
 		})
 	}

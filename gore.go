@@ -3,6 +3,7 @@ package gore
 import (
 	"context"
 	"database/sql"
+	"git.tenvine.cn/backend/gore/auth"
 	"git.tenvine.cn/backend/gore/cmd"
 	"git.tenvine.cn/backend/gore/consul"
 	goreCache "git.tenvine.cn/backend/gore/db/cache"
@@ -17,7 +18,6 @@ import (
 	goreHttp "git.tenvine.cn/backend/gore/http"
 	"git.tenvine.cn/backend/gore/infratoken"
 	"git.tenvine.cn/backend/gore/log"
-	"git.tenvine.cn/backend/gore/usertoken"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/cache/v8"
 	"github.com/go-redis/redis/v8"
@@ -99,8 +99,12 @@ func InfraToken(c context.Context) (string, error) {
 	return infratoken.Get(c)
 }
 
-func UserTokenVerification(token string) (*usertoken.Member, error) {
-	return usertoken.Check(token)
+func UserTokenVerification(token string) (*auth.Member, error) {
+	return auth.CheckUser(token)
+}
+
+func TokenVerification(token string) (*auth.Member, error) {
+	return auth.Check(token)
 }
 
 func Viper() *viper.Viper {
