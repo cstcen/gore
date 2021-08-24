@@ -11,7 +11,7 @@ import (
 type Member struct {
 	Agent          string `json:"agent"`
 	ApplicationNo  int    `json:"application_no"`
-	BirthDt        string `json:"birth_dt"`
+	BirthDt        int    `json:"birth_dt"`
 	Check          string `json:"check"`
 	Env            string `json:"env"`
 	ExpireTime     int    `json:"expire_time"`
