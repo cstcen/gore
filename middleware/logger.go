@@ -2,9 +2,9 @@ package middleware
 
 import (
 	"bytes"
+	"fmt"
 	"git.tenvine.cn/backend/gore/log"
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 	"io"
 	"time"
 )
@@ -73,17 +73,17 @@ func Logger(skipLogResp func(path string) bool) gin.HandlerFunc {
 
 		param.Path = path
 
-		fields := logrus.Fields{
-			"method":  param.Method,
-			"uri":     param.Path,
-			"status":  param.StatusCode,
-			"latency": param.Latency,
-			"ip":      param.ClientIP,
-			"body":    respWriter.body.String(),
+		logStr := fmt.Sprintf(
+			"method=%s uri=%s status=%v latency=%v ip=%s",
+			param.Method,
+			param.Path,
+			param.StatusCode,
+			param.Latency,
+			param.ClientIP,
+		)
+		if !skipLogResp(path) {
+			logStr = logStr + fmt.Sprintf(" body=%s", respWriter.body.String())
 		}
-		if skipLogResp(path) {
-			delete(fields, "body")
-		}
-		contextLog.WithFields(fields).Info()
+		contextLog.Info(logStr)
 	}
 }
