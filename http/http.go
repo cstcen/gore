@@ -30,7 +30,7 @@ func InternalPost(c context.Context, url, contentType string, body interface{}, 
 		return err
 	}
 
-	req, err := http.NewRequest(http.MethodPost, url, bytes.NewReader(p))
+	req, err := http.NewRequestWithContext(c, http.MethodPost, url, bytes.NewReader(p))
 	if err != nil {
 		return err
 	}
@@ -45,7 +45,6 @@ func InternalPost(c context.Context, url, contentType string, body interface{}, 
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
 
 	if err := RespHandler(resp, expectedPtr); err != nil {
 		return err
@@ -54,16 +53,21 @@ func InternalPost(c context.Context, url, contentType string, body interface{}, 
 	return nil
 }
 
-func Post(url, contentType string, body interface{}, expectedPtr interface{}) error {
+func Post(c context.Context, url, contentType string, body interface{}, expectedPtr interface{}) error {
 	p, err := json.Marshal(body)
 	if err != nil {
 		return err
 	}
-	resp, err := cli.Post(url, contentType, bytes.NewReader(p))
+	req, err := http.NewRequestWithContext(c, http.MethodPost, url, bytes.NewReader(p))
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	req.Header.Set("Content-Type", contentType)
+
+	resp, err := cli.Do(req)
+	if err != nil {
+		return err
+	}
 
 	if err := RespHandler(resp, expectedPtr); err != nil {
 		return err
@@ -72,7 +76,7 @@ func Post(url, contentType string, body interface{}, expectedPtr interface{}) er
 }
 
 func InternalGet(c context.Context, url string, expectedPtr interface{}, getInfraToken func(c context.Context) (string, error)) error {
-	req, err := http.NewRequest(http.MethodGet, url, nil)
+	req, err := http.NewRequestWithContext(c, http.MethodGet, url, nil)
 	if err != nil {
 		return err
 	}
@@ -86,7 +90,6 @@ func InternalGet(c context.Context, url string, expectedPtr interface{}, getInfr
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
 
 	if err := RespHandler(resp, expectedPtr); err != nil {
 		return err
@@ -94,12 +97,15 @@ func InternalGet(c context.Context, url string, expectedPtr interface{}, getInfr
 	return nil
 }
 
-func Get(url string, expectedPtr interface{}) error {
-	resp, err := cli.Get(url)
+func Get(c context.Context, url string, expectedPtr interface{}) error {
+	req, err := http.NewRequestWithContext(c, http.MethodGet, url, nil)
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	resp, err := cli.Do(req)
+	if err != nil {
+		return err
+	}
 
 	if err := RespHandler(resp, expectedPtr); err != nil {
 		return err
@@ -107,12 +113,15 @@ func Get(url string, expectedPtr interface{}) error {
 	return nil
 }
 
-func Head(url string, expectedPtr interface{}) error {
-	resp, err := cli.Head(url)
+func Head(c context.Context, url string, expectedPtr interface{}) error {
+	req, err := http.NewRequestWithContext(c, http.MethodHead, url, nil)
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
+	resp, err := cli.Do(req)
+	if err != nil {
+		return err
+	}
 
 	if err := RespHandler(resp, expectedPtr); err != nil {
 		return err
@@ -121,6 +130,10 @@ func Head(url string, expectedPtr interface{}) error {
 }
 
 func RespHandler(resp *http.Response, expectedPtr interface{}) error {
+	if expectedPtr == nil {
+		return nil
+	}
+	defer resp.Body.Close()
 	bodyBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return err

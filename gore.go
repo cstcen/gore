@@ -123,20 +123,20 @@ func HttpInternalPost(c context.Context, url, contentType string, body interface
 	return goreHttp.InternalPost(c, url, contentType, body, expectedPtr, InfraToken)
 }
 
-func HttpPost(url, contentType string, body interface{}, expectedPtr interface{}) error {
-	return goreHttp.Post(url, contentType, body, expectedPtr)
+func HttpPost(c context.Context, url, contentType string, body interface{}, expectedPtr interface{}) error {
+	return goreHttp.Post(c, url, contentType, body, expectedPtr)
 }
 
 func HttpInternalGet(c context.Context, url string, expectedPtr interface{}) error {
 	return goreHttp.InternalGet(c, url, expectedPtr, InfraToken)
 }
 
-func HttpGet(url string, expectedPtr interface{}) error {
-	return goreHttp.Get(url, expectedPtr)
+func HttpGet(c context.Context, url string, expectedPtr interface{}) error {
+	return goreHttp.Get(c, url, expectedPtr)
 }
 
-func HttpHead(url string, expectedPtr interface{}) error {
-	return goreHttp.Get(url, expectedPtr)
+func HttpHead(c context.Context, url string, expectedPtr interface{}) error {
+	return goreHttp.Head(c, url, expectedPtr)
 }
 
 func Cache() *cache.Cache {
