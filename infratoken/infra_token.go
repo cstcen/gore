@@ -48,7 +48,7 @@ func Get(c context.Context) (string, error) {
 		}
 	}
 
-	response, err = request()
+	response, err = request(c)
 	if err != nil {
 		ctxLog.WithError(err).Warn("get infra token fail")
 		return "", err
@@ -60,7 +60,7 @@ func Get(c context.Context) (string, error) {
 	return response.AccessToken, nil
 }
 
-func request() (*Response, error) {
+func request(c context.Context) (*Response, error) {
 
 	url := gonfig.Instance().GetString("tenvine.infraToken.url")
 	req := Request{
@@ -71,7 +71,7 @@ func request() (*Response, error) {
 	}
 
 	result := new(Response)
-	if err := goreHttp.Post(url, constant.ContentTypeApplicationJSON, req, result); err != nil {
+	if err := goreHttp.Post(c, url, constant.ContentTypeApplicationJSON, req, result); err != nil {
 		return nil, err
 	}
 
