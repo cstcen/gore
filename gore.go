@@ -44,6 +44,10 @@ func Setup() error {
 
 	log.Infof("Current logger level: %s", log.GetLevel())
 
+	if err := goreHttp.Setup(); err != nil {
+		return err
+	}
+
 	if err := goreGin.Setup(); err != nil {
 		return err
 	}

@@ -58,7 +58,7 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 	method := req.Method
 	statusCode := resp.StatusCode
 
-	contextLog.Infof(
+	contextLog.Tracef(
 		"HTTPClient method=%s uri=%s status=%v latency=%v ip=%s body=%s",
 		method,
 		path,

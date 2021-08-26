@@ -5,8 +5,10 @@ import (
 	"context"
 	"encoding/json"
 	"git.tenvine.cn/backend/gore/constant"
+	"git.tenvine.cn/backend/gore/gonfig"
 	"io"
 	"net/http"
+	"strings"
 )
 
 var cli *http.Client
@@ -15,13 +17,16 @@ func GetInstance() *http.Client {
 	return cli
 }
 
-func init() {
-	cli = &http.Client{
-		Transport: &Transport{
+func Setup() error {
+	cli = &http.Client{Timeout: constant.TimeoutConn}
+
+	logLevel := strings.ToLower(gonfig.Instance().GetString("gore.logger.level"))
+	if logLevel == "trace" {
+		cli.Transport = &Transport{
 			RoundTripper: http.DefaultTransport,
-		},
-		Timeout: constant.TimeoutConn,
+		}
 	}
+	return nil
 }
 
 func InternalPost(c context.Context, url, contentType string, body interface{}, expectedPtr interface{}, getInfraToken func(c context.Context) (string, error)) error {
