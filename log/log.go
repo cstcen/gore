@@ -172,6 +172,72 @@ func Println(args ...interface{}) {
 	getLogEntry().Println(args...)
 }
 
+func ErrorCE(c context.Context, err error) {
+	WithContext(c).WithError(err).Error()
+}
+
+func WarnCE(c context.Context, err error) {
+	WithContext(c).WithError(err).Warn()
+}
+
+func FatalC(c context.Context, args ...interface{}) {
+	WithContext(c).Fatal(args...)
+}
+
+func FatalfC(c context.Context, format string, args ...interface{}) {
+	WithContext(c).Fatalf(format, args...)
+}
+
+func ErrorC(c context.Context, args ...interface{}) {
+	WithContext(c).Error(args...)
+}
+
+func ErrorfC(c context.Context, format string, args ...interface{}) {
+	WithContext(c).Errorf(format, args...)
+}
+
+func WarnC(c context.Context, args ...interface{}) {
+	WithContext(c).Warn(args...)
+}
+
+func WarnfC(c context.Context, format string, args ...interface{}) {
+	WithContext(c).Warnf(format, args...)
+}
+
+func InfoC(c context.Context, args ...interface{}) {
+	WithContext(c).Info(args...)
+}
+
+func InfofC(c context.Context, format string, args ...interface{}) {
+	WithContext(c).Infof(format, args...)
+}
+
+func DebugC(c context.Context, args ...interface{}) {
+	WithContext(c).Debug(args...)
+}
+
+func DebugfC(c context.Context, format string, args ...interface{}) {
+	WithContext(c).Debugf(format, args...)
+}
+
+func TraceC(c context.Context, args ...interface{}) {
+	WithContext(c).Trace(args...)
+}
+
+func TracefC(c context.Context, format string, args ...interface{}) {
+	WithContext(c).Tracef(format, args...)
+}
+
+func PrintC(c context.Context, args ...interface{}) {
+	WithContext(c).Print(args...)
+}
+func PrintfC(c context.Context, format string, args ...interface{}) {
+	WithContext(c).Printf(format, args...)
+}
+func PrintlnC(c context.Context, args ...interface{}) {
+	WithContext(c).Println(args...)
+}
+
 func SetLogLink(link string) error {
 	if "" == link {
 		return errors.New("invalid log link")
