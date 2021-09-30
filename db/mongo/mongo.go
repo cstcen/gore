@@ -73,6 +73,7 @@ func Setup() error {
 	}
 
 	if err = mgo.Ping(context.Background(), readpref.Primary()); err != nil {
+		entry.WithError(err).Warnf("Failed to ping mongodb")
 		return err
 	}
 
