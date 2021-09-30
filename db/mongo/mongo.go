@@ -6,7 +6,6 @@ import (
 	"git.tenvine.cn/backend/gore/log"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"time"
 )
 
@@ -69,11 +68,6 @@ func Setup() error {
 
 	if err = mgo.Connect(context.Background()); err != nil {
 		entry.WithError(err).Warnf("Failed to connect mongodb")
-		return err
-	}
-
-	if err = mgo.Ping(context.Background(), readpref.Primary()); err != nil {
-		entry.WithError(err).Warnf("Failed to ping mongodb [%s|%s]", cfg.Username, cfg.Password)
 		return err
 	}
 
