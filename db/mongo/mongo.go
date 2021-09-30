@@ -66,7 +66,9 @@ func Setup() error {
 		return err
 	}
 
-	if err = mgo.Connect(context.Background()); err != nil {
+	timeout, cancelFunc := context.WithTimeout(context.Background(), time.Second*1)
+	defer cancelFunc()
+	if err = mgo.Connect(timeout); err != nil {
 		entry.WithError(err).Warnf("Failed to connect mongodb [$s|$s]", cfg.Username, cfg.Password)
 		return err
 	}
