@@ -57,7 +57,7 @@ func Setup() error {
 
 	var err error
 	entry := log.WithField("host", cfg.Hosts)
-	entry.Infof("Current mongo")
+	entry.Infof("Current mongo: %s", cfg.Dbname)
 
 	clientOptions := newOptions(cfg)
 
@@ -73,7 +73,7 @@ func Setup() error {
 	}
 
 	if err = mgo.Ping(context.Background(), readpref.Primary()); err != nil {
-		entry.WithError(err).Warnf("Failed to ping mongodb")
+		entry.WithError(err).Warnf("Failed to ping mongodb [%s|%s]", cfg.Username, cfg.Password)
 		return err
 	}
 
