@@ -84,9 +84,7 @@ func Setup() error {
 
 func newOptions(c *Config) *options.ClientOptions {
 	clientOptions := options.Client()
-	clientOptions.SetAppName(c.AppName)
 	clientOptions.SetAuth(options.Credential{
-		AuthSource:  c.AppName,
 		Username:    c.Username,
 		Password:    c.Password,
 		PasswordSet: true,
