@@ -48,6 +48,8 @@ func Setup() error {
 
 	env := vp.GetString("env")
 	appName := vp.GetString("name")
+	replacer := strings.NewReplacer("${profile}", env, "${application}", appName)
+	placeholder(replacer)
 
 	if err := unmarshalConfigCustom(); err != nil {
 		return err
@@ -69,8 +71,6 @@ func Setup() error {
 		}
 	}
 
-	replacer := strings.NewReplacer("${profile}", env, "${application}", appName)
-	placeholder(replacer)
 	placeholder(replacer)
 
 	return nil
