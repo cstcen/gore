@@ -36,32 +36,18 @@ func init() {
 // Setup 读取顺序为：
 // 假如env=dev, appName=gore
 // 先读取consul K/V store
+// 1. config/config.yml
+// 2. config/config-dev.yml
+// 再读取项目内配置文件
 // 1. config/application/data
 // 2. config/application,dev/data
 // 3. config/gore/data
 // 4. config/gore,dev/data
-// 再读取项目内配置文件
-// 1. config/config.yml
-// 2. config/config-dev.yml
 // 越靠后，配置优先级越高
 func Setup() error {
 
 	env := vp.GetString("env")
 	appName := vp.GetString("name")
-	replacer := strings.NewReplacer("${profile}", env, "${application}", appName)
-	placeholder(replacer)
-
-	endpoint := vp.GetString("consul")
-
-	name := "application"
-	if err := readRemoteConfig(env, name, endpoint); err != nil {
-		return err
-	}
-	if len(appName) > 0 {
-		if err := readRemoteConfig(env, appName, endpoint); err != nil {
-			return err
-		}
-	}
 
 	if err := unmarshalConfigCustom(); err != nil {
 		return err
@@ -72,6 +58,19 @@ func Setup() error {
 		}
 	}
 
+	endpoint := vp.GetString("consul")
+	name := "application"
+	if err := readRemoteConfig(env, name, endpoint); err != nil {
+		return err
+	}
+	if len(appName) > 0 {
+		if err := readRemoteConfig(env, appName, endpoint); err != nil {
+			return err
+		}
+	}
+
+	replacer := strings.NewReplacer("${profile}", env, "${application}", appName)
+	placeholder(replacer)
 	placeholder(replacer)
 
 	return nil

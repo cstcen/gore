@@ -25,5 +25,4 @@ require (
 	github.com/vmihailenco/go-tinylfu v0.2.1 // indirect
 	go.mongodb.org/mongo-driver v1.5.3
 	golang.org/x/text v0.3.6
-	gopkg.in/yaml.v2 v2.4.0
 )
