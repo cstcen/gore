@@ -79,6 +79,9 @@ func Setup() error {
 func placeholder(replacer *strings.Replacer) {
 	for _, key := range vp.AllKeys() {
 		val := vp.GetString(key)
+		if len(val) == 0 {
+			continue
+		}
 		val = replacer.Replace(val)
 		vp.Set(key, val)
 	}
