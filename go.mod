@@ -12,9 +12,7 @@ require (
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/google/uuid v1.2.0
 	github.com/hashicorp/consul/api v1.1.0
-	github.com/jonboulle/clockwork v0.2.2 // indirect
-	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
-	github.com/lestrrat-go/strftime v1.0.4 // indirect
+	github.com/natefinch/lumberjack v2.0.0+incompatible
 	github.com/olivere/elastic v6.2.35+incompatible
 	github.com/pkg/errors v0.9.1
 	github.com/sirupsen/logrus v1.8.1
@@ -25,4 +23,5 @@ require (
 	github.com/vmihailenco/go-tinylfu v0.2.1 // indirect
 	go.mongodb.org/mongo-driver v1.5.3
 	golang.org/x/text v0.3.6
+	gopkg.in/natefinch/lumberjack.v2 v2.0.0 // indirect
 )

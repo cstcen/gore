@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"git.tenvine.cn/backend/gore/gonfig"
 	"git.tenvine.cn/backend/gore/util"
-	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
+	"github.com/natefinch/lumberjack"
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"io"
@@ -39,14 +39,6 @@ func init() {
 }
 
 var (
-	ErrAppNameEmpty = errors.New("the app name is empty")
-
-	logLink     string
-	logPath     string
-	logMaxFiles uint
-)
-
-var (
 	std = logrus.New()
 )
 
@@ -56,10 +48,12 @@ type Config struct {
 
 func Setup() error {
 
-	err := setLogOutput()
-	if err != nil {
+	lumberjackLogger := lumberjack.Logger{}
+	if err := gonfig.Instance().UnmarshalKey("gore.logger", &lumberjackLogger); err != nil {
 		return err
 	}
+	multiWriter := io.MultiWriter(os.Stdout, &lumberjackLogger)
+	std.SetOutput(multiWriter)
 
 	setLogFormatter()
 
@@ -70,9 +64,8 @@ func Setup() error {
 		SetLogLevel(logrus.TraceLevel.String())
 	}
 
-	Infof("Current log path: %s", logPath)
-	Infof("Current log link: %s", logLink)
-	Infof("Current log max files: %v", logMaxFiles)
+	Infof("Current log filename: %s", lumberjackLogger.Filename)
+	Infof("Current log maxage: %s", lumberjackLogger.MaxAge)
 
 	return nil
 }
@@ -238,39 +231,6 @@ func PrintlnC(c context.Context, args ...interface{}) {
 	WithContext(c).Println(args...)
 }
 
-func SetLogLink(link string) error {
-	if "" == link {
-		return errors.New("invalid log link")
-	}
-	logLink = link
-	return nil
-}
-
-func SetLogPath(path string) error {
-	if "" == path {
-		return errors.New("invalid log path")
-	}
-	logPath = path
-	return nil
-}
-
-func SetMaxFiles(maxFiles uint) error {
-	if 0 == maxFiles {
-		return errors.New("invalid log max files")
-	}
-	logMaxFiles = maxFiles
-	return nil
-}
-
-func setLogOutput() error {
-	rotateLogs, err := GetRotateLogs()
-	if err != nil {
-		return err
-	}
-	std.SetOutput(rotateLogs)
-	return nil
-}
-
 func setLogFormatter() {
 	std.SetFormatter(&logrus.TextFormatter{
 		TimestampFormat:  FormatTimestamp,
@@ -303,42 +263,6 @@ func getCurDirName() (string, error) {
 		return "", errors.New("current dir name is empty")
 	}
 	return dirNames[len(dirNames)-1], nil
-}
-
-func GetRotateLogs() (*rotatelogs.RotateLogs, error) {
-
-	appName, err := getCurDirName()
-	if err != nil {
-		return nil, err
-	}
-
-	if "" == logLink {
-		logLink = fmt.Sprintf("/xk5/logs/%s/%s.log", appName, appName)
-	}
-	if "" == logPath {
-		logPath = fmt.Sprintf("/xk5/logs/%s/%s-%s", appName, appName, "%Y-%m-%d.log")
-	}
-	if 0 == logMaxFiles {
-		logMaxFiles = 30
-	}
-
-	if sysType := runtime.GOOS; sysType != "linux" {
-		logLink = ""
-	}
-	return rotatelogs.New(
-		logPath,
-		// WithLinkName为最新的日志建立软连接,以方便随着找到当前日志文件
-		rotatelogs.WithLinkName(logLink),
-
-		// WithRotationTime设置日志分割的时间,默认：86400s分割一次
-		// rotatelogs.WithRotationTime(time.Hour),
-
-		// WithMaxAge和WithRotationCount二者只能设置一个,
-		// WithMaxAge设置文件清理前的最长保存时间,
-		// rotatelogs.WithMaxAge(time.Hour*24),
-		// WithRotationCount设置文件清理前最多保存的个数.
-		rotatelogs.WithRotationCount(logMaxFiles),
-	)
 }
 
 func getLogEntry() *logrus.Entry {
@@ -386,7 +310,7 @@ func getCaller() *runtime.Frame {
 }
 
 // getPackageName reduces a fully qualified function name to the package name
-// There really ought to be to be a better way...
+// There really ought to be a better way...
 func getPackageName(f string) string {
 	for {
 		lastPeriod := strings.LastIndex(f, ".")
