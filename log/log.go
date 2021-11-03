@@ -65,7 +65,7 @@ func Setup() error {
 	}
 
 	Infof("Current log filename: %s", lumberjackLogger.Filename)
-	Infof("Current log maxage: %s", lumberjackLogger.MaxAge)
+	Infof("Current log maxage: %v", lumberjackLogger.MaxAge)
 
 	return nil
 }
