@@ -29,7 +29,6 @@ func init() {
 	vp.Set("gore.path", "config")
 	vp.Set("gore.filename", "config.yml")
 	vp.Set("gore.filenameEnv", "config-${profile}.yml")
-	vp.Set("consul", "http://i-consul-${profile}.xk5.com")
 	vp.AutomaticEnv()
 }
 
