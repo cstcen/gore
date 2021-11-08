@@ -19,8 +19,8 @@ func CheckUser(token string) (*Member, error) {
 	if err != nil {
 		return nil, err
 	}
-	mb := new(Member)
-	result := &vo.DataResult{Data: mb}
+	member := new(Member)
+	result := &vo.DataResult{Data: member}
 	if err := goreHttp.RespHandler(resp, result); err != nil {
 		return nil, err
 	}
@@ -31,9 +31,9 @@ func CheckUser(token string) (*Member, error) {
 		return nil, errors.New("no member was found during user token verification")
 	}
 
-	if mb.Agent != "USER" {
+	if member.Agent != "USER" {
 		return nil, errors.New("invalid user token")
 	}
 
-	return mb, nil
+	return member, nil
 }
