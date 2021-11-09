@@ -20,6 +20,6 @@ type Member struct {
 	TransactionId  string `json:"transaction_id"`
 	OpenId         string `json:"open_id"`
 	ProviderOS     string `json:"provider_os"`
-	CharacterNo    string `json:"character_no"`
+	CharacterNo    int    `json:"character_no"`
 	ProfileImg     string `json:"profile_img"`
 }
