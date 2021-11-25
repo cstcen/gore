@@ -48,12 +48,17 @@ type Config struct {
 
 func Setup() error {
 
-	lumberjackLogger := lumberjack.Logger{}
-	if err := gonfig.Instance().UnmarshalKey("gore.logger", &lumberjackLogger); err != nil {
-		return err
+	if gonfig.Instance().GetBool("log") {
+		lumberjackLogger := lumberjack.Logger{}
+		if err := gonfig.Instance().UnmarshalKey("gore.logger", &lumberjackLogger); err != nil {
+			return err
+		}
+		std.SetOutput(io.MultiWriter(os.Stdout, &lumberjackLogger))
+		Infof("Current log filename: %s", lumberjackLogger.Filename)
+		Infof("Current log maxage: %v", lumberjackLogger.MaxAge)
+	} else {
+		std.SetOutput(io.MultiWriter(os.Stdout))
 	}
-	multiWriter := io.MultiWriter(os.Stdout, &lumberjackLogger)
-	std.SetOutput(multiWriter)
 
 	setLogFormatter()
 
@@ -63,9 +68,6 @@ func Setup() error {
 	} else {
 		SetLogLevel(logrus.TraceLevel.String())
 	}
-
-	Infof("Current log filename: %s", lumberjackLogger.Filename)
-	Infof("Current log maxage: %v", lumberjackLogger.MaxAge)
 
 	return nil
 }
