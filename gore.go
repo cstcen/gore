@@ -99,6 +99,10 @@ func Cmd(preStartup func(engine *gin.Engine) error) *cobra.Command {
 	})
 }
 
+func RootCmd() *cobra.Command {
+	return cmd.GetInstance()
+}
+
 func InfraToken(c context.Context) (string, error) {
 	return infratoken.Get(c)
 }

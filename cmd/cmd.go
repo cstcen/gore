@@ -17,6 +17,10 @@ func init() {
 	_ = gonfig.Instance().BindPFlags(rootCmd.PersistentFlags())
 }
 
+func GetInstance() *cobra.Command {
+	return rootCmd
+}
+
 func New(setup func() error) *cobra.Command {
 	rootCmd.PreRunE = func(cmd *cobra.Command, args []string) error {
 		return setup()
