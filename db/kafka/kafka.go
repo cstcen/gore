@@ -3,6 +3,7 @@ package kafka
 import (
 	"git.tenvine.cn/backend/gore/gonfig"
 	"git.tenvine.cn/backend/gore/log"
+	"git.tenvine.cn/backend/gore/util"
 	"github.com/Shopify/sarama"
 	"github.com/pkg/errors"
 )
@@ -82,6 +83,7 @@ func NewKafkaConfig(cfg *Config) (*sarama.Config, error) {
 
 	config := sarama.NewConfig()
 	config.Version = version
+	config.ClientID = util.GetLocalhost()
 
 	if len(cfg.Assignor) > 0 {
 		switch cfg.Assignor {
