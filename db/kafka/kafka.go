@@ -1,6 +1,7 @@
 package kafka
 
 import (
+	"fmt"
 	"git.tenvine.cn/backend/gore/gonfig"
 	"git.tenvine.cn/backend/gore/log"
 	"git.tenvine.cn/backend/gore/util"
@@ -83,7 +84,7 @@ func NewKafkaConfig(cfg *Config) (*sarama.Config, error) {
 
 	config := sarama.NewConfig()
 	config.Version = version
-	config.ClientID = util.GetLocalhost()
+	config.ClientID = fmt.Sprintf("sarama-%s-%s-%s", gonfig.Instance().GetString("env"), gonfig.Instance().GetString("name"), util.GetLocalhost())
 
 	if len(cfg.Assignor) > 0 {
 		switch cfg.Assignor {
