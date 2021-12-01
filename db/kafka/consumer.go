@@ -16,7 +16,7 @@ import (
 
 type ConsumerMessageHandler interface {
 	// HandleConsumerMessage 在ConsumeClaim中调用，用作处理接收到的消息
-	HandleConsumerMessage(*sarama.ConsumerMessage)
+	HandleConsumerMessage(*sarama.ConsumerMessage) error
 }
 
 type ConsumerConfig struct {
@@ -140,9 +140,10 @@ func (c *Consumer) ConsumeClaim(session sarama.ConsumerGroupSession, claim saram
 			"message claimed: %s",
 			string(message.Value),
 		)
+		if err := c.HandleMessage.HandleConsumerMessage(message); err != nil {
+			return err
+		}
 		session.MarkMessage(message, "")
-
-		c.HandleMessage.HandleConsumerMessage(message)
 	}
 
 	return nil
