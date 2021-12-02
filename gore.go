@@ -30,19 +30,9 @@ import (
 
 func Setup() error {
 
-	if err := gonfig.Setup(); err != nil {
+	if err := SetupBase(); err != nil {
 		return err
 	}
-
-	if err := log.Setup(); err != nil {
-		return err
-	}
-
-	log.Infof("Current active profile: %s", Viper().GetString("env"))
-
-	log.Infof("Current load config path: %s", Viper().GetString("gore.path"))
-
-	log.Infof("Current logger level: %s", log.GetLevel())
 
 	if err := goreHttp.Setup(); err != nil {
 		return err
@@ -81,6 +71,24 @@ func Setup() error {
 			return err
 		}
 	}
+
+	return nil
+}
+
+func SetupBase() error {
+	if err := gonfig.Setup(); err != nil {
+		return err
+	}
+
+	if err := log.Setup(); err != nil {
+		return err
+	}
+
+	log.Infof("Current active profile: %s", Viper().GetString("env"))
+
+	log.Infof("Current load config path: %s", Viper().GetString("gore.path"))
+
+	log.Infof("Current logger level: %s", log.GetLevel())
 
 	return nil
 }
