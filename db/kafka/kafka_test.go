@@ -8,7 +8,7 @@ import (
 
 func init() {
 	gonfig.Instance().Set("name", "tlogsender")
-	gonfig.Instance().Set("env", "dev3")
+	gonfig.Instance().Set("env", "sdev0")
 	gonfig.Instance().Set("consul", "i-consul-${profile}.xk5.com:8500")
 	gonfig.Setup()
 }

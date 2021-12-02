@@ -1,14 +1,19 @@
 package kafka
 
 import (
+	"git.tenvine.cn/backend/gore/log"
 	"github.com/pkg/errors"
+	"os"
+	"os/signal"
+	"syscall"
 )
 
 var (
 	ErrConsumerConfigNotFound = errors.New("consumer config not found")
+	cancellers                = make([]Canceller, 0)
 )
 
-func SetupConsumers(handlers map[string]ConsumerMessageHandler) error {
+func StartupConsumers(handlers map[string]ConsumerMessageHandler) error {
 	cfg := NewConfig()
 
 	config, err := NewKafkaConfig(cfg)
@@ -21,11 +26,37 @@ func SetupConsumers(handlers map[string]ConsumerMessageHandler) error {
 		if !ok {
 			return errors.Wrap(ErrConsumerConfigNotFound, key)
 		}
-		err := SetupConsumer(key, consumerConfig, config, handler)
-		if err != nil {
+		csm := &Consumer{
+			ready:         make(chan bool),
+			name:          key,
+			HandleMessage: handler,
+		}
+		cancellers = append(cancellers, csm)
+		if err := csm.Consume(consumerConfig, config); err != nil {
 			return errors.Wrap(err, key)
 		}
 	}
 
+	return nil
+}
+
+func ListeningSigterm() error {
+	sigterm := make(chan os.Signal, 1)
+	signal.Notify(sigterm, syscall.SIGINT, syscall.SIGTERM)
+	select {
+	case <-sigterm:
+		log.Info("terminating: via signal")
+	}
+
+	if err := ShutdownConsumers(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func ShutdownConsumers() error {
+	for _, canceller := range cancellers {
+		canceller.Cancel()
+	}
 	return nil
 }

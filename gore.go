@@ -183,16 +183,8 @@ func ElasticsearchCustom(setup func() *elastic.Client) *elastic.Client {
 	return setup()
 }
 
-func KafkaStartConsumer(handler kafka.ConsumerMessageHandler) error {
-	return goreKafka.StartConsumer(handler)
-}
-
-func KafkaStartConsumerCustom(setup func() error) error {
-	return setup()
-}
-
 func KafkaStartConsumers(handlers map[string]kafka.ConsumerMessageHandler) error {
-	return goreKafka.SetupConsumers(handlers)
+	return goreKafka.StartupConsumers(handlers)
 }
 
 func KafkaStartConsumersCustom(setup func() error) error {

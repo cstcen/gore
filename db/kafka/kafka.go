@@ -22,7 +22,6 @@ type Config struct {
 	Assignor string
 	Oldest   bool
 
-	Consumer  ConsumerConfig
 	Consumers map[string]ConsumerConfig
 }
 
@@ -38,35 +37,6 @@ func NewConfig() *Config {
 		return nil
 	}
 	return &cfg
-	//viper := gonfig.Instance()
-	//cfg := &Config{
-	//	Enable:   viper.GetBool("gore.kafka.enable"),
-	//	Version:  viper.GetString("gore.kafka.version"),
-	//	Assignor: viper.GetString("gore.kafka.assignor"),
-	//	Oldest:   viper.GetBool("gore.kafka.oldest"),
-	//	Consumer: ConsumerConfig{
-	//		Brokers: viper.GetStringSlice("gore.kafka.consumer.brokers"),
-	//		Topics:  viper.GetStringSlice("gore.kafka.consumer.topics"),
-	//		Group:   viper.GetString("gore.kafka.consumer.group"),
-	//	},
-	//}
-	//consumers := viper.GetStringMap("gore.kafka.consumers")
-	//if len(consumers) == 0 {
-	//	return cfg
-	//}
-	//cfg.Consumers = make(map[string]ConsumerConfig)
-	//for key, consumer := range consumers {
-	//	b, err := json.Marshal(consumer)
-	//	if err != nil {
-	//		continue
-	//	}
-	//	c := ConsumerConfig{}
-	//	if err := json.Unmarshal(b, &c); err != nil {
-	//		continue
-	//	}
-	//	cfg.Consumers[key] = c
-	//}
-	//return cfg
 }
 
 func NewKafkaConfig(cfg *Config) (*sarama.Config, error) {
