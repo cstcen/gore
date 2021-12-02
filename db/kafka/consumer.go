@@ -2,7 +2,6 @@ package kafka
 
 import (
 	"context"
-	"git.tenvine.cn/backend/gore/constant"
 	"git.tenvine.cn/backend/gore/log"
 	"github.com/Shopify/sarama"
 	"github.com/sirupsen/logrus"
@@ -38,7 +37,7 @@ func (c *Consumer) ConsumeClaim(session sarama.ConsumerGroupSession, claim saram
 	for message := range claim.Messages() {
 		log.WithFields(logrus.Fields{
 			"topic":        message.Topic,
-			"timestamp":    message.Timestamp.Format(constant.FormatTimestamp),
+			"timestamp":    message.Timestamp,
 			"consumerName": c.name,
 		}).Infof(
 			"message claimed: %s",
