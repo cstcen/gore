@@ -1,6 +1,7 @@
 package gore
 
 import (
+	"context"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -45,7 +46,7 @@ func TestHttpGet(t *testing.T) {
 			if err := Setup(); err != nil {
 				t.Error(err)
 			}
-			if err := HttpGet(tt.args.url, tt.args.expectedPtr); (err != nil) != tt.wantErr {
+			if err := HttpGet(context.Background(), tt.args.url, tt.args.expectedPtr); (err != nil) != tt.wantErr {
 				t.Errorf("HttpGet() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})

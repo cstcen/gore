@@ -68,7 +68,7 @@ func Setup() error {
 	}
 
 	if err = mgo.Connect(context.Background()); err != nil {
-		entry.WithError(err).Warnf("Failed to connect mongodb [$s|$s]", cfg.Username, cfg.Password)
+		entry.WithError(err).Warnf("Failed to connect mongodb [%s|%s]", cfg.Username, cfg.Password)
 		return err
 	}
 

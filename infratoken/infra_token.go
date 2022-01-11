@@ -81,6 +81,7 @@ func request(c context.Context) (*Response, error) {
 func get(c context.Context, key string) (*Response, error) {
 	var wanted Response
 	ctx, cancelFunc := context.WithTimeout(c, constant.TimeoutConn)
+	defer cancelFunc()
 	if err := goreCache.Instance().Get(ctx, key, &wanted); err != nil {
 		return nil, err
 	}
@@ -90,14 +91,11 @@ func get(c context.Context, key string) (*Response, error) {
 }
 
 func save(response *Response, key string, cc *cache.Cache, ctxLog *logrus.Entry) {
-	if cc == nil {
-		return
-	}
-	if response == nil {
+	if cc == nil || response == nil || response.ExpiresIn == 0 {
 		return
 	}
 
-	ttl := time.Duration(response.ExpiresIn)
+	ttl := time.Duration(response.ExpiresIn) * time.Millisecond
 	ctx, cancelFunc := context.WithTimeout(context.Background(), constant.TimeoutConn)
 	defer cancelFunc()
 	if err := goreCache.Instance().Set(&cache.Item{

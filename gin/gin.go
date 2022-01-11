@@ -11,7 +11,7 @@ import (
 	syslog "log"
 	"net/http"
 	"os"
-	signal "os/signal"
+	"os/signal"
 	"strings"
 	"time"
 )
@@ -56,10 +56,10 @@ func Startup() error {
 	log.Info("Shutdown Server")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 	if err := srv.Shutdown(ctx); err != nil {
 		return err
 	}
-	defer cancel()
 	log.Info("Server exiting")
 
 	if consul.Enable() {

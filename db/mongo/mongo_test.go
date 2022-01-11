@@ -25,7 +25,7 @@ func TestSetup(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := Setup(tt.args.cfg); (err != nil) != tt.wantErr {
+			if err := Setup(); (err != nil) != tt.wantErr {
 				t.Errorf("Setup() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
