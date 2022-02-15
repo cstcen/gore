@@ -22,20 +22,20 @@ func Setup() error {
 
 func Register() error {
 
+	registration := api.AgentServiceRegistration{}
+	if err := gonfig.Instance().UnmarshalKey("gore.consul.discovery", &registration); err != nil {
+		return err
+	}
+
 	cli, err := api.NewClient(conf)
 	if err != nil {
 		return err
 	}
-
-	appName := gonfig.Instance().GetString("name")
-	env := gonfig.Instance().GetString("env")
-	addr := gonfig.Instance().GetString("SERVER_ID")
-	registration := &api.AgentServiceRegistration{Name: appName, Tags: []string{env}, Address: addr}
-	if err := cli.Agent().ServiceRegister(registration); err != nil {
+	if err := cli.Agent().ServiceRegister(&registration); err != nil {
 		return err
 	}
 
-	log.Infof("consul register service: %s", appName)
+	log.Infof("consul register service: %s", registration.Name)
 	return nil
 
 }
