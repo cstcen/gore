@@ -1,16 +1,25 @@
 package auth
 
 import (
+	"context"
 	"errors"
-	"git.tenvine.cn/backend/gore/gonfig"
+	goreCache "git.tenvine.cn/backend/gore/db/cache"
 	goreHttp "git.tenvine.cn/backend/gore/http"
+	"git.tenvine.cn/backend/gore/log"
 	"git.tenvine.cn/backend/gore/vo"
+	"github.com/go-redis/cache/v8"
 	"net/http"
+	"time"
 )
 
-func Check(token string) (*Member, error) {
-	url := gonfig.Instance().GetString("tenvine.api.host") + gonfig.Instance().GetString("tenvine.api.verifyToken")
-	req, err := http.NewRequest(http.MethodGet, url, nil)
+func Check(ctx context.Context, token string, url string) (*Member, error) {
+	var member Member
+	if goreCache.Instance() != nil {
+		if goreCache.Instance().Get(ctx, cacheKey(token), &member) == nil {
+			return &member, nil
+		}
+	}
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -19,9 +28,8 @@ func Check(token string) (*Member, error) {
 	if err != nil {
 		return nil, err
 	}
-	member := new(Member)
-	result := &vo.DataResult{Data: member}
-	if err := goreHttp.RespHandler(resp, result); err != nil {
+	result := vo.DataResult{Data: &member}
+	if err := goreHttp.RespHandler(resp, &result); err != nil {
 		return nil, err
 	}
 	if result.Code != vo.BaseResultSuccess.Code {
@@ -31,9 +39,16 @@ func Check(token string) (*Member, error) {
 		return nil, errors.New("no member was found during token verification")
 	}
 
-	if member.Agent != "XK5_SERVER" {
-		return nil, errors.New("invalid token")
+	if goreCache.Instance() != nil {
+		if err := goreCache.Instance().Set(&cache.Item{
+			Ctx:   ctx,
+			Key:   cacheKey(token),
+			Value: member,
+			TTL:   time.Duration(member.ExpireTime-member.Timestamp) * time.Millisecond,
+		}); err != nil {
+			log.ErrorCE(ctx, err)
+		}
 	}
 
-	return member, nil
+	return &member, nil
 }

@@ -10,4 +10,6 @@ const (
 
 	ContentTypeApplicationJSON        = "application/json"
 	ContentTypeApplicationJSONCharset = "application/json; charset=UTF-8"
+
+	HeaderAuthorization = "Authorization"
 )
