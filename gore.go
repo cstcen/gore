@@ -116,11 +116,19 @@ func InfraToken(c context.Context) (string, error) {
 }
 
 func UserTokenVerification(token string) (*auth.Member, error) {
-	return auth.CheckUser(token)
+	return auth.ExternalCheck(context.Background(), token)
 }
 
 func TokenVerification(token string) (*auth.Member, error) {
-	return auth.Check(token)
+	return auth.InternalCheck(context.Background(), token)
+}
+
+func ExternalTokenVerification(token string) (*auth.Member, error) {
+	return auth.ExternalCheck(context.Background(), token)
+}
+
+func InternalTokenVerification(token string) (*auth.Member, error) {
+	return auth.InternalCheck(context.Background(), token)
 }
 
 func Viper() *viper.Viper {
