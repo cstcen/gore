@@ -1,6 +1,6 @@
 package vo
 
-type DataResult struct {
+type DataResult[T any] struct {
 	BaseResult
-	Data interface{} `json:"data,omitempty"`
+	Data T `json:"data,omitempty"`
 }

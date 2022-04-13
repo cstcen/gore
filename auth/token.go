@@ -3,6 +3,7 @@ package auth
 import (
 	"context"
 	"errors"
+	"git.tenvine.cn/backend/gore/constant"
 	goreCache "git.tenvine.cn/backend/gore/db/cache"
 	goreHttp "git.tenvine.cn/backend/gore/http"
 	"git.tenvine.cn/backend/gore/log"
@@ -15,6 +16,7 @@ import (
 func Check(ctx context.Context, token string, url string) (*Member, error) {
 	var member Member
 	if goreCache.Instance() != nil {
+		log.DebugfC(ctx, "load member from cache")
 		if goreCache.Instance().Get(ctx, cacheKey(token), &member) == nil {
 			return &member, nil
 		}
@@ -23,28 +25,27 @@ func Check(ctx context.Context, token string, url string) (*Member, error) {
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set("Authorization", token)
+	req.Header.Set(constant.HeaderAuthorization, token)
 	resp, err := goreHttp.GetInstance().Do(req)
 	if err != nil {
 		return nil, err
 	}
-	result := vo.DataResult{Data: &member}
+	result := vo.DataResult[Member]{Data: member}
 	if err := goreHttp.RespHandler(resp, &result); err != nil {
 		return nil, err
 	}
 	if result.Code != vo.BaseResultSuccess.Code {
 		return nil, errors.New("token verification failed")
 	}
-	if result.Data == nil {
-		return nil, errors.New("no member was found during token verification")
-	}
 
 	if goreCache.Instance() != nil {
+		expireTime := member.ExpireTime
+		timestamp := member.Timestamp
 		if err := goreCache.Instance().Set(&cache.Item{
 			Ctx:   ctx,
 			Key:   cacheKey(token),
 			Value: member,
-			TTL:   time.Duration(member.ExpireTime-member.Timestamp) * time.Millisecond,
+			TTL:   time.Duration(expireTime-timestamp) * time.Millisecond,
 		}); err != nil {
 			log.ErrorCE(ctx, err)
 		}

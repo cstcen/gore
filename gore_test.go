@@ -32,7 +32,7 @@ func TestSetup(t *testing.T) {
 func TestHttpGet(t *testing.T) {
 	type args struct {
 		url         string
-		expectedPtr interface{}
+		expectedPtr any
 	}
 	tests := []struct {
 		name    string

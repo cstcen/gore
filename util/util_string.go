@@ -39,7 +39,7 @@ func UnixToDate(unix string) (string, error) {
 // Strval 获取变量的字符串值
 // 浮点型 3.0将会转换成字符串3, "3"
 // 非数值或字符类型的变量将会被转换成JSON格式字符串
-func Strval(value interface{}) string {
+func Strval(value any) string {
 	var wanted string
 	if value == nil {
 		return wanted
@@ -94,11 +94,11 @@ func Strval(value interface{}) string {
 	return wanted
 }
 
-func Interface2String(inter interface{}) string {
+func Interface2String(inter any) string {
 	return Strval(inter)
 }
 
-func Interface2Int(inter interface{}) int {
+func Interface2Int(inter any) int {
 	var wanted int
 	switch v := inter.(type) {
 	case string:

@@ -93,7 +93,7 @@ func WithError(err error) *logrus.Entry {
 	return getLogEntry().WithError(err)
 }
 
-func WithField(key string, value interface{}) *logrus.Entry {
+func WithField(key string, value any) *logrus.Entry {
 	return getLogEntry().WithField(key, value)
 }
 
@@ -109,61 +109,61 @@ func WarnE(err error) {
 	getLogEntry().WithError(err).Warn()
 }
 
-func Fatal(args ...interface{}) {
+func Fatal(args ...any) {
 	getLogEntry().Fatal(args...)
 }
 
-func Fatalf(format string, args ...interface{}) {
+func Fatalf(format string, args ...any) {
 	getLogEntry().Fatalf(format, args...)
 }
 
-func Error(args ...interface{}) {
+func Error(args ...any) {
 	getLogEntry().Error(args...)
 }
 
-func Errorf(format string, args ...interface{}) {
+func Errorf(format string, args ...any) {
 	getLogEntry().Errorf(format, args...)
 }
 
-func Warn(args ...interface{}) {
+func Warn(args ...any) {
 	getLogEntry().Warn(args...)
 }
 
-func Warnf(format string, args ...interface{}) {
+func Warnf(format string, args ...any) {
 	getLogEntry().Warnf(format, args...)
 }
 
-func Info(args ...interface{}) {
+func Info(args ...any) {
 	getLogEntry().Info(args...)
 }
 
-func Infof(format string, args ...interface{}) {
+func Infof(format string, args ...any) {
 	getLogEntry().Infof(format, args...)
 }
 
-func Debug(args ...interface{}) {
+func Debug(args ...any) {
 	getLogEntry().Debug(args...)
 }
 
-func Debugf(format string, args ...interface{}) {
+func Debugf(format string, args ...any) {
 	getLogEntry().Debugf(format, args...)
 }
 
-func Trace(args ...interface{}) {
+func Trace(args ...any) {
 	getLogEntry().Trace(args...)
 }
 
-func Tracef(format string, args ...interface{}) {
+func Tracef(format string, args ...any) {
 	getLogEntry().Tracef(format, args...)
 }
 
-func Print(args ...interface{}) {
+func Print(args ...any) {
 	getLogEntry().Print(args...)
 }
-func Printf(format string, args ...interface{}) {
+func Printf(format string, args ...any) {
 	getLogEntry().Printf(format, args...)
 }
-func Println(args ...interface{}) {
+func Println(args ...any) {
 	getLogEntry().Println(args...)
 }
 
@@ -175,61 +175,61 @@ func WarnCE(c context.Context, err error) {
 	WithContext(c).WithError(err).Warn()
 }
 
-func FatalC(c context.Context, args ...interface{}) {
+func FatalC(c context.Context, args ...any) {
 	WithContext(c).Fatal(args...)
 }
 
-func FatalfC(c context.Context, format string, args ...interface{}) {
+func FatalfC(c context.Context, format string, args ...any) {
 	WithContext(c).Fatalf(format, args...)
 }
 
-func ErrorC(c context.Context, args ...interface{}) {
+func ErrorC(c context.Context, args ...any) {
 	WithContext(c).Error(args...)
 }
 
-func ErrorfC(c context.Context, format string, args ...interface{}) {
+func ErrorfC(c context.Context, format string, args ...any) {
 	WithContext(c).Errorf(format, args...)
 }
 
-func WarnC(c context.Context, args ...interface{}) {
+func WarnC(c context.Context, args ...any) {
 	WithContext(c).Warn(args...)
 }
 
-func WarnfC(c context.Context, format string, args ...interface{}) {
+func WarnfC(c context.Context, format string, args ...any) {
 	WithContext(c).Warnf(format, args...)
 }
 
-func InfoC(c context.Context, args ...interface{}) {
+func InfoC(c context.Context, args ...any) {
 	WithContext(c).Info(args...)
 }
 
-func InfofC(c context.Context, format string, args ...interface{}) {
+func InfofC(c context.Context, format string, args ...any) {
 	WithContext(c).Infof(format, args...)
 }
 
-func DebugC(c context.Context, args ...interface{}) {
+func DebugC(c context.Context, args ...any) {
 	WithContext(c).Debug(args...)
 }
 
-func DebugfC(c context.Context, format string, args ...interface{}) {
+func DebugfC(c context.Context, format string, args ...any) {
 	WithContext(c).Debugf(format, args...)
 }
 
-func TraceC(c context.Context, args ...interface{}) {
+func TraceC(c context.Context, args ...any) {
 	WithContext(c).Trace(args...)
 }
 
-func TracefC(c context.Context, format string, args ...interface{}) {
+func TracefC(c context.Context, format string, args ...any) {
 	WithContext(c).Tracef(format, args...)
 }
 
-func PrintC(c context.Context, args ...interface{}) {
+func PrintC(c context.Context, args ...any) {
 	WithContext(c).Print(args...)
 }
-func PrintfC(c context.Context, format string, args ...interface{}) {
+func PrintfC(c context.Context, format string, args ...any) {
 	WithContext(c).Printf(format, args...)
 }
-func PrintlnC(c context.Context, args ...interface{}) {
+func PrintlnC(c context.Context, args ...any) {
 	WithContext(c).Println(args...)
 }
 

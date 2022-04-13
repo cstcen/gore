@@ -29,7 +29,7 @@ func Setup() error {
 	return nil
 }
 
-func InternalPost(c context.Context, url, contentType string, body interface{}, expectedPtr interface{}, getInfraToken func(c context.Context) (string, error)) error {
+func InternalPost(c context.Context, url, contentType string, body any, expectedPtr any, getInfraToken func(c context.Context) (string, error)) error {
 	p, err := json.Marshal(body)
 	if err != nil {
 		return err
@@ -58,7 +58,7 @@ func InternalPost(c context.Context, url, contentType string, body interface{}, 
 	return nil
 }
 
-func Post(c context.Context, url, contentType string, body interface{}, expectedPtr interface{}) error {
+func Post(c context.Context, url, contentType string, body any, expectedPtr any) error {
 	p, err := json.Marshal(body)
 	if err != nil {
 		return err
@@ -80,7 +80,7 @@ func Post(c context.Context, url, contentType string, body interface{}, expected
 	return nil
 }
 
-func InternalGet(c context.Context, url string, expectedPtr interface{}, getInfraToken func(c context.Context) (string, error)) error {
+func InternalGet(c context.Context, url string, expectedPtr any, getInfraToken func(c context.Context) (string, error)) error {
 	req, err := http.NewRequestWithContext(c, http.MethodGet, url, nil)
 	if err != nil {
 		return err
@@ -102,7 +102,7 @@ func InternalGet(c context.Context, url string, expectedPtr interface{}, getInfr
 	return nil
 }
 
-func Get(c context.Context, url string, expectedPtr interface{}) error {
+func Get(c context.Context, url string, expectedPtr any) error {
 	req, err := http.NewRequestWithContext(c, http.MethodGet, url, nil)
 	if err != nil {
 		return err
@@ -118,7 +118,7 @@ func Get(c context.Context, url string, expectedPtr interface{}) error {
 	return nil
 }
 
-func Head(c context.Context, url string, expectedPtr interface{}) error {
+func Head(c context.Context, url string, expectedPtr any) error {
 	req, err := http.NewRequestWithContext(c, http.MethodHead, url, nil)
 	if err != nil {
 		return err
@@ -134,7 +134,7 @@ func Head(c context.Context, url string, expectedPtr interface{}) error {
 	return nil
 }
 
-func RespHandler(resp *http.Response, expectedPtr interface{}) error {
+func RespHandler(resp *http.Response, expectedPtr any) error {
 	if expectedPtr == nil {
 		return nil
 	}

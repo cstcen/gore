@@ -1,6 +1,6 @@
 package vo
 
-type PageResult struct {
+type PageResult[T any] struct {
 	BaseResult
-	Data []PageData `json:"data,omitempty"`
+	Data []PageData[T] `json:"data,omitempty"`
 }

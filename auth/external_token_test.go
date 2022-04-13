@@ -2,9 +2,11 @@ package auth
 
 import (
 	"context"
+	"encoding/json"
 	goreCache "git.tenvine.cn/backend/gore/db/cache"
 	"git.tenvine.cn/backend/gore/gonfig"
 	goreHttp "git.tenvine.cn/backend/gore/http"
+	"git.tenvine.cn/backend/gore/log"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -16,6 +18,7 @@ func init() {
 	gonfig.Setup()
 	goreHttp.Setup()
 	goreCache.Setup()
+	log.SetLogLevel("debug")
 }
 
 func TestExternalCheck(t *testing.T) {
@@ -42,8 +45,11 @@ func TestExternalCheck(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			got, err := ExternalCheck(tt.args.ctx, tt.args.token)
 
+			marshal, err := json.Marshal(got)
+
 			assert.Nil(t, err)
 			assert.NotNil(t, got)
+			log.Infof("%v", string(marshal))
 		})
 	}
 }

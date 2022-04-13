@@ -143,23 +143,23 @@ func HttpClient() *http.Client {
 	return goreHttp.GetInstance()
 }
 
-func HttpInternalPost(c context.Context, url, contentType string, body interface{}, expectedPtr interface{}) error {
+func HttpInternalPost(c context.Context, url, contentType string, body any, expectedPtr any) error {
 	return goreHttp.InternalPost(c, url, contentType, body, expectedPtr, InfraToken)
 }
 
-func HttpPost(c context.Context, url, contentType string, body interface{}, expectedPtr interface{}) error {
+func HttpPost(c context.Context, url, contentType string, body any, expectedPtr any) error {
 	return goreHttp.Post(c, url, contentType, body, expectedPtr)
 }
 
-func HttpInternalGet(c context.Context, url string, expectedPtr interface{}) error {
+func HttpInternalGet(c context.Context, url string, expectedPtr any) error {
 	return goreHttp.InternalGet(c, url, expectedPtr, InfraToken)
 }
 
-func HttpGet(c context.Context, url string, expectedPtr interface{}) error {
+func HttpGet(c context.Context, url string, expectedPtr any) error {
 	return goreHttp.Get(c, url, expectedPtr)
 }
 
-func HttpHead(c context.Context, url string, expectedPtr interface{}) error {
+func HttpHead(c context.Context, url string, expectedPtr any) error {
 	return goreHttp.Head(c, url, expectedPtr)
 }
 

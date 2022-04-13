@@ -7,23 +7,23 @@ var (
 	DESC OrderEnum = "DESC"
 )
 
-type PageData struct {
-	PageNo             int           `json:"pageNo"`
-	PageSize           int           `json:"pageSize"`
-	Order              OrderEnum     `json:"order,omitempty"`
-	OrderBy            string        `json:"orderBy,omitempty"`
-	List               []interface{} `json:"list"`
-	Total              int           `json:"total"`
-	TotalPages         int           `json:"totalPages"`
-	NeedlessData       bool          `json:"-"`
-	NeedlessTotalCount bool          `json:"-"`
+type PageData[T any] struct {
+	PageNo             int       `json:"pageNo"`
+	PageSize           int       `json:"pageSize"`
+	Order              OrderEnum `json:"order,omitempty"`
+	OrderBy            string    `json:"orderBy,omitempty"`
+	List               []T       `json:"list"`
+	Total              int       `json:"total"`
+	TotalPages         int       `json:"totalPages"`
+	NeedlessData       bool      `json:"-"`
+	NeedlessTotalCount bool      `json:"-"`
 }
 
-func (d *PageData) GetFirst() int {
+func (d *PageData[T]) GetFirst() int {
 	return (d.PageNo - 1) * d.PageSize
 }
 
-func (d *PageData) GetTotalPages() int {
+func (d *PageData[T]) GetTotalPages() int {
 	if d.Total < 0 {
 		return -1
 	}
@@ -37,30 +37,30 @@ func (d *PageData) GetTotalPages() int {
 	return count
 }
 
-func (d *PageData) HasNext() bool {
+func (d *PageData[T]) HasNext() bool {
 	return d.PageNo+1 <= d.GetTotalPages()
 }
 
-func (d *PageData) NextPage() int {
+func (d *PageData[T]) NextPage() int {
 	if d.HasNext() {
 		return d.PageNo + 1
 	}
 	return d.PageNo
 }
 
-func (d *PageData) EndIndex() int {
+func (d *PageData[T]) EndIndex() int {
 	return d.PageNo * d.PageSize
 }
 
-func (d *PageData) BeginIndex() int {
+func (d *PageData[T]) BeginIndex() int {
 	return d.GetFirst()
 }
 
-func (d *PageData) HasPrev() bool {
+func (d *PageData[T]) HasPrev() bool {
 	return d.PageNo-1 >= 1
 }
 
-func (d *PageData) PrevPage() int {
+func (d *PageData[T]) PrevPage() int {
 	if d.HasPrev() {
 		return d.PageNo - 1
 	}
