@@ -14,9 +14,9 @@ import (
 )
 
 func Check(ctx context.Context, token string, url string) (*Member, error) {
-	var member Member
 	if goreCache.Instance() != nil {
 		log.DebugfC(ctx, "load member from cache")
+		var member Member
 		if goreCache.Instance().Get(ctx, cacheKey(token), &member) == nil {
 			return &member, nil
 		}
@@ -30,7 +30,7 @@ func Check(ctx context.Context, token string, url string) (*Member, error) {
 	if err != nil {
 		return nil, err
 	}
-	result := vo.DataResult[Member]{Data: member}
+	var result vo.DataResult[Member]
 	if err := goreHttp.RespHandler(resp, &result); err != nil {
 		return nil, err
 	}
@@ -39,17 +39,29 @@ func Check(ctx context.Context, token string, url string) (*Member, error) {
 	}
 
 	if goreCache.Instance() != nil {
-		expireTime := member.ExpireTime
-		timestamp := member.Timestamp
+		expireTime := result.Data.ExpireTime
+		timestamp := result.Data.Timestamp
 		if err := goreCache.Instance().Set(&cache.Item{
 			Ctx:   ctx,
 			Key:   cacheKey(token),
-			Value: member,
+			Value: result.Data,
 			TTL:   time.Duration(expireTime-timestamp) * time.Millisecond,
 		}); err != nil {
 			log.ErrorCE(ctx, err)
 		}
 	}
 
-	return &member, nil
+	return &result.Data, nil
+}
+
+func deleteCheckCache(token string) error {
+	if goreCache.Instance() == nil {
+		return nil
+	}
+
+	if err := goreCache.Instance().Delete(context.Background(), cacheKey(token)); err != nil {
+		return err
+	}
+
+	return nil
 }
