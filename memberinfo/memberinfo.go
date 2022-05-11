@@ -37,7 +37,9 @@ func (r *MemberInfoRequest) Get(memberNo int64) (*MemberInfo, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		_ = Body.Close()
+	}(resp.Body)
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err

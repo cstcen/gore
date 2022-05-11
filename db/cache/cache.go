@@ -64,7 +64,7 @@ func newOptions(cfg *Config) *cache.Options {
 		for i, host := range cfg.Hosts {
 			addrs[cfg.AppName+strconv.Itoa(i)] = host
 		}
-		log.Infof("Current redis ring: %+v", addrs)
+		log.StandardLogger().Infof("Current redis ring: %+v", addrs)
 
 		options.Redis = redis.NewRing(&redis.RingOptions{
 			Addrs:    addrs,
@@ -72,7 +72,7 @@ func newOptions(cfg *Config) *cache.Options {
 			Password: cfg.Password,
 		})
 	} else {
-		log.Infof("Current redis cluster: %+v", cfg.Hosts)
+		log.StandardLogger().Infof("Current redis cluster: %+v", cfg.Hosts)
 		options.Redis = redis.NewClusterClient(&redis.ClusterOptions{
 			Addrs:    cfg.Hosts,
 			Username: cfg.Username,

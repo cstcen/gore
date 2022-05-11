@@ -15,9 +15,9 @@ func init() {
 	gonfig.Instance().Set("env", "sdev0")
 	gonfig.Instance().Set("name", "banimage")
 	gonfig.Instance().Set("consul", "i-consul-sdev0.xk5.com:8500")
-	gonfig.Setup()
-	goreHttp.Setup()
-	goreCache.Setup()
+	_ = gonfig.Setup()
+	_ = goreHttp.Setup()
+	_ = goreCache.Setup()
 	log.SetLogLevel("debug")
 }
 
@@ -49,7 +49,7 @@ func TestExternalCheck(t *testing.T) {
 
 			assert.Nil(t, err)
 			assert.NotNil(t, got)
-			log.Infof("%v", string(marshal))
+			log.StandardLogger().Infof("%v", string(marshal))
 		})
 	}
 }

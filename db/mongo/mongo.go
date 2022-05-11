@@ -56,7 +56,7 @@ func Setup() error {
 	}
 
 	var err error
-	entry := log.WithField("host", cfg.Hosts)
+	entry := log.StandardLogger().WithField("host", cfg.Hosts)
 	entry.Infof("Current mongo dbname: %s", cfg.Dbname)
 
 	clientOptions := newOptions(cfg)

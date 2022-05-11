@@ -138,7 +138,9 @@ func RespHandler(resp *http.Response, expectedPtr any) error {
 	if expectedPtr == nil {
 		return nil
 	}
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		_ = Body.Close()
+	}(resp.Body)
 	bodyBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return err

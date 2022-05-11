@@ -45,7 +45,7 @@ func ListeningSigterm() error {
 	signal.Notify(sigterm, syscall.SIGINT, syscall.SIGTERM)
 	select {
 	case <-sigterm:
-		log.Info("terminating: via signal")
+		log.StandardLogger().Info("terminating: via signal")
 	}
 
 	if err := ShutdownConsumers(); err != nil {

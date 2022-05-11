@@ -3,6 +3,7 @@ package util
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net"
 	"net/http"
@@ -17,7 +18,9 @@ func GetLocation(ip string) string {
 	if err != nil {
 		return ""
 	}
-	defer resp.Body.Close()
+	defer func(Body io.ReadCloser) {
+		_ = Body.Close()
+	}(resp.Body)
 	s, err := ioutil.ReadAll(resp.Body)
 	fmt.Printf(string(s))
 

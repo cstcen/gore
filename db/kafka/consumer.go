@@ -35,7 +35,7 @@ func (c *Consumer) Cleanup(sarama.ConsumerGroupSession) error {
 
 func (c *Consumer) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
 	for message := range claim.Messages() {
-		log.WithFields(logrus.Fields{
+		log.StandardLogger().WithFields(logrus.Fields{
 			"topic":        message.Topic,
 			"timestamp":    message.Timestamp,
 			"consumerName": c.name,
@@ -55,7 +55,7 @@ func (c *Consumer) ConsumeClaim(session sarama.ConsumerGroupSession, claim saram
 }
 
 func (c *Consumer) Consume(cfg ConsumerConfig, config *sarama.Config) error {
-	fieldLog := log.WithField("consumerName", c.name)
+	fieldLog := log.StandardLogger().WithField("consumerName", c.name)
 
 	ctx, cancel := context.WithCancel(context.Background())
 	c.cancel = cancel

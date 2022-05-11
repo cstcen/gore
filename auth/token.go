@@ -15,7 +15,7 @@ import (
 
 func Check(ctx context.Context, token string, url string) (*Member, error) {
 	if goreCache.Instance() != nil {
-		log.DebugfC(ctx, "load member from cache")
+		log.WithContext(ctx).Debug("load member from cache")
 		var member Member
 		if goreCache.Instance().Get(ctx, cacheKey(token), &member) == nil {
 			return &member, nil
@@ -47,7 +47,7 @@ func Check(ctx context.Context, token string, url string) (*Member, error) {
 			Value: result.Data,
 			TTL:   time.Duration(expireTime-timestamp) * time.Millisecond,
 		}); err != nil {
-			log.ErrorCE(ctx, err)
+			log.WithContext(ctx).WithError(err)
 		}
 	}
 

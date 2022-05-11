@@ -18,7 +18,7 @@ func ExampleSetup() {
 		return
 	}
 
-	Info("test")
+	StandardLogger().Info("test")
 
 	fmt.Println(std)
 

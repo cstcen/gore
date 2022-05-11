@@ -9,7 +9,7 @@ import (
 
 func init() {
 	gonfig.Instance().Set("env", "sdev0")
-	gonfig.Setup()
+	_ = gonfig.Setup()
 }
 
 func TestGet(t *testing.T) {

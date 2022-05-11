@@ -77,11 +77,11 @@ func SetupBase() error {
 		return err
 	}
 
-	log.Infof("Current active profile: %s", Viper().GetString("env"))
+	log.StandardLogger().Infof("Current active profile: %s", Viper().GetString("env"))
 
-	log.Infof("Current load config path: %s", Viper().GetString("gore.path"))
+	log.StandardLogger().Infof("Current load config path: %s", Viper().GetString("gore.path"))
 
-	log.Infof("Current logger level: %s", log.GetLevel())
+	log.StandardLogger().Infof("Current logger level: %s", log.GetLevel())
 
 	return nil
 }
