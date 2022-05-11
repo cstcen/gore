@@ -11,18 +11,17 @@
 5. 提供配置文件加载方法
 6. 提供公用model：BaseResult,DataResult,PageResult
 7. 提供gin初始化方法：var r *gin.Engine = gore.SetupGin(mode)，具体如下：
-   1. 内置gin错误处理中间件：自动处理gin.Context.errorMsgs的错误，在业务层发现错误，可以通过gin.Context.Error(error)方法，把错误交给此中间件处理并响应
-   2. 内置gin日志中间件：自动打印请求和响应的uri,header,body等信息
-   3. 内置gin请求ID中间件：自动嵌入X-Request-ID到gin.Context.Keys
+    1. 内置gin错误处理中间件：自动处理gin.Context.errorMsgs的错误，在业务层发现错误，可以通过gin.Context.Error(error)方法，把错误交给此中间件处理并响应
+    2. 内置gin日志中间件：自动打印请求和响应的uri,header,body等信息
+    3. 内置gin请求ID中间件：自动嵌入X-Request-ID到gin.Context.Keys
 8. 提供日志X-Request-ID，想要打印带有X-Request-ID的业务日志，请使用(log.WithContext(c context.Context) *logrus.Entry)方法
-
 
 ### Usage
 
 #### Install
 
     go get git.tenvine.cn/backend/gore
-    
+
 #### Config Example
 
     gore:
@@ -137,7 +136,7 @@
       consul:
         enable: true
         host: https://i-consul-${profile}.xk5.com
-    
+
 #### Setup
 
     gore.Cmd(preStartup func(engine *gin.Engine) error) *cobra.Command
@@ -145,7 +144,7 @@
 #### Infra Token
 
     gore.InfraToken(c context.Context) (string, error)
-    
+
 #### Config context
 
     gore:
