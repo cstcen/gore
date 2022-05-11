@@ -6,11 +6,11 @@ import (
 )
 
 func init() {
+	gonfig.Instance().Set("gore.logger.filename", "/xk5/logs/gore/gore.log")
+	gonfig.Instance().Set("gore.logger.maxage", 1)
 }
 
 func ExampleSetup() {
-
-	gonfig.Instance().Set("gore.logger.level", "info")
 
 	err := Setup()
 	if err != nil {
@@ -18,8 +18,9 @@ func ExampleSetup() {
 		return
 	}
 
-	std.Info("test")
+	Info("test")
 
-	// output:
-	// true
+	fmt.Println(std)
+
+	// output: true
 }
