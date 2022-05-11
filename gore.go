@@ -216,12 +216,12 @@ func RedisCustom(setup func() redis.UniversalClient) redis.UniversalClient {
 	return setup()
 }
 
-func MiddlewareRequestID() func(http.Handler) http.Handler {
-	return middleware.SetupRequestID
+func MiddlewareRequestID(handler http.Handler) http.Handler {
+	return middleware.SetupRequestID(handler)
 }
-func MiddlewareTrace() func(http.Handler, func(path string) bool) http.Handler {
-	return middleware.SetupTrace
+func MiddlewareTrace(handler http.Handler, skipLogResp func(path string) bool) http.Handler {
+	return middleware.SetupTrace(handler, skipLogResp)
 }
-func MiddlewareRecovery() func(http.Handler) http.Handler {
-	return middleware.SetupRecovery
+func MiddlewareRecovery(handler http.Handler) http.Handler {
+	return middleware.SetupRecovery(handler)
 }
