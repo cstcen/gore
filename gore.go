@@ -18,6 +18,7 @@ import (
 	goreHttp "git.tenvine.cn/backend/gore/http"
 	"git.tenvine.cn/backend/gore/infratoken"
 	"git.tenvine.cn/backend/gore/log"
+	"git.tenvine.cn/backend/gore/middleware"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/cache/v8"
 	"github.com/go-redis/redis/v8"
@@ -213,4 +214,14 @@ func Redis() redis.UniversalClient {
 
 func RedisCustom(setup func() redis.UniversalClient) redis.UniversalClient {
 	return setup()
+}
+
+func MiddlewareRequestID() func(http.Handler) http.Handler {
+	return middleware.SetupRequestID
+}
+func MiddlewareTrace() func(http.Handler, func(path string) bool) http.Handler {
+	return middleware.SetupTrace
+}
+func MiddlewareRecovery() func(http.Handler) http.Handler {
+	return middleware.SetupRecovery
 }

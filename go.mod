@@ -20,6 +20,7 @@ require (
 	github.com/spf13/viper v1.10.1
 	github.com/stretchr/testify v1.7.1
 	github.com/swaggo/gin-swagger v1.4.1
+	github.com/ztrue/tracerr v0.3.0
 	go.mongodb.org/mongo-driver v1.9.0
 	golang.org/x/text v0.3.7
 )
@@ -77,6 +78,7 @@ require (
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/compress v1.14.4 // indirect
 	github.com/leodido/go-urn v1.2.0 // indirect
+	github.com/logrusorgru/aurora v0.0.0-20181002194514-a7b3b318ed4e // indirect
 	github.com/magiconair/properties v1.8.5 // indirect
 	github.com/mailru/easyjson v0.7.6 // indirect
 	github.com/mattn/go-colorable v0.1.12 // indirect

@@ -69,6 +69,10 @@ func Setup() error {
 		SetLogLevel(logrus.TraceLevel.String())
 	}
 
+	if std.GetLevel() >= logrus.DebugLevel {
+		std.SetReportCaller(true)
+	}
+
 	return nil
 }
 
@@ -268,10 +272,11 @@ func getCurDirName() (string, error) {
 }
 
 func getLogEntry() *logrus.Entry {
-	frame := getCaller()
-	file := shortFile(frame.File)
-	file = fmt.Sprintf("%s:%d", file, frame.Line)
-	return std.WithField("file", file)
+	// frame := getCaller()
+	// file := shortFile(frame.File)
+	// file = fmt.Sprintf("%s:%d", file, frame.Line)
+	// return std.WithField("file", file)
+	return nil
 }
 
 // getCaller retrieves the name of the first non-logrus calling function
