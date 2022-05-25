@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"git.tenvine.cn/backend/gore/auth"
 	"git.tenvine.cn/backend/gore/cmd"
+	"git.tenvine.cn/backend/gore/command"
 	"git.tenvine.cn/backend/gore/consul"
 	goreCache "git.tenvine.cn/backend/gore/db/cache"
 	goreEs "git.tenvine.cn/backend/gore/db/es"
@@ -198,4 +199,19 @@ func MiddlewareTrace(handler http.Handler, skipLogResp func(path string) bool) h
 }
 func MiddlewareRecovery(handler http.Handler) http.Handler {
 	return middleware.SetupRecovery(handler)
+}
+
+func SetupGorm() error {
+	return goreMysql.SetupGorm()
+}
+
+func SetupHttp() error {
+	return goreHttp.Setup()
+}
+
+func SetDefaultConfig(opt *command.Args) {
+	Viper().Set("name", opt.Name)
+	Viper().Set("env", opt.Env)
+	Viper().Set("consul", opt.Consul)
+	Viper().Set("log", opt.Log)
 }

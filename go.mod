@@ -20,6 +20,8 @@ require (
 	github.com/ztrue/tracerr v0.3.0
 	go.mongodb.org/mongo-driver v1.9.0
 	golang.org/x/text v0.3.7
+	gorm.io/driver/mysql v1.3.3
+	gorm.io/gorm v1.23.5
 )
 
 require (
@@ -60,6 +62,8 @@ require (
 	github.com/jcmturner/gofork v1.0.0 // indirect
 	github.com/jcmturner/gokrb5/v8 v8.4.2 // indirect
 	github.com/jcmturner/rpc/v2 v2.0.3 // indirect
+	github.com/jinzhu/inflection v1.0.0 // indirect
+	github.com/jinzhu/now v1.1.4 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/compress v1.14.4 // indirect
