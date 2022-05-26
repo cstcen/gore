@@ -3,17 +3,18 @@ package util
 import (
 	"context"
 	"github.com/google/uuid"
+	"github.com/pkg/errors"
 	"strings"
 )
 
 const RequestIDContextKey = "X-Request-ID"
 
-func GetRequestID(c context.Context) string {
+func MustRequestID(c context.Context) string {
 	id, ok := c.Value(RequestIDContextKey).(string)
-	if ok {
-		return id
+	if !ok {
+		panic(errors.New(RequestIDContextKey + " not found"))
 	}
-	return GenerateRequestID()
+	return id
 }
 
 func GenerateRequestID() string {

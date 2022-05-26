@@ -59,7 +59,7 @@ func GetLevel() logrus.Level {
 }
 
 func WithContext(c context.Context) *logrus.Entry {
-	return std.WithField(util.RequestIDContextKey, util.GetRequestID(c))
+	return std.WithField(util.RequestIDContextKey, util.MustRequestID(c))
 }
 
 func setLogFormatter() {
