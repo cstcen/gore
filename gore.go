@@ -201,6 +201,10 @@ func MiddlewareRecovery(handler http.Handler) http.Handler {
 	return middleware.SetupRecovery(handler)
 }
 
+func MiddlewareDB(handler http.Handler) http.Handler {
+	return middleware.SetupDB(handler)
+}
+
 func SetupGorm() error {
 	return goreMysql.SetupGorm()
 }
