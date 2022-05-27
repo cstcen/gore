@@ -51,28 +51,33 @@ var (
 	ErrorCodeMetaServerDatabaseNotFound       = NewErrorCode(60104, "Meta server database not found")
 )
 
-type ErrorCode struct {
+type ErrorCode interface {
+	error
+	Code() int32
+}
+
+type errorCode struct {
 	code    int32
 	message string
 }
 
-func (e *ErrorCode) Code() int32 {
+func (e *errorCode) Code() int32 {
 	return e.code
 }
 
-func (e *ErrorCode) Message() string {
+func (e *errorCode) Message() string {
 	return e.message
 }
 
-func (e *ErrorCode) SetCode(code int32) {
+func (e *errorCode) SetCode(code int32) {
 	e.code = code
 }
 
-func (e *ErrorCode) SetMessage(message string) {
+func (e *errorCode) SetMessage(message string) {
 	e.message = message
 }
 
-func (e *ErrorCode) Error() string {
+func (e *errorCode) Error() string {
 	b, _ := json.Marshal(map[string]any{
 		"code":    e.code,
 		"message": e.message,
@@ -80,6 +85,6 @@ func (e *ErrorCode) Error() string {
 	return string(b)
 }
 
-func NewErrorCode(code int32, message string) *ErrorCode {
-	return &ErrorCode{code: code, message: message}
+func NewErrorCode(code int32, message string) *errorCode {
+	return &errorCode{code: code, message: message}
 }
