@@ -7,8 +7,20 @@ type ErrorCode struct {
 	message string
 }
 
-func NewErrorCode(code int32, message string) *ErrorCode {
-	return &ErrorCode{code: code, message: message}
+func (e *ErrorCode) Code() int32 {
+	return e.code
+}
+
+func (e *ErrorCode) Message() string {
+	return e.message
+}
+
+func (e *ErrorCode) SetCode(code int32) {
+	e.code = code
+}
+
+func (e *ErrorCode) SetMessage(message string) {
+	e.message = message
 }
 
 func (e *ErrorCode) Error() string {
@@ -19,6 +31,6 @@ func (e *ErrorCode) Error() string {
 	return string(b)
 }
 
-func (e *ErrorCode) Code() int32 {
-	return e.code
+func NewErrorCode(code int32, message string) *ErrorCode {
+	return &ErrorCode{code: code, message: message}
 }
