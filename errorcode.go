@@ -69,12 +69,14 @@ func (e *errorCode) Message() string {
 	return e.message
 }
 
-func (e *errorCode) SetCode(code int32) {
+func (e *errorCode) SetCode(code int32) *errorCode {
 	e.code = code
+	return e
 }
 
-func (e *errorCode) SetMessage(message string) {
+func (e *errorCode) SetMessage(message string) *errorCode {
 	e.message = message
+	return e
 }
 
 func (e *errorCode) Error() string {
