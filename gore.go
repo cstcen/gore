@@ -19,6 +19,7 @@ import (
 	"git.tenvine.cn/backend/gore/infratoken"
 	"git.tenvine.cn/backend/gore/log"
 	"git.tenvine.cn/backend/gore/middleware"
+	"git.tenvine.cn/backend/gore/util"
 	"github.com/go-redis/cache/v8"
 	"github.com/go-redis/redis/v8"
 	"github.com/olivere/elastic"
@@ -96,19 +97,19 @@ func InfraToken(c context.Context) (string, error) {
 }
 
 func UserTokenVerification(token string) (*auth.Member, error) {
-	return auth.ExternalCheck(context.Background(), token)
+	return auth.ExternalCheck(context.WithValue(context.Background(), util.RequestIDContextKey, util.GenerateRequestID()), token)
 }
 
 func TokenVerification(token string) (*auth.Member, error) {
-	return auth.InternalCheck(context.Background(), token)
+	return auth.InternalCheck(context.WithValue(context.Background(), util.RequestIDContextKey, util.GenerateRequestID()), token)
 }
 
 func ExternalTokenVerification(token string) (*auth.Member, error) {
-	return auth.ExternalCheck(context.Background(), token)
+	return auth.ExternalCheck(context.WithValue(context.Background(), util.RequestIDContextKey, util.GenerateRequestID()), token)
 }
 
 func InternalTokenVerification(token string) (*auth.Member, error) {
-	return auth.InternalCheck(context.Background(), token)
+	return auth.InternalCheck(context.WithValue(context.Background(), util.RequestIDContextKey, util.GenerateRequestID()), token)
 }
 
 func Viper() *viper.Viper {
