@@ -78,7 +78,9 @@ func SetupTrace(handler http.Handler, skipLogResp func(path string) bool) http.H
 			clientIP,
 		)
 		if !skipLogResp(path) {
-			logStr = logStr + fmt.Sprintf(" body=%s", respWriter.body.String())
+			b := new(bytes.Buffer)
+			_ = json.Compact(b, respWriter.body.Bytes())
+			logStr = logStr + fmt.Sprintf(" body=%s", b.String())
 		}
 		contextLog.Info(logStr)
 	})
