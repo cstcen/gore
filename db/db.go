@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	goreCache "git.tenvine.cn/backend/gore/db/cache"
 	"git.tenvine.cn/backend/gore/db/es"
+	goreEs "git.tenvine.cn/backend/gore/db/es"
 	goreMongo "git.tenvine.cn/backend/gore/db/mongo"
 	goreMysql "git.tenvine.cn/backend/gore/db/mysql"
 	goreRedis "git.tenvine.cn/backend/gore/db/redis"
@@ -100,4 +101,14 @@ func Check(cfg Config) *CheckResult {
 	}
 
 	return result
+}
+
+func CheckDB() *CheckResult {
+	return Check(Config{
+		Cache:         goreCache.NewConfig(),
+		Elasticsearch: goreEs.NewConfig(),
+		Mongo:         goreMongo.NewConfig(),
+		Mysql:         goreMysql.NewConfig(),
+		Redis:         goreRedis.NewConfig(),
+	})
 }
