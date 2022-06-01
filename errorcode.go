@@ -1,5 +1,7 @@
 package gore
 
+import "encoding/json"
+
 var (
 	ErrorCodeSuccess                          = NewErrorCode(0, "OK")
 	ErrorCodeInvalidArgument                  = NewErrorCode(400, "Invalid argument")
@@ -79,6 +81,14 @@ func (e *errorCode) SetMessage(message string) *errorCode {
 
 func (e *errorCode) Error() string {
 	return e.message
+}
+
+// MarshalJSON implements the JSON encoding interface
+func (e *errorCode) MarshalJSON() ([]byte, error) {
+	return json.Marshal(map[string]interface{}{
+		"code":    e.code,
+		"message": e.message,
+	})
 }
 
 func NewErrorCode(code int32, message string) *errorCode {
