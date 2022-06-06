@@ -14,6 +14,7 @@ func init() {
 	rootCmd.PersistentFlags().StringP("port", "p", "8000", "Tcp port server listening on")
 	rootCmd.PersistentFlags().StringP("consul", "c", "i-consul-${profile}.xk5.com", "Consul host or host:port")
 	rootCmd.PersistentFlags().BoolP("log", "l", false, "Enable log")
+	rootCmd.PersistentFlags().BoolP("host", "h", false, "暂无用处，为了兼容")
 	_ = gonfig.Instance().BindPFlags(rootCmd.PersistentFlags())
 }
 
