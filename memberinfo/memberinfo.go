@@ -1,4 +1,4 @@
-package service
+package memberinfo
 
 import (
 	"context"
@@ -12,11 +12,11 @@ import (
 	"strconv"
 )
 
-type MemberInfoRequest struct {
+type Request struct {
 	Ctx context.Context
 }
 
-func (r *MemberInfoRequest) Get(memberNo int64) (*MemberInfo, error) {
+func (r *Request) Get(memberNo int64) (*MemberInfo, error) {
 	if goreCache.Instance() != nil {
 		var memberInfo MemberInfo
 		if goreCache.Instance().Get(r.Ctx, r.cacheKey(memberNo), &memberInfo) == nil {
@@ -62,7 +62,7 @@ func (r *MemberInfoRequest) Get(memberNo int64) (*MemberInfo, error) {
 	return &memberInfo, nil
 }
 
-func (r *MemberInfoRequest) cacheKey(memberNo int64) string {
+func (r *Request) cacheKey(memberNo int64) string {
 	return fmt.Sprintf("MemberInfo:%v", memberNo)
 }
 
