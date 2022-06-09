@@ -12,20 +12,16 @@ import (
 	"strconv"
 )
 
-type Request struct {
-	Ctx context.Context
-}
-
-func (r *Request) Get(memberNo int64) (*MemberInfo, error) {
+func Get(ctx context.Context, memberNo int64) (*MemberInfo, error) {
 	if goreCache.Instance() != nil {
 		var memberInfo MemberInfo
-		if goreCache.Instance().Get(r.Ctx, r.cacheKey(memberNo), &memberInfo) == nil {
+		if goreCache.Instance().Get(ctx, cacheKey(memberNo), &memberInfo) == nil {
 			return &memberInfo, nil
 		}
 	}
 
 	url := gore.Viper().GetString("memberinfo.host") + gore.Viper().GetString("memberinfo.uri")
-	req, err := http.NewRequestWithContext(r.Ctx, http.MethodGet, url, nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -52,8 +48,8 @@ func (r *Request) Get(memberNo int64) (*MemberInfo, error) {
 
 	if goreCache.Instance() != nil {
 		if err := goreCache.Instance().Set(&cache.Item{
-			Ctx:   r.Ctx,
-			Key:   r.cacheKey(memberNo),
+			Ctx:   ctx,
+			Key:   cacheKey(memberNo),
 			Value: memberInfo,
 			TTL:   gore.Viper().GetDuration("memberinfo.duration"),
 		}); err != nil {
@@ -64,7 +60,7 @@ func (r *Request) Get(memberNo int64) (*MemberInfo, error) {
 	return &memberInfo, nil
 }
 
-func (r *Request) cacheKey(memberNo int64) string {
+func cacheKey(memberNo int64) string {
 	return fmt.Sprintf("MemberInfo:%v", memberNo)
 }
 
