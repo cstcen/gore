@@ -21,7 +21,9 @@ func SetupRecovery(handler http.Handler) http.Handler {
 				e := tracerr.Wrap(err)
 				frames := e.StackTrace()[4:5]
 
-				log.WithContext(request.Context()).Info(tracerr.SprintSourceColor(tracerr.CustomError(err, frames)))
+				entry := log.WithContext(request.Context())
+				entry.Info(err.Error())
+				entry.Info(frames)
 
 				writer.WriteHeader(http.StatusOK)
 				_ = json.NewEncoder(writer).Encode(vo.BaseResult{
