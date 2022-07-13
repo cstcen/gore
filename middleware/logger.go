@@ -54,9 +54,7 @@ func SetupTrace(handler http.Handler, skipLogResp func(path string) bool) http.H
 
 		contextLog.Tracef("Request url   : [%v] %s", request.Method, path)
 		contextLog.Tracef("Request header: %+v", header)
-		compactBody := new(bytes.Buffer)
-		_ = json.Compact(compactBody, body)
-		contextLog.Tracef("Request body  : %s", compactBody)
+		contextLog.Tracef("Request body  : %s", bytes.ReplaceAll(body, []byte("\n\t"), []byte("")))
 
 		// Process request
 		handler.ServeHTTP(writer, request)
@@ -80,7 +78,7 @@ func SetupTrace(handler http.Handler, skipLogResp func(path string) bool) http.H
 		if !skipLogResp(path) {
 			b := new(bytes.Buffer)
 			_ = json.Compact(b, respWriter.body.Bytes())
-			logStr = logStr + fmt.Sprintf(" body=%s", b.String())
+			logStr = logStr + fmt.Sprintf(" body=%s", bytes.ReplaceAll(respWriter.body.Bytes(), []byte("\n\t"), []byte("")))
 		}
 		contextLog.Info(logStr)
 	})
