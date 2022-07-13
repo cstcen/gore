@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"git.tenvine.cn/backend/gore/log"
 	"io"
@@ -54,7 +53,7 @@ func SetupTrace(handler http.Handler, skipLogResp func(path string) bool) http.H
 
 		contextLog.Tracef("Request url   : [%v] %s", request.Method, path)
 		contextLog.Tracef("Request header: %+v", header)
-		contextLog.Tracef("Request body  : %s", bytes.ReplaceAll(body, []byte("\n\t"), []byte("")))
+		contextLog.Tracef("Request body  : %s", body)
 
 		// Process request
 		handler.ServeHTTP(writer, request)
@@ -76,9 +75,7 @@ func SetupTrace(handler http.Handler, skipLogResp func(path string) bool) http.H
 			clientIP,
 		)
 		if !skipLogResp(path) {
-			b := new(bytes.Buffer)
-			_ = json.Compact(b, respWriter.body.Bytes())
-			logStr = logStr + fmt.Sprintf(" body=%s", bytes.ReplaceAll(respWriter.body.Bytes(), []byte("\n\t"), []byte("")))
+			logStr = logStr + fmt.Sprintf(" body=%s", respWriter.body.Bytes())
 		}
 		contextLog.Info(logStr)
 	})
