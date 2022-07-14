@@ -53,7 +53,7 @@ func SetupTrace(handler http.Handler, skipLogResp func(path string) bool) http.H
 
 		contextLog.Tracef("Request url   : [%v] %s", request.Method, path)
 		contextLog.Tracef("Request header: %+v", header)
-		contextLog.Tracef("Request body  : %s", body)
+		contextLog.Tracef("Request body  : %s", bytes.TrimSpace(body))
 
 		// Process request
 		handler.ServeHTTP(writer, request)
@@ -75,7 +75,7 @@ func SetupTrace(handler http.Handler, skipLogResp func(path string) bool) http.H
 			clientIP,
 		)
 		if !skipLogResp(path) {
-			logStr = logStr + fmt.Sprintf(" body=%s", respWriter.body.Bytes())
+			logStr = logStr + fmt.Sprintf(" body=%s", bytes.TrimSpace(respWriter.body.Bytes()))
 		}
 		contextLog.Info(logStr)
 	})
