@@ -61,7 +61,7 @@ func Get(ctx context.Context, memberNo int64) (*MemberInfo, error) {
 }
 
 func cacheKey(memberNo int64) string {
-	return fmt.Sprintf("MemberInfo:%v", memberNo)
+	return fmt.Sprintf("MemberInfo:%s:%v", gore.Viper().GetString("env"), memberNo)
 }
 
 type MemberInfo struct {
