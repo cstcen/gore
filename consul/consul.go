@@ -5,7 +5,6 @@ import (
 	goreHttp "git.tenvine.cn/backend/gore/http"
 	"git.tenvine.cn/backend/gore/log"
 	"github.com/hashicorp/consul/api"
-	"github.com/pkg/errors"
 )
 
 var (
@@ -23,7 +22,7 @@ func Setup() error {
 
 func Register() error {
 	if !Enable() {
-		return errors.New("consul disable")
+		return nil
 	}
 
 	registration := api.AgentServiceRegistration{}
@@ -46,7 +45,7 @@ func Register() error {
 
 func Deregister() error {
 	if !Enable() {
-		return errors.New("consul disable")
+		return nil
 	}
 
 	cli, err := api.NewClient(conf)
