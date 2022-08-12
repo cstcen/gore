@@ -65,24 +65,24 @@ func cacheKey(memberNo int64) string {
 }
 
 type MemberInfo struct {
-	MemberNo          int64       `json:"member_no"`
-	CharacterNo       int         `json:"character_no"`
-	Nickname          string      `json:"nickname"`
-	ProfileImg        string      `json:"profile_img"`
-	OpenId            string      `json:"open_id"`
-	ProviderOs        interface{} `json:"provider_os"`
-	ProviderCd        string      `json:"provider_cd"`
-	PwdType           interface{} `json:"pwd_type"`
-	MemberType        interface{} `json:"member_type"`
-	ServerId          interface{} `json:"server_id"`
-	ChannelId         interface{} `json:"channel_id"`
-	GameId            interface{} `json:"game_id"`
-	RegDt             string      `json:"reg_dt"`
-	CountryCd         interface{} `json:"country_cd"`
-	LoginClientIp     interface{} `json:"login_client_ip"`
-	LoginChannelNum   interface{} `json:"login_channel_num"`
-	RegChannelNum     interface{} `json:"reg_channel_num"`
-	WithdrawRequestDt interface{} `json:"withdraw_request_dt"`
-	GameMemberNo      interface{} `json:"game_member_no"`
-	Xk5MemberNo       interface{} `json:"xk5_member_no"`
+	MemberNo          int64  `json:"member_no"`
+	CharacterNo       int    `json:"character_no"`
+	Nickname          string `json:"nickname"`
+	ProfileImg        string `json:"profile_img"`
+	OpenId            string `json:"open_id"`
+	ProviderOs        string `json:"provider_os"`
+	ProviderCd        string `json:"provider_cd"`
+	PwdType           int    `json:"pwd_type"`
+	MemberType        int    `json:"member_type"`
+	ServerId          string `json:"server_id"`
+	ChannelId         string `json:"channel_id"`
+	GameId            string `json:"game_id"`
+	RegDt             string `json:"reg_dt"`
+	CountryCd         string `json:"country_cd"`
+	LoginClientIp     string `json:"login_client_ip"`
+	LoginChannelNum   string `json:"login_channel_num"`
+	RegChannelNum     string `json:"reg_channel_num"`
+	WithdrawRequestDt string `json:"withdraw_request_dt"`
+	GameMemberNo      int64  `json:"game_member_no"`
+	Xk5MemberNo       int64  `json:"xk5_member_no"`
 }
