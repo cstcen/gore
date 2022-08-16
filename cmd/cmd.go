@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	goreGin "git.tenvine.cn/backend/gore/gin"
 	"git.tenvine.cn/backend/gore/gonfig"
 	"github.com/spf13/cobra"
 )
@@ -18,5 +19,15 @@ func init() {
 }
 
 func GetInstance() *cobra.Command {
+	return rootCmd
+}
+
+func New(setup func() error) *cobra.Command {
+	rootCmd.PreRunE = func(cmd *cobra.Command, args []string) error {
+		return setup()
+	}
+	rootCmd.RunE = func(cmd *cobra.Command, args []string) error {
+		return goreGin.Startup()
+	}
 	return rootCmd
 }
