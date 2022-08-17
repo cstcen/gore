@@ -14,12 +14,14 @@ import (
 	goreMongo "git.tenvine.cn/backend/gore/db/mongo"
 	goreMysql "git.tenvine.cn/backend/gore/db/mysql"
 	goreRedis "git.tenvine.cn/backend/gore/db/redis"
+	goreGin "git.tenvine.cn/backend/gore/gin"
 	"git.tenvine.cn/backend/gore/gonfig"
 	goreHttp "git.tenvine.cn/backend/gore/http"
 	"git.tenvine.cn/backend/gore/infratoken"
 	"git.tenvine.cn/backend/gore/log"
 	"git.tenvine.cn/backend/gore/middleware"
 	"git.tenvine.cn/backend/gore/util"
+	"github.com/gin-gonic/gin"
 	"github.com/go-redis/cache/v8"
 	"github.com/go-redis/redis/v8"
 	"github.com/olivere/elastic"
@@ -36,6 +38,10 @@ func Setup() error {
 	}
 
 	if err := goreHttp.Setup(); err != nil {
+		return err
+	}
+
+	if err := goreGin.Setup(); err != nil {
 		return err
 	}
 
@@ -88,8 +94,25 @@ func SetupBase() error {
 	return nil
 }
 
+// preStartup is between gore.setup and server startup.
+func Cmd(preStartup func(engine *gin.Engine) error) *cobra.Command {
+	return cmd.New(func() error {
+		if err := Setup(); err != nil {
+			return err
+		}
+		if err := preStartup(goreGin.GetInstance()); err != nil {
+			return err
+		}
+		return nil
+	})
+}
+
 func RootCmd() *cobra.Command {
 	return cmd.GetInstance()
+}
+
+func Gin() *gin.Engine {
+	return goreGin.GetInstance()
 }
 
 func InfraToken(c context.Context) (string, error) {
