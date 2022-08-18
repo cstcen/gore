@@ -86,7 +86,7 @@ func Logger(skipLogResp func(path string) bool) gin.HandlerFunc {
 			param.ClientIP,
 		)
 		if !skipLogResp(path) {
-			contextLog.Tracef("Response body  : %s", respWriter.body.String())
+			contextLog.Tracef("Response body : %s", respWriter.body.String())
 		}
 		contextLog.Info(logStr)
 	}
