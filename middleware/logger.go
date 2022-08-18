@@ -51,11 +51,11 @@ func Logger(skipLogResp func(path string) bool) gin.HandlerFunc {
 
 		c.Writer = respWriter
 
-		contextLog.Tracef("Request url:    %s", path)
+		contextLog.Tracef("Request url   : %s", path)
 		contextLog.Tracef("Request header: %+v", header)
 		compactBody := new(bytes.Buffer)
 		_ = json.Compact(compactBody, body)
-		contextLog.Tracef("Request body:   %s", compactBody)
+		contextLog.Tracef("Request body  : %s", bytes.TrimSpace(body))
 
 		// Process request
 		c.Next()
@@ -86,7 +86,7 @@ func Logger(skipLogResp func(path string) bool) gin.HandlerFunc {
 			param.ClientIP,
 		)
 		if !skipLogResp(path) {
-			logStr = logStr + fmt.Sprintf(" body=%s", respWriter.body.String())
+			contextLog.Tracef("Response body  : %s", respWriter.body.String())
 		}
 		contextLog.Info(logStr)
 	}
@@ -158,7 +158,7 @@ func SetupTrace(handler http.Handler, skipLogResp func(path string) bool) http.H
 			clientIP,
 		)
 		if !skipLogResp(path) {
-			logStr = logStr + fmt.Sprintf(" body=%s", bytes.TrimSpace(respWriter.body.Bytes()))
+			contextLog.Tracef("Response body : %s", respWriter.body.Bytes())
 		}
 		contextLog.Info(logStr)
 	})
