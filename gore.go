@@ -94,6 +94,10 @@ func SetupBase() error {
 	return nil
 }
 
+func SetupGin() error {
+	return goreGin.Setup()
+}
+
 // preStartup is between gore.setup and server startup.
 func Cmd(preStartup func(engine *gin.Engine) error) *cobra.Command {
 	return cmd.New(func() error {
