@@ -51,7 +51,7 @@ func Logger(skipLogResp func(path string) bool) gin.HandlerFunc {
 
 		c.Writer = respWriter
 
-		contextLog.Tracef("Request url   : %s", path)
+		contextLog.Tracef("Request url   : %s", c.Request.URL.String())
 		contextLog.Tracef("Request header: %+v", header)
 		compactBody := new(bytes.Buffer)
 		_ = json.Compact(compactBody, body)
