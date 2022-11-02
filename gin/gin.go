@@ -72,12 +72,9 @@ func Startup() error {
 
 func Setup() error {
 
-	mode := gin.DebugMode
 	if "xk5" == gonfig.Instance().GetString("env") {
-		mode = gin.ReleaseMode
+		gin.SetMode(gin.ReleaseMode)
 	}
-
-	gin.SetMode(mode)
 
 	// gin log to file
 	gin.DefaultWriter = log.Default().Writer()
