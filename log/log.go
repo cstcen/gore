@@ -28,7 +28,7 @@ type Config struct {
 func Setup() error {
 
 	log.SetPrefix("[GORE]")
-	log.SetFlags(log.LstdFlags | log.Lshortfile | log.Lmsgprefix)
+	log.SetFlags(log.LstdFlags | log.Lmsgprefix)
 
 	if gonfig.Instance().GetBool("log") {
 		lumberjackLogger := lumberjack.Logger{}
