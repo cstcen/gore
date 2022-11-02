@@ -8,6 +8,7 @@ import (
 	"github.com/natefinch/lumberjack"
 	"github.com/sirupsen/logrus"
 	"io"
+	"log"
 	"os"
 	"runtime"
 )
@@ -26,16 +27,22 @@ type Config struct {
 
 func Setup() error {
 
+	log.SetPrefix("[GORE]")
+	log.SetFlags(log.LstdFlags | log.Lshortfile | log.Lmsgprefix)
+
 	if gonfig.Instance().GetBool("log") {
 		lumberjackLogger := lumberjack.Logger{}
 		if err := gonfig.Instance().UnmarshalKey("gore.logger", &lumberjackLogger); err != nil {
 			return err
 		}
-		std.SetOutput(io.MultiWriter(os.Stdout, &lumberjackLogger))
-		std.Infof("Current log filename: %s", lumberjackLogger.Filename)
-		std.Infof("Current log maxage: %v", lumberjackLogger.MaxAge)
+		multiWriter := io.MultiWriter(os.Stdout, &lumberjackLogger)
+		std.SetOutput(multiWriter)
+
+		log.SetOutput(multiWriter)
 	} else {
-		std.SetOutput(io.MultiWriter(os.Stdout))
+		std.SetOutput(os.Stdout)
+
+		log.SetOutput(os.Stdout)
 	}
 
 	setLogFormatter()

@@ -5,10 +5,9 @@ import (
 	"fmt"
 	"git.tenvine.cn/backend/gore/consul"
 	"git.tenvine.cn/backend/gore/gonfig"
-	"git.tenvine.cn/backend/gore/log"
 	"git.tenvine.cn/backend/gore/middleware"
 	"github.com/gin-gonic/gin"
-	syslog "log"
+	"log"
 	"net/http"
 	"os"
 	"os/signal"
@@ -30,37 +29,37 @@ func Startup() error {
 	srv := &http.Server{
 		Addr:     addr,
 		Handler:  engine,
-		ErrorLog: syslog.New(log.StandardLogger().Out, "Gore", 0),
+		ErrorLog: log.Default(),
 	}
 
 	go func() {
 		// 服务连接
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.StandardLogger().WithError(err).Fatal("listen")
+			log.Fatal("listen")
 		}
 	}()
 
-	log.StandardLogger().Infof("Server run port: %s", port)
-	log.StandardLogger().Infof("        #####    #######   ######    #######        ")
-	log.StandardLogger().Infof("       #     #   #     #   #     #   #              ")
-	log.StandardLogger().Infof("       #         #     #   #     #   #              ")
-	log.StandardLogger().Infof("       #  ####   #     #   ######    #####          ")
-	log.StandardLogger().Infof("       #     #   #     #   #   #     #              ")
-	log.StandardLogger().Infof("       #     #   #     #   #    #    #              ")
-	log.StandardLogger().Infof("        #####    #######   #     #   #######        ")
+	log.Printf("Server run port: %s", port)
+	log.Printf("        #####    #######   ######    #######        ")
+	log.Printf("       #     #   #     #   #     #   #              ")
+	log.Printf("       #         #     #   #     #   #              ")
+	log.Printf("       #  ####   #     #   ######    #####          ")
+	log.Printf("       #     #   #     #   #   #     #              ")
+	log.Printf("       #     #   #     #   #    #    #              ")
+	log.Printf("        #####    #######   #     #   #######        ")
 
 	// 等待中断信号以优雅地关闭服务器（设置 5 秒的超时时间）
 	quit := make(chan os.Signal)
 	signal.Notify(quit, os.Interrupt)
 	<-quit
-	log.StandardLogger().Info("Shutdown Server")
+	log.Print("Shutdown Server")
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	if err := srv.Shutdown(ctx); err != nil {
 		return err
 	}
-	log.StandardLogger().Info("Server exiting")
+	log.Print("Server exiting")
 
 	if consul.Enable() {
 		if err := consul.Deregister(); err != nil {
@@ -81,11 +80,11 @@ func Setup() error {
 	gin.SetMode(mode)
 
 	// gin log to file
-	gin.DefaultWriter = log.StandardLogger().Out
-	gin.DefaultErrorWriter = log.StandardLogger().Out
+	gin.DefaultWriter = log.Default().Writer()
+	gin.DefaultErrorWriter = log.Default().Writer()
 
 	gin.DebugPrintRouteFunc = func(httpMethod, absolutePath, handlerName string, nuHandlers int) {
-		log.StandardLogger().Debugf("%-6s %-25s --> %s (%d handlers)", httpMethod, absolutePath, handlerName, nuHandlers)
+		log.Printf("%-6s %-25s --> %s (%d handlers)", httpMethod, absolutePath, handlerName, nuHandlers)
 	}
 
 	engine = gin.New()
