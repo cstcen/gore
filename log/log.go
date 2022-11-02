@@ -27,7 +27,7 @@ type Config struct {
 
 func Setup() error {
 
-	log.SetPrefix("[GORE]")
+	log.SetPrefix("[GORE] ")
 	log.SetFlags(log.LstdFlags | log.Lmsgprefix)
 
 	if gonfig.Instance().GetBool("log") {
