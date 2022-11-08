@@ -2,10 +2,9 @@ package http
 
 import (
 	"bytes"
-	"context"
-	"git.tenvine.cn/backend/gore/log"
-	"git.tenvine.cn/backend/gore/vo"
+	"git.tenvine.cn/backend/gore/util"
 	"io"
+	"log"
 	"net/http"
 	"time"
 )
@@ -15,12 +14,9 @@ type Transport struct {
 }
 
 func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
-	ctx, ok := req.Context().(context.Context)
-	if !ok {
-		return nil, vo.BaseResult{Code: http.StatusInternalServerError, Message: "unknown context"}
-	}
+	ctx := req.Context()
 
-	contextLog := log.WithContext(ctx)
+	requestId, _ := ctx.Value(util.RequestIDContextKey).(string)
 
 	// Start timer
 	start := time.Now()
@@ -39,9 +35,9 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 		req.Body = io.NopCloser(&reqBuf)
 	}
 
-	contextLog.Tracef("HTTPClient url:    %s", req.URL.String())
-	contextLog.Tracef("HTTPClient header: %+v", header)
-	contextLog.Tracef("HTTPClient body:   %+v", string(reqBody))
+	log.Printf("[%s] HTTPClient url:    %s", requestId, req.URL.String())
+	log.Printf("[%s] HTTPClient header: %+v", requestId, header)
+	log.Printf("[%s] HTTPClient body:   %+v", requestId, string(reqBody))
 
 	resp, err := t.RoundTripper.RoundTrip(req)
 	if err != nil {
@@ -58,8 +54,8 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 	method := req.Method
 	statusCode := resp.StatusCode
 
-	contextLog.Tracef(
-		"HTTPClient method=%s uri=%s status=%v latency=%v ip=%s body=%s",
+	log.Printf("[%s] HTTPClient method=%s uri=%s status=%v latency=%v ip=%s body=%s",
+		requestId,
 		method,
 		path,
 		statusCode,
