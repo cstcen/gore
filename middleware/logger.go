@@ -88,7 +88,7 @@ func Logger(skipLogResp func(path string) bool) gin.HandlerFunc {
 		if !skipLogResp(path) {
 			contextLog.Tracef("Response body : %s", respWriter.body.String())
 		}
-		contextLog.Info(logStr)
+		contextLog.Tracef(logStr)
 	}
 }
 
@@ -160,6 +160,6 @@ func SetupTrace(handler http.Handler, skipLogResp func(path string) bool) http.H
 		if !skipLogResp(path) {
 			contextLog.Tracef("Response body : %s", respWriter.body.Bytes())
 		}
-		contextLog.Info(logStr)
+		contextLog.Tracef(logStr)
 	})
 }
