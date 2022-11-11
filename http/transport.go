@@ -53,19 +53,15 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 	latency := time.Now().Sub(start)
 	method := req.Method
 	statusCode := resp.StatusCode
-	clientIP := req.RemoteAddr
-	if getter, ok := ctx.(ClientIPGetter); ok {
-		clientIP = getter.ClientIP()
-	}
 
-	log.Printf("[%s] HTTPClient | %3d | %13v | %15s |%-7s %#v | %s",
+	log.Printf("[%s] HTTPClient Resp Body:   %+v", requestId, string(respBody))
+
+	log.Printf("[%s] HTTPClient | %3d | %13v |%-7s %#v",
 		requestId,
 		statusCode,
 		latency,
-		clientIP,
 		method,
 		path,
-		string(respBody),
 	)
 
 	return resp, nil
