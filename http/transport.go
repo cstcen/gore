@@ -35,9 +35,9 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 		req.Body = io.NopCloser(&reqBuf)
 	}
 
-	log.Printf("[%s] HTTPClient url:    %s", requestId, req.URL.String())
-	log.Printf("[%s] HTTPClient header: %+v", requestId, header)
-	log.Printf("[%s] HTTPClient body:   %+v", requestId, string(reqBody))
+	log.Printf("[%s] HTTPClient Req URL:    %s", requestId, req.URL.String())
+	log.Printf("[%s] HTTPClient Req Header: %+v", requestId, header)
+	log.Printf("[%s] HTTPClient Req Body:   %+v", requestId, string(reqBody))
 
 	resp, err := t.RoundTripper.RoundTrip(req)
 	if err != nil {
@@ -53,16 +53,24 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 	latency := time.Now().Sub(start)
 	method := req.Method
 	statusCode := resp.StatusCode
+	clientIP := req.RemoteAddr
+	if getter, ok := ctx.(ClientIPGetter); ok {
+		clientIP = getter.ClientIP()
+	}
 
-	log.Printf("[%s] HTTPClient method=%s uri=%s status=%v latency=%v ip=%s body=%s",
+	log.Printf("[%s] HTTPClient | %3d | %13v | %15s |%-7s %#v | %s",
 		requestId,
-		method,
-		path,
 		statusCode,
 		latency,
-		req.RemoteAddr,
+		clientIP,
+		method,
+		path,
 		string(respBody),
 	)
 
 	return resp, nil
+}
+
+type ClientIPGetter interface {
+	ClientIP() string
 }
