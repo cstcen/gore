@@ -47,9 +47,9 @@ func ParseJwt(jwtStr string) (*MemberClaims, error) {
 		return nil, fmt.Errorf("ParseUnverified: %w", err)
 	}
 
-	claims, ok := token.Claims.(MemberClaims)
+	claims, ok := token.Claims.(*MemberClaims)
 	if !ok {
 		return nil, fmt.Errorf("claims error: %w", err)
 	}
-	return &claims, nil
+	return claims, nil
 }
