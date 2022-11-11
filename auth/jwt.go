@@ -4,8 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"git.tenvine.cn/backend/gore"
 	"git.tenvine.cn/backend/gore/constant"
+	"git.tenvine.cn/backend/gore/gonfig"
 	goreHttp "git.tenvine.cn/backend/gore/http"
 	"git.tenvine.cn/backend/gore/vo"
 	"github.com/golang-jwt/jwt/v4"
@@ -13,7 +13,7 @@ import (
 )
 
 func DecryptToken(ctx context.Context, token string) (*string, error) {
-	url := gore.Viper().GetString("xk5.auth.userJwt")
+	url := gonfig.Instance().GetString("xk5.auth.userJwt")
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
