@@ -1,0 +1,55 @@
+package auth
+
+import (
+	"context"
+	"errors"
+	"fmt"
+	"git.tenvine.cn/backend/gore"
+	"git.tenvine.cn/backend/gore/constant"
+	goreHttp "git.tenvine.cn/backend/gore/http"
+	"git.tenvine.cn/backend/gore/vo"
+	"github.com/golang-jwt/jwt/v4"
+	"net/http"
+)
+
+func DecryptToken(ctx context.Context, token string) (*string, error) {
+	url := gore.Viper().GetString("xk5.auth.userJwt")
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set(constant.HeaderAuthorization, token)
+	resp, err := goreHttp.GetInstance().Do(req)
+	if err != nil {
+		return nil, err
+	}
+	var result vo.DataResult[struct {
+		UserJwt string `json:"user_jwt"`
+	}]
+	if err := goreHttp.RespHandler(resp, &result); err != nil {
+		return nil, err
+	}
+	if result.Code != vo.BaseResultSuccess.Code || len(result.Data.UserJwt) == 0 {
+		return nil, errors.New("token verification failed")
+	}
+
+	return &result.Data.UserJwt, nil
+}
+
+type MemberClaims struct {
+	Member
+	jwt.RegisteredClaims
+}
+
+func ParseJwt(jwtStr string) (*MemberClaims, error) {
+	token, _, err := new(jwt.Parser).ParseUnverified(jwtStr, &MemberClaims{})
+	if err != nil {
+		return nil, fmt.Errorf("ParseUnverified: %w", err)
+	}
+
+	claims, ok := token.Claims.(MemberClaims)
+	if !ok {
+		return nil, fmt.Errorf("claims error: %w", err)
+	}
+	return &claims, nil
+}
