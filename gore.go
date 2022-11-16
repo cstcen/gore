@@ -18,7 +18,7 @@ import (
 	"git.tenvine.cn/backend/gore/gonfig"
 	goreHttp "git.tenvine.cn/backend/gore/http"
 	"git.tenvine.cn/backend/gore/infratoken"
-	goreLog "git.tenvine.cn/backend/gore/log"
+	"git.tenvine.cn/backend/gore/log"
 	"git.tenvine.cn/backend/gore/middleware"
 	"git.tenvine.cn/backend/gore/util"
 	"github.com/gin-gonic/gin"
@@ -28,7 +28,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"go.mongodb.org/mongo-driver/mongo"
-	"log"
 	"net/http"
 )
 
@@ -82,13 +81,13 @@ func SetupBase() error {
 		return err
 	}
 
-	if err := goreLog.Setup(); err != nil {
+	if err := log.Setup(); err != nil {
 		return err
 	}
 
-	log.Printf("Current active profile: %s", Viper().GetString("env"))
+	log.Infof("Current active profile: %s", Viper().GetString("env"))
 
-	log.Printf("Current load config path: %s", Viper().GetString("gore.path"))
+	log.Infof("Current load config path: %s", Viper().GetString("gore.path"))
 
 	return nil
 }
@@ -245,4 +244,8 @@ func SetDefaultConfig(opt *command.Args) {
 	Viper().Set("env", opt.Env)
 	Viper().Set("consul", opt.Consul)
 	Viper().Set("log", opt.Log)
+}
+
+func Debugf(format string, v ...any) {
+	log.Debugf(format, v...)
 }
