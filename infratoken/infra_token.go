@@ -9,7 +9,6 @@ import (
 	"git.tenvine.cn/backend/gore/log"
 	"git.tenvine.cn/backend/gore/util"
 	"github.com/go-redis/cache/v8"
-	"github.com/sirupsen/logrus"
 	"time"
 )
 
@@ -36,8 +35,6 @@ type Response struct {
 func Get(c context.Context) (string, error) {
 	cacheKey := gonfig.Instance().GetString("tenvine.keyPrefix") + gonfig.Instance().GetString("tenvine.infraToken.clientId")
 
-	ctxLog := log.WithContext(c)
-
 	var response *Response
 	var err error
 
@@ -50,12 +47,12 @@ func Get(c context.Context) (string, error) {
 
 	response, err = request(c)
 	if err != nil {
-		ctxLog.WithError(err).Warn("get infra token fail")
+		log.ErrorCf(c, "get infra token fail: %v", err)
 		return "", err
 	}
 
 	// async
-	go save(response, cacheKey, goreCache.Instance(), ctxLog)
+	go save(response, cacheKey, goreCache.Instance(), c)
 
 	return response.AccessToken, nil
 }
@@ -90,21 +87,21 @@ func get(c context.Context, key string) (*Response, error) {
 
 }
 
-func save(response *Response, key string, cc *cache.Cache, ctxLog *logrus.Entry) {
+func save(response *Response, key string, cc *cache.Cache, ctx context.Context) {
 	if cc == nil || response == nil || response.ExpiresIn == 0 {
 		return
 	}
 
 	ttl := time.Duration(response.ExpiresIn) * time.Millisecond
-	ctx, cancelFunc := context.WithTimeout(context.Background(), constant.TimeoutConn)
+	c, cancelFunc := context.WithTimeout(context.Background(), constant.TimeoutConn)
 	defer cancelFunc()
 	if err := goreCache.Instance().Set(&cache.Item{
-		Ctx:   ctx,
+		Ctx:   c,
 		Key:   key,
 		Value: response,
 		TTL:   ttl,
 	}); err != nil {
-		ctxLog.WithError(err).Warn("cache infra token fail")
+		log.WarningCf(ctx, "cache infra token fail: %v", err)
 	}
 
 }

@@ -38,7 +38,7 @@ func Register() error {
 		return err
 	}
 
-	log.StandardLogger().Infof("consul register service: %s", registration.Name)
+	log.Infof("consul register service: %s", registration.Name)
 	return nil
 
 }
@@ -58,7 +58,7 @@ func Deregister() error {
 		return err
 	}
 
-	log.StandardLogger().Infof("consul deregister service: %s", appName)
+	log.Infof("consul deregister service: %s", appName)
 	return nil
 }
 

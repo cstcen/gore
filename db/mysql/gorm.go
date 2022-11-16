@@ -15,15 +15,15 @@ var (
 
 func SetupGorm() error {
 	var logLvl = logger.Silent
-	switch log.GetLevel().String() {
-	case "error":
+	switch log.GetLevel() {
+	case log.LevelError:
 		logLvl = logger.Error
-	case "warn":
+	case log.LevelWarning:
 		logLvl = logger.Warn
-	case "info":
+	case log.LevelInfo:
 		logLvl = logger.Info
 	}
-	newLogger := logger.New(log.StandardLogger(), logger.Config{
+	newLogger := logger.New(log.Default(), logger.Config{
 		SlowThreshold: 200 * time.Millisecond,
 		LogLevel:      logLvl,
 	})

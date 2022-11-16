@@ -45,7 +45,7 @@ func NewKafkaConfig(cfg *Config) (*sarama.Config, error) {
 		return nil, ErrDisable
 	}
 
-	sarama.Logger = log.StandardLogger()
+	sarama.Logger = log.Default()
 
 	version, err := sarama.ParseKafkaVersion(cfg.Version)
 	if err != nil {

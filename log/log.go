@@ -6,20 +6,49 @@ import (
 	"git.tenvine.cn/backend/gore/gonfig"
 	"git.tenvine.cn/backend/gore/util"
 	"github.com/natefinch/lumberjack"
-	"github.com/sirupsen/logrus"
+	"github.com/pkg/errors"
 	"io"
 	"log"
 	"os"
-	"runtime"
+	"strings"
 )
 
 const (
-	FormatTimestamp = "2006-01-02 15:04:05"
+	LevelDebug Level = iota
+	LevelInfo
+	LevelWarning
+	LevelError
 )
 
 var (
-	std = logrus.StandardLogger()
+	defaultLevel     = LevelDebug
+	defaultLevelName = LevelDebug.Name()
 )
+
+func GetLevel() Level {
+	return defaultLevel
+}
+
+func Default() *log.Logger {
+	return log.Default()
+}
+
+type Level uint8
+
+func (l Level) Name() string {
+	switch l {
+	case LevelDebug:
+		return "debug"
+	case LevelInfo:
+		return "info"
+	case LevelWarning:
+		return "warning"
+	case LevelError:
+		return "error"
+	default:
+		return "unknown"
+	}
+}
 
 type Config struct {
 	Level string
@@ -36,77 +65,96 @@ func Setup() error {
 			return err
 		}
 		multiWriter := io.MultiWriter(os.Stdout, &lumberjackLogger)
-		std.SetOutput(multiWriter)
 
 		log.SetOutput(multiWriter)
 	} else {
-		std.SetOutput(os.Stdout)
-
 		log.SetOutput(os.Stdout)
 	}
 
-	setLogFormatter()
-
-	level := gonfig.Instance().GetString("gore.logger.level")
-	if len(level) > 0 {
-		SetLogLevel(level)
-	} else {
-		SetLogLevel(logrus.TraceLevel.String())
+	level, err := ParseLevel(gonfig.Instance().GetString("gore.logger.level"))
+	if err != nil {
+		return err
 	}
+	defaultLevel = level
 
 	return nil
 }
 
-func StandardLogger() *logrus.Logger {
-	return std
+func ParseLevel(level string) (Level, error) {
+	switch strings.ToLower(level) {
+	case "debug":
+		return LevelDebug, nil
+	case "info":
+		return LevelInfo, nil
+	case "warning":
+		return LevelWarning, nil
+	case "error":
+		return LevelError, nil
+	default:
+		return LevelDebug, errors.New("invalid level")
+	}
 }
 
-func GetLevel() logrus.Level {
-	return std.GetLevel()
-}
-
-func WithContext(c context.Context) *logrus.Entry {
-	return std.WithField(util.RequestIDContextKey, util.MustRequestID(c))
-}
-
-func setLogFormatter() {
-	std.SetFormatter(&logrus.TextFormatter{
-		TimestampFormat:  FormatTimestamp,
-		CallerPrettyfier: callerPrettyfier,
-		DisableQuote:     true},
-	)
-}
-
-func SetLogLevel(lvl string) {
-	if len(lvl) == 0 {
+func Debugf(format string, v ...any) {
+	if defaultLevel > LevelDebug {
 		return
 	}
-	level, err := logrus.ParseLevel(lvl)
-	if err != nil {
+	log.Printf("[%s] %s", defaultLevelName, fmt.Sprintf(format, v))
+}
+
+func DebugCf(ctx context.Context, format string, v ...any) {
+	if defaultLevel > LevelDebug {
 		return
 	}
-	std.SetLevel(level)
+	log.Printf("[%s] [%s] %s", util.MustRequestID(ctx), defaultLevelName, fmt.Sprintf(format, v))
 }
 
-func shortFile(file string) string {
-	short := file
-	var count int
-	maxCount := 1
-	for i := len(file) - 1; i > 0; i-- {
-		if file[i] == '/' {
-			if count >= maxCount {
-				short = file[i+1:]
-				break
-			}
-			count++
-		}
+func Infof(format string, v ...any) {
+	if defaultLevel > LevelInfo {
+		return
 	}
-	file = short
-	return file
+	log.Printf("[%s] %s", defaultLevelName, fmt.Sprintf(format, v))
 }
 
-func callerPrettyfier(frame *runtime.Frame) (function string, file string) {
-	file = shortFile(frame.File)
-	file = fmt.Sprintf("%s:%d", file, frame.Line)
-	return
+func InfoCf(ctx context.Context, format string, v ...any) {
+	if defaultLevel > LevelInfo {
+		return
+	}
+	log.Printf("[%s] [%s] %s", util.MustRequestID(ctx), defaultLevelName, fmt.Sprintf(format, v))
+}
+
+func Warningf(format string, v ...any) {
+	if defaultLevel > LevelWarning {
+		return
+	}
+	log.Printf("[%s] %s", defaultLevelName, fmt.Sprintf(format, v))
+}
+
+func WarningCf(ctx context.Context, format string, v ...any) {
+	if defaultLevel > LevelWarning {
+		return
+	}
+	log.Printf("[%s] [%s] %s", util.MustRequestID(ctx), defaultLevelName, fmt.Sprintf(format, v))
+}
+
+func Errorf(format string, v ...any) {
+	if defaultLevel > LevelError {
+		return
+	}
+	log.Printf("[%s] %s", defaultLevelName, fmt.Sprintf(format, v))
+}
+
+func ErrorCf(ctx context.Context, format string, v ...any) {
+	if defaultLevel > LevelError {
+		return
+	}
+	log.Printf("[%s] [%s] %s", util.MustRequestID(ctx), defaultLevelName, fmt.Sprintf(format, v))
+}
+
+func Panicf(format string, v ...any) {
+	log.Panicf(format, v...)
+}
+
+func Fatal(format string, v ...any) {
+	log.Fatalf(format, v...)
 }

@@ -67,5 +67,9 @@ func (g *Group) swagger() {
 		return
 	}
 
-	g.r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	g.r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, func(c *ginSwagger.Config) {
+		c.DocExpansion = "none"
+		c.DefaultModelsExpandDepth = 0
+		c.DeepLinking = true
+	}))
 }

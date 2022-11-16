@@ -2,6 +2,7 @@ package mongo
 
 import (
 	"context"
+	"fmt"
 	"git.tenvine.cn/backend/gore/gonfig"
 	"git.tenvine.cn/backend/gore/log"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -56,24 +57,24 @@ func Setup() error {
 	}
 
 	var err error
-	entry := log.StandardLogger().WithField("host", cfg.Hosts)
-	entry.Infof("Current mongo dbname: %s", cfg.Dbname)
+	logPrefix := fmt.Sprintf("host: %v", cfg.Hosts)
+	log.Infof("[%s] Current mongo dbname: %s", logPrefix, cfg.Dbname)
 
 	clientOptions := newOptions(cfg)
 
 	mgo, err = mongo.NewClient(clientOptions)
 	if err != nil {
-		entry.WithError(err).Warnf("Failed to create new mongodb")
+		log.Warningf("[%s] failed to create new mongodb", logPrefix)
 		return err
 	}
 
 	if err = mgo.Connect(context.Background()); err != nil {
-		entry.WithError(err).Warnf("Failed to connect mongodb [%s|%s]", cfg.Username, cfg.Password)
+		log.Warningf("[%s] failed to connect mongodb [%s|%s]", logPrefix, cfg.Username, cfg.Password)
 		return err
 	}
 
 	if err = mgo.Ping(context.Background(), readpref.Primary()); err != nil {
-		entry.WithError(err).Warnf("Failed to ping mongodb [%s|%s]", cfg.Username, cfg.Password)
+		log.Warningf("[%s] failed to ping mongodb [%s|%s]", logPrefix, cfg.Username, cfg.Password)
 		return err
 	}
 

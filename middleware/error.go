@@ -17,10 +17,8 @@ func Error() gin.HandlerFunc {
 			return
 		}
 
-		requestIDLog := log.WithContext(c)
-
 		for i, e := range errorMsgs {
-			requestIDLog.Warnf("Error #%02d: %s", i+1, e.Err)
+			log.WarningCf(c, "Error #%02d: %s", i+1, e.Err)
 		}
 
 		last := errorMsgs.Last()

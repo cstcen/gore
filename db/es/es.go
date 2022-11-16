@@ -38,9 +38,9 @@ func Setup() error {
 		Sniff:       cfg.Sniff,
 		Healthcheck: cfg.Healthcheck,
 	}
-	elastic.SetInfoLog(log.StandardLogger())
-	elastic.SetTraceLog(log.StandardLogger())
-	elastic.SetErrorLog(log.StandardLogger())
+	elastic.SetInfoLog(log.Default())
+	elastic.SetTraceLog(log.Default())
+	elastic.SetErrorLog(log.Default())
 	es, err = elastic.NewClientFromConfig(c)
 	if err != nil {
 		return err

@@ -2,7 +2,6 @@ package middleware
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"git.tenvine.cn/backend/gore/log"
 	"github.com/gin-gonic/gin"
@@ -28,7 +27,6 @@ func (w GinResponseWriter) WriteString(s string) (int, error) {
 
 func Logger(skipLogResp func(path string) bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		contextLog := log.WithContext(c)
 		// Start timer
 		start := time.Now()
 		header := c.Request.Header
@@ -41,21 +39,19 @@ func Logger(skipLogResp func(path string) bool) gin.HandlerFunc {
 			ResponseWriter: c.Writer,
 			body:           bytes.NewBufferString(""),
 		}
-		var buf bytes.Buffer
-		var body []byte
+		var reqBuf bytes.Buffer
+		var reqBody []byte
 		if c.Request.Body != nil {
-			tee := io.TeeReader(c.Request.Body, &buf)
-			body, _ = io.ReadAll(tee)
-			c.Request.Body = io.NopCloser(&buf)
+			tee := io.TeeReader(c.Request.Body, &reqBuf)
+			reqBody, _ = io.ReadAll(tee)
+			c.Request.Body = io.NopCloser(&reqBuf)
 		}
 
 		c.Writer = respWriter
 
-		contextLog.Tracef("Request url   : %s", c.Request.URL.String())
-		contextLog.Tracef("Request header: %+v", header)
-		compactBody := new(bytes.Buffer)
-		_ = json.Compact(compactBody, body)
-		contextLog.Tracef("Request body  : %s", bytes.TrimSpace(body))
+		log.DebugCf(c, "HTTPClient Req URL:    %s", c.Request.URL.String())
+		log.DebugCf(c, "HTTPClient Req Header: %+v", header)
+		log.DebugCf(c, "HTTPClient Req Body:   %+v", string(reqBody))
 
 		// Process request
 		c.Next()
@@ -86,9 +82,9 @@ func Logger(skipLogResp func(path string) bool) gin.HandlerFunc {
 			param.ClientIP,
 		)
 		if !skipLogResp(path) {
-			contextLog.Tracef("Response body : %s", respWriter.body.String())
+			log.DebugCf(c, "Response body : %s", respWriter.body.String())
 		}
-		contextLog.Tracef(logStr)
+		log.DebugCf(c, logStr)
 	}
 }
 
@@ -110,8 +106,7 @@ func (rw *ResponseWriter) WriteHeader(statusCode int) {
 
 func SetupTrace(handler http.Handler, skipLogResp func(path string) bool) http.Handler {
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-		ctx := request.Context()
-		contextLog := log.WithContext(ctx)
+		c := request.Context()
 		// Start timer
 		start := time.Now()
 		header := request.Header
@@ -124,19 +119,19 @@ func SetupTrace(handler http.Handler, skipLogResp func(path string) bool) http.H
 			ResponseWriter: writer,
 			body:           new(bytes.Buffer),
 		}
-		var buf bytes.Buffer
-		var body []byte
+		var reqBuf bytes.Buffer
+		var reqBody []byte
 		if request.Body != nil {
-			tee := io.TeeReader(request.Body, &buf)
-			body, _ = io.ReadAll(tee)
-			request.Body = io.NopCloser(&buf)
+			tee := io.TeeReader(request.Body, &reqBuf)
+			reqBody, _ = io.ReadAll(tee)
+			request.Body = io.NopCloser(&reqBuf)
 		}
 
 		writer = respWriter
 
-		contextLog.Tracef("Request url   : [%v] %s", request.Method, path)
-		contextLog.Tracef("Request header: %+v", header)
-		contextLog.Tracef("Request body  : %s", bytes.TrimSpace(body))
+		log.DebugCf(c, "HTTPClient Req URL:    %s", request.URL.String())
+		log.DebugCf(c, "HTTPClient Req Header: %+v", header)
+		log.DebugCf(c, "HTTPClient Req Body:   %+v", string(reqBody))
 
 		// Process request
 		handler.ServeHTTP(writer, request)
@@ -147,7 +142,6 @@ func SetupTrace(handler http.Handler, skipLogResp func(path string) bool) http.H
 		clientIP := request.RemoteAddr
 		method := request.Method
 		statusCode := respWriter.statusCode
-		// bodySize := writer.Header().Get("Content-Length")
 
 		logStr := fmt.Sprintf(
 			"method=%v uri=%v status=%v latency=%v ip=%v",
@@ -158,8 +152,8 @@ func SetupTrace(handler http.Handler, skipLogResp func(path string) bool) http.H
 			clientIP,
 		)
 		if !skipLogResp(path) {
-			contextLog.Tracef("Response body : %s", respWriter.body.Bytes())
+			log.DebugCf(c, "Response body : %s", respWriter.body.Bytes())
 		}
-		contextLog.Tracef(logStr)
+		log.DebugCf(c, logStr)
 	})
 }
