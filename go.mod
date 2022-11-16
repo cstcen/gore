@@ -1,6 +1,6 @@
 module git.tenvine.cn/backend/gore
 
-go 1.18
+go 1.19
 
 require (
 	github.com/Shopify/sarama v1.32.0
@@ -16,7 +16,6 @@ require (
 	github.com/natefinch/lumberjack v2.0.0+incompatible
 	github.com/olivere/elastic v6.2.37+incompatible
 	github.com/pkg/errors v0.9.1
-	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/cobra v1.4.0
 	github.com/spf13/viper v1.10.1
 	github.com/stretchr/testify v1.8.0
