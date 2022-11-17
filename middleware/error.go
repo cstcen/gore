@@ -1,8 +1,8 @@
 package middleware
 
 import (
+	"git.tenvine.cn/backend/gore/common"
 	"git.tenvine.cn/backend/gore/log"
-	"git.tenvine.cn/backend/gore/vo"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -24,10 +24,10 @@ func Error() gin.HandlerFunc {
 		last := errorMsgs.Last()
 
 		switch x := last.Err.(type) {
-		case vo.BaseResult:
+		case common.BaseResult:
 			c.JSON(http.StatusOK, x)
 		default:
-			c.JSON(http.StatusOK, vo.BaseResult{Code: http.StatusInternalServerError, Message: x.Error()})
+			c.JSON(http.StatusOK, common.BaseResult{Code: http.StatusInternalServerError, Message: x.Error()})
 		}
 		return
 

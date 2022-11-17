@@ -3,8 +3,8 @@ package middleware
 import (
 	"encoding/json"
 	"fmt"
+	"git.tenvine.cn/backend/gore/common"
 	"git.tenvine.cn/backend/gore/log"
-	"git.tenvine.cn/backend/gore/vo"
 	"github.com/ztrue/tracerr"
 	"net/http"
 )
@@ -25,7 +25,7 @@ func SetupRecovery(handler http.Handler) http.Handler {
 				log.InfoCf(request.Context(), "%v", frames)
 
 				writer.WriteHeader(http.StatusOK)
-				_ = json.NewEncoder(writer).Encode(vo.BaseResult{
+				_ = json.NewEncoder(writer).Encode(common.BaseResult{
 					Code:    http.StatusInternalServerError,
 					Message: err.Error(),
 				})
