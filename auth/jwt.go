@@ -4,10 +4,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"git.tenvine.cn/backend/gore/constant"
+	"git.tenvine.cn/backend/gore/common"
 	"git.tenvine.cn/backend/gore/gonfig"
 	goreHttp "git.tenvine.cn/backend/gore/http"
-	"git.tenvine.cn/backend/gore/vo"
 	"github.com/golang-jwt/jwt/v4"
 	"net/http"
 )
@@ -18,18 +17,18 @@ func DecryptToken(ctx context.Context, token string) (*string, error) {
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set(constant.HeaderAuthorization, token)
+	req.Header.Set("Authorization", token)
 	resp, err := goreHttp.GetInstance().Do(req)
 	if err != nil {
 		return nil, err
 	}
-	var result vo.DataResult[struct {
+	var result common.DataResult[struct {
 		UserJwt string `json:"user_jwt"`
 	}]
 	if err := goreHttp.RespHandler(resp, &result); err != nil {
 		return nil, err
 	}
-	if result.Code != vo.BaseResultSuccess.Code || len(result.Data.UserJwt) == 0 {
+	if result.Code != common.BaseResultSuccess.Code || len(result.Data.UserJwt) == 0 {
 		return nil, errors.New("token verification failed")
 	}
 

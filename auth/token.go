@@ -3,11 +3,10 @@ package auth
 import (
 	"context"
 	"errors"
-	"git.tenvine.cn/backend/gore/constant"
+	"git.tenvine.cn/backend/gore/common"
 	goreCache "git.tenvine.cn/backend/gore/db/cache"
 	goreHttp "git.tenvine.cn/backend/gore/http"
 	"git.tenvine.cn/backend/gore/log"
-	"git.tenvine.cn/backend/gore/vo"
 	"github.com/go-redis/cache/v8"
 	"net/http"
 	"time"
@@ -25,16 +24,16 @@ func Check(ctx context.Context, token string, url string) (*Member, error) {
 	if err != nil {
 		return nil, err
 	}
-	req.Header.Set(constant.HeaderAuthorization, token)
+	req.Header.Set("Authorization", token)
 	resp, err := goreHttp.GetInstance().Do(req)
 	if err != nil {
 		return nil, err
 	}
-	var result vo.DataResult[Member]
+	var result common.DataResult[Member]
 	if err := goreHttp.RespHandler(resp, &result); err != nil {
 		return nil, err
 	}
-	if result.Code != vo.BaseResultSuccess.Code {
+	if result.Code != common.BaseResultSuccess.Code {
 		return nil, errors.New("token verification failed")
 	}
 
