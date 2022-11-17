@@ -1,4 +1,4 @@
-module git.tenvine.cn/backend/gore/mongo
+module git.tenvine.cn/backend/gore/db/mongo
 
 go 1.19
 

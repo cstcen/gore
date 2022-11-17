@@ -1,4 +1,4 @@
-module git.tenvine.cn/backend/gore/redis
+module git.tenvine.cn/backend/gore/db/redis
 
 go 1.19
 

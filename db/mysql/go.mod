@@ -1,4 +1,4 @@
-module git.tenvne.cn/backend/gore/mysql
+module git.tenvne.cn/backend/gore/db/mysql
 
 go 1.19
 

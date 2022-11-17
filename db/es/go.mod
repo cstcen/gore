@@ -1,4 +1,4 @@
-module git.tenvine.cn/backend/gore/es
+module git.tenvine.cn/backend/gore/db/es
 
 go 1.19
 
