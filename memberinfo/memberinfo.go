@@ -4,8 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"git.tenvine.cn/backend/gore"
 	goreCache "git.tenvine.cn/backend/gore/db/cache"
+	"git.tenvine.cn/backend/gore/gonfig"
+	goreHttp "git.tenvine.cn/backend/gore/http"
 	"github.com/go-redis/cache/v8"
 	"io"
 	"net/http"
@@ -20,7 +21,7 @@ func Get(ctx context.Context, memberNo int64) (*MemberInfo, error) {
 		}
 	}
 
-	url := gore.Viper().GetString("memberinfo.host") + gore.Viper().GetString("memberinfo.uri")
+	url := gonfig.Instance().GetString("memberinfo.host") + gonfig.Instance().GetString("memberinfo.uri")
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return nil, err
@@ -29,7 +30,7 @@ func Get(ctx context.Context, memberNo int64) (*MemberInfo, error) {
 	q.Add("memberNo", strconv.FormatInt(memberNo, 10))
 	req.URL.RawQuery = q.Encode()
 
-	resp, err := gore.HttpClient().Do(req)
+	resp, err := goreHttp.GetInstance().Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +50,7 @@ func Get(ctx context.Context, memberNo int64) (*MemberInfo, error) {
 			Ctx:   ctx,
 			Key:   cacheKey(memberNo),
 			Value: memberInfo,
-			TTL:   gore.Viper().GetDuration("memberinfo.duration"),
+			TTL:   gonfig.Instance().GetDuration("memberinfo.duration"),
 		}); err != nil {
 			return nil, err
 		}
@@ -59,7 +60,7 @@ func Get(ctx context.Context, memberNo int64) (*MemberInfo, error) {
 }
 
 func cacheKey(memberNo int64) string {
-	return fmt.Sprintf("MemberInfo:%s:%v", gore.Viper().GetString("env"), memberNo)
+	return fmt.Sprintf("MemberInfo:%s:%v", gonfig.Instance().GetString("env"), memberNo)
 }
 
 type MemberInfo struct {
