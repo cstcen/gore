@@ -81,7 +81,13 @@ func SetupBase() error {
 		return err
 	}
 
-	if err := log.Setup(); err != nil {
+	logCfg := log.Config{Level: gonfig.Instance().GetString("gore.logger.level")}
+	if gonfig.Instance().GetBool("log") {
+		if err := gonfig.Instance().UnmarshalKey("gore.logger", &logCfg.Logger); err != nil {
+			return err
+		}
+	}
+	if err := log.Setup(&logCfg); err != nil {
 		return err
 	}
 
@@ -244,8 +250,4 @@ func SetDefaultConfig(opt *command.Args) {
 	Viper().Set("env", opt.Env)
 	Viper().Set("consul", opt.Consul)
 	Viper().Set("log", opt.Log)
-}
-
-func Debugf(format string, v ...any) {
-	log.Debugf(format, v...)
 }

@@ -3,8 +3,6 @@ package log
 import (
 	"context"
 	"fmt"
-	"git.tenvine.cn/backend/gore/gonfig"
-	"git.tenvine.cn/backend/gore/util"
 	"github.com/natefinch/lumberjack"
 	"github.com/pkg/errors"
 	"io"
@@ -21,9 +19,22 @@ const (
 )
 
 var (
-	defaultLevel     = LevelDebug
-	defaultLevelName = LevelDebug.Name()
+	defaultLevel        = LevelDebug
+	defaultLevelName    = LevelDebug.Name()
+	defaultRequestIdKey = "X-Request-ID"
 )
+
+func MustRequestID(c context.Context) string {
+	id, ok := c.Value(defaultRequestIdKey).(string)
+	if !ok {
+		return ""
+	}
+	return id
+}
+
+func SetRequestIdKey(key string) {
+	defaultRequestIdKey = key
+}
 
 func GetLevel() Level {
 	return defaultLevel
@@ -51,29 +62,28 @@ func (l Level) Name() string {
 }
 
 type Config struct {
-	Level string
+	Logger *lumberjack.Logger
+	Level  string
 }
 
-func Setup() error {
+func Setup(cfg *Config) error {
+	if cfg == nil {
+		return errors.New("log config not found")
+	}
 
 	log.SetPrefix("[GORE] ")
 	log.SetFlags(log.LstdFlags | log.Lmsgprefix)
 
-	if gonfig.Instance().GetBool("log") {
-		lumberjackLogger := lumberjack.Logger{}
-		if err := gonfig.Instance().UnmarshalKey("gore.logger", &lumberjackLogger); err != nil {
-			return err
-		}
-		multiWriter := io.MultiWriter(os.Stdout, &lumberjackLogger)
-
+	if cfg.Logger != nil {
+		multiWriter := io.MultiWriter(os.Stdout, cfg.Logger)
 		log.SetOutput(multiWriter)
 	} else {
 		log.SetOutput(os.Stdout)
 	}
 
-	level, err := ParseLevel(gonfig.Instance().GetString("gore.logger.level"))
+	level, err := ParseLevel(cfg.Level)
 	if err != nil {
-		return err
+		log.Println(err.Error())
 	}
 	defaultLevel = level
 
@@ -91,7 +101,7 @@ func ParseLevel(level string) (Level, error) {
 	case "error":
 		return LevelError, nil
 	default:
-		return LevelDebug, errors.New("invalid level")
+		return LevelDebug, errors.New("invalid log level")
 	}
 }
 
@@ -106,7 +116,7 @@ func DebugCf(ctx context.Context, format string, v ...any) {
 	if defaultLevel > LevelDebug {
 		return
 	}
-	log.Printf("[%s] [%s] %s", util.MustRequestID(ctx), defaultLevelName, fmt.Sprintf(format, v))
+	log.Printf("[%s] [%s] %s", MustRequestID(ctx), defaultLevelName, fmt.Sprintf(format, v))
 }
 
 func Infof(format string, v ...any) {
@@ -120,7 +130,7 @@ func InfoCf(ctx context.Context, format string, v ...any) {
 	if defaultLevel > LevelInfo {
 		return
 	}
-	log.Printf("[%s] [%s] %s", util.MustRequestID(ctx), defaultLevelName, fmt.Sprintf(format, v))
+	log.Printf("[%s] [%s] %s", MustRequestID(ctx), defaultLevelName, fmt.Sprintf(format, v))
 }
 
 func Warningf(format string, v ...any) {
@@ -134,7 +144,7 @@ func WarningCf(ctx context.Context, format string, v ...any) {
 	if defaultLevel > LevelWarning {
 		return
 	}
-	log.Printf("[%s] [%s] %s", util.MustRequestID(ctx), defaultLevelName, fmt.Sprintf(format, v))
+	log.Printf("[%s] [%s] %s", MustRequestID(ctx), defaultLevelName, fmt.Sprintf(format, v))
 }
 
 func Errorf(format string, v ...any) {
@@ -148,13 +158,13 @@ func ErrorCf(ctx context.Context, format string, v ...any) {
 	if defaultLevel > LevelError {
 		return
 	}
-	log.Printf("[%s] [%s] %s", util.MustRequestID(ctx), defaultLevelName, fmt.Sprintf(format, v))
+	log.Printf("[%s] [%s] %s", MustRequestID(ctx), defaultLevelName, fmt.Sprintf(format, v))
 }
 
 func Panicf(format string, v ...any) {
 	log.Panicf(format, v...)
 }
 
-func Fatal(format string, v ...any) {
+func Fatalf(format string, v ...any) {
 	log.Fatalf(format, v...)
 }

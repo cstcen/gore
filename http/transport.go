@@ -2,9 +2,8 @@ package http
 
 import (
 	"bytes"
-	"git.tenvine.cn/backend/gore/util"
+	"git.tenvine.cn/backend/gore/log"
 	"io"
-	"log"
 	"net/http"
 	"time"
 )
@@ -15,8 +14,6 @@ type Transport struct {
 
 func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 	ctx := req.Context()
-
-	requestId, _ := ctx.Value(util.RequestIDContextKey).(string)
 
 	// Start timer
 	start := time.Now()
@@ -35,9 +32,9 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 		req.Body = io.NopCloser(&reqBuf)
 	}
 
-	log.Printf("[%s] HTTPClient Req URL:    %s", requestId, req.URL.String())
-	log.Printf("[%s] HTTPClient Req Header: %+v", requestId, header)
-	log.Printf("[%s] HTTPClient Req Body:   %+v", requestId, string(reqBody))
+	log.DebugCf(ctx, "HTTPClient Req URL:    %s", req.URL.String())
+	log.DebugCf(ctx, "HTTPClient Req Header: %+v", header)
+	log.DebugCf(ctx, "HTTPClient Req Body:   %+v", string(reqBody))
 
 	resp, err := t.RoundTripper.RoundTrip(req)
 	if err != nil {
@@ -54,10 +51,9 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 	method := req.Method
 	statusCode := resp.StatusCode
 
-	log.Printf("[%s] HTTPClient Resp Body:   %+v", requestId, string(respBody))
+	log.DebugCf(ctx, "HTTPClient Resp Body:   %+v", string(respBody))
 
-	log.Printf("[%s] HTTPClient | %3d | %13v |%-7s %#v",
-		requestId,
+	log.DebugCf(ctx, "HTTPClient | %3d | %13v |%-7s %#v",
 		statusCode,
 		latency,
 		method,
