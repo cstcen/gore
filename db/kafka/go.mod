@@ -1,4 +1,4 @@
-module git.tenvine.cn/backend/gore/kafka
+module git.tenvine.cn/backend/gore/db/kafka
 
 go 1.19
 
