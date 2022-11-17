@@ -1,4 +1,4 @@
-package vo
+package common
 
 type PageResult[T any] struct {
 	BaseResult

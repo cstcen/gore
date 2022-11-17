@@ -1,4 +1,4 @@
-package vo
+package common
 
 type OrderEnum string
 

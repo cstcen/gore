@@ -1,4 +1,4 @@
-package vo
+package common
 
 type DataResult[T any] struct {
 	BaseResult
