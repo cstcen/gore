@@ -2,7 +2,6 @@ package infratoken
 
 import (
 	"context"
-	"git.tenvine.cn/backend/gore/constant"
 	goreCache "git.tenvine.cn/backend/gore/db/cache"
 	"git.tenvine.cn/backend/gore/gonfig"
 	goreHttp "git.tenvine.cn/backend/gore/http"
@@ -68,7 +67,7 @@ func request(c context.Context) (*Response, error) {
 	}
 
 	result := new(Response)
-	if err := goreHttp.Post(c, url, constant.ContentTypeApplicationJSON, req, result); err != nil {
+	if err := goreHttp.Post(c, url, "application/json; charset=utf8", req, result); err != nil {
 		return nil, err
 	}
 
@@ -77,7 +76,7 @@ func request(c context.Context) (*Response, error) {
 
 func get(c context.Context, key string) (*Response, error) {
 	var wanted Response
-	ctx, cancelFunc := context.WithTimeout(c, constant.TimeoutConn)
+	ctx, cancelFunc := context.WithTimeout(c, 3*time.Second)
 	defer cancelFunc()
 	if err := goreCache.Instance().Get(ctx, key, &wanted); err != nil {
 		return nil, err
@@ -93,7 +92,7 @@ func save(response *Response, key string, cc *cache.Cache, ctx context.Context) 
 	}
 
 	ttl := time.Duration(response.ExpiresIn) * time.Millisecond
-	c, cancelFunc := context.WithTimeout(context.Background(), constant.TimeoutConn)
+	c, cancelFunc := context.WithTimeout(context.Background(), 2*time.Second)
 	defer cancelFunc()
 	if err := goreCache.Instance().Set(&cache.Item{
 		Ctx:   c,
