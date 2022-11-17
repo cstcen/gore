@@ -5,13 +5,11 @@ import (
 	"fmt"
 	"git.tenvine.cn/backend/gore/consul"
 	"git.tenvine.cn/backend/gore/gonfig"
-	"git.tenvine.cn/backend/gore/middleware"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
-	"strings"
 	"time"
 )
 
@@ -87,16 +85,6 @@ func Setup() error {
 	engine = gin.New()
 
 	engine.Use(gin.Recovery())
-
-	engine.Use(middleware.RequestID())
-
-	engine.Use(middleware.Logger(func(path string) bool {
-		return strings.Contains(path, "/swagger/") || strings.Contains(path, "/pprof/")
-	}))
-
-	engine.Use(middleware.Rest())
-
-	engine.Use(middleware.Error())
 
 	group := &Group{r: engine}
 
