@@ -27,9 +27,12 @@ func Instance() *cache.Cache {
 	return cc
 }
 
-func Setup() error {
+func SetupDefault() error {
+	cfg := DefaultConfig()
+	return Setup(cfg)
+}
 
-	cfg := NewConfig()
+func Setup(cfg *Config) error {
 
 	if !cfg.Enable {
 		return nil
@@ -43,7 +46,7 @@ func Setup() error {
 	return nil
 }
 
-func NewConfig() *Config {
+func DefaultConfig() *Config {
 	viper := gonfig.Instance()
 	cfg := &Config{
 		Enable:       viper.GetBool("gore.cache.enable"),

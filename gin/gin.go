@@ -3,9 +3,13 @@ package gin
 import (
 	"context"
 	"fmt"
+	"git.tenvine.cn/backend/gore/common"
 	"git.tenvine.cn/backend/gore/consul"
 	"git.tenvine.cn/backend/gore/gonfig"
+	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"log"
 	"net/http"
 	"os"
@@ -86,18 +90,60 @@ func Setup() error {
 
 	engine.Use(gin.Recovery())
 
-	group := &Group{r: engine}
-
 	// check health
-	group.healthcheck()
+	routeHealthcheck(engine)
 
 	// swagger
-	group.swagger()
+	routeSwagger(engine)
 
 	// pprof router
-	group.pprof()
+	routePprof(engine)
 
-	group.status()
+	routeStatus(engine)
 
 	return nil
+}
+
+const (
+	RelativePathHealthCheck = "/healthcheck"
+)
+
+func routeHealthcheck(e *gin.Engine) {
+	e.GET(RelativePathHealthCheck, func(c *gin.Context) {
+		c.JSON(http.StatusOK, common.BaseResultSuccess)
+	})
+}
+
+func routePprof(e *gin.Engine) {
+	if !gin.IsDebugging() {
+		return
+	}
+
+	pprof.Register(e)
+}
+
+func routeStatus(e *gin.Engine) {
+
+	// 404 Handler.
+	e.NoRoute(func(c *gin.Context) {
+		c.JSON(http.StatusNotFound, common.BaseResultNotFound)
+	})
+
+	// 405 Handler.
+	e.NoMethod(func(c *gin.Context) {
+		c.JSON(http.StatusMethodNotAllowed, common.BaseResultNotFound)
+	})
+
+}
+
+func routeSwagger(e *gin.Engine) {
+	if !gin.IsDebugging() {
+		return
+	}
+
+	e.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, func(c *ginSwagger.Config) {
+		c.DocExpansion = "none"
+		c.DefaultModelsExpandDepth = 0
+		c.DeepLinking = true
+	}))
 }

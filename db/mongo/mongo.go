@@ -35,7 +35,7 @@ func Database() *mongo.Database {
 	return db
 }
 
-func NewConfig() *Config {
+func DefaultConfig() *Config {
 	viper := gonfig.Instance()
 	cfg := &Config{
 		Enable:   viper.GetBool("gore.mongo.enable"),
@@ -49,8 +49,12 @@ func NewConfig() *Config {
 	return cfg
 }
 
-func Setup() error {
-	cfg := NewConfig()
+func SetupDefault() error {
+	cfg := DefaultConfig()
+	return Setup(cfg)
+}
+
+func Setup(cfg *Config) error {
 
 	if !cfg.Enable {
 		return nil

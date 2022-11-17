@@ -62,7 +62,3 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 
 	return resp, nil
 }
-
-type ClientIPGetter interface {
-	ClientIP() string
-}

@@ -3,6 +3,7 @@ package log
 import (
 	"context"
 	"fmt"
+	"git.tenvine.cn/backend/gore/gonfig"
 	"github.com/natefinch/lumberjack"
 	"github.com/pkg/errors"
 	"io"
@@ -64,6 +65,16 @@ func (l Level) Name() string {
 type Config struct {
 	Logger *lumberjack.Logger
 	Level  string
+}
+
+func SetupDefault() error {
+	cfg := Config{Level: gonfig.Instance().GetString("gore.logger.level")}
+	if gonfig.Instance().GetBool("log") {
+		if err := gonfig.Instance().UnmarshalKey("gore.logger", &cfg.Logger); err != nil {
+			return err
+		}
+	}
+	return Setup(&cfg)
 }
 
 func Setup(cfg *Config) error {

@@ -3,6 +3,7 @@ module git.tenvine.cn/backend/gore/gonfig
 go 1.19
 
 require (
+	git.tenvine.cn/backend/gore/common v0.11.1-beta.6
 	github.com/bketelsen/crypt v0.0.5
 	github.com/spf13/viper v1.14.0
 	github.com/stretchr/testify v1.8.1

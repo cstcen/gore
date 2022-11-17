@@ -4,10 +4,8 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
-	"git.tenvine.cn/backend/gore/gonfig"
 	"io"
 	"net/http"
-	"strings"
 	"time"
 )
 
@@ -18,14 +16,10 @@ func GetInstance() *http.Client {
 }
 
 func Setup() error {
-	cli = &http.Client{Timeout: 3 * time.Second}
+	cli = &http.Client{Timeout: 3 * time.Second, Transport: &Transport{
+		RoundTripper: http.DefaultTransport,
+	}}
 
-	logLevel := strings.ToLower(gonfig.Instance().GetString("gore.logger.level"))
-	if logLevel == "trace" {
-		cli.Transport = &Transport{
-			RoundTripper: http.DefaultTransport,
-		}
-	}
 	return nil
 }
 

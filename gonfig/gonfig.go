@@ -3,6 +3,7 @@ package gonfig
 import (
 	"bytes"
 	"fmt"
+	"git.tenvine.cn/backend/gore/common"
 	crypt "github.com/bketelsen/crypt/config"
 	"github.com/spf13/viper"
 	_ "github.com/spf13/viper/remote"
@@ -30,6 +31,10 @@ func init() {
 	vp.Set("gore.filename", "config.yml")
 	vp.Set("gore.filenameEnv", "config-${profile}.yml")
 	vp.AutomaticEnv()
+}
+
+func Instance() *viper.Viper {
+	return vp
 }
 
 // Setup 读取顺序为：
@@ -75,6 +80,13 @@ func Setup() error {
 	return nil
 }
 
+func SetDefaultCmdConfig(opt *common.Args) {
+	vp.Set("name", opt.Name)
+	vp.Set("env", opt.Env)
+	vp.Set("consul", opt.Consul)
+	vp.Set("log", opt.Log)
+}
+
 func placeholder(replacer *strings.Replacer) {
 	for _, key := range vp.AllKeys() {
 		val := vp.GetString(key)
@@ -106,10 +118,6 @@ func readRemoteConfig(env string, appName string, endpoint string) error {
 		}
 	}
 	return nil
-}
-
-func Instance() *viper.Viper {
-	return vp
 }
 
 func unmarshalConfigCustom() error {

@@ -24,8 +24,12 @@ func Instance() redis.UniversalClient {
 	return cli
 }
 
-func Setup() error {
-	cfg := NewConfig()
+func SetupDefault() error {
+	cfg := DefaultConfig()
+	return Setup(cfg)
+}
+
+func Setup(cfg *Config) error {
 
 	if !cfg.Enable {
 		return nil
@@ -53,7 +57,7 @@ func Setup() error {
 	return nil
 }
 
-func NewConfig() *Config {
+func DefaultConfig() *Config {
 	viper := gonfig.Instance()
 	cfg := &Config{
 		Enable:         viper.GetBool("gore.redis.enable"),

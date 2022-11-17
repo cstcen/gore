@@ -11,7 +11,11 @@ var (
 	conf *api.Config
 )
 
-func Setup() error {
+func SetConfig(cfg *api.Config) {
+	conf = cfg
+}
+
+func SetupDefault() error {
 	url := gonfig.Instance().GetString("gore.consul.discovery.host")
 	conf = &api.Config{
 		Address:    url,
