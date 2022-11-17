@@ -1,4 +1,4 @@
-package command
+package common
 
 type Args struct {
 	Name   string `short:"n" long:"name" description:"Application name"`
