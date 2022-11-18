@@ -120,56 +120,56 @@ func Debugf(format string, v ...any) {
 	if defaultLevel > LevelDebug {
 		return
 	}
-	log.Printf("[%s] %s", defaultLevelName, fmt.Sprintf(format, v))
+	log.Printf("[%s] %s", defaultLevelName, fmt.Sprintf(format, v...))
 }
 
 func DebugCf(ctx context.Context, format string, v ...any) {
 	if defaultLevel > LevelDebug {
 		return
 	}
-	log.Printf("[%s] [%s] %s", MustRequestID(ctx), defaultLevelName, fmt.Sprintf(format, v))
+	log.Printf("[%s] [%s] %s", MustRequestID(ctx), defaultLevelName, fmt.Sprintf(format, v...))
 }
 
 func Infof(format string, v ...any) {
 	if defaultLevel > LevelInfo {
 		return
 	}
-	log.Printf("[%s] %s", defaultLevelName, fmt.Sprintf(format, v))
+	log.Printf("[%s] %s", defaultLevelName, fmt.Sprintf(format, v...))
 }
 
 func InfoCf(ctx context.Context, format string, v ...any) {
 	if defaultLevel > LevelInfo {
 		return
 	}
-	log.Printf("[%s] [%s] %s", MustRequestID(ctx), defaultLevelName, fmt.Sprintf(format, v))
+	log.Printf("[%s] [%s] %s", MustRequestID(ctx), defaultLevelName, fmt.Sprintf(format, v...))
 }
 
 func Warningf(format string, v ...any) {
 	if defaultLevel > LevelWarning {
 		return
 	}
-	log.Printf("[%s] %s", defaultLevelName, fmt.Sprintf(format, v))
+	log.Printf("[%s] %s", defaultLevelName, fmt.Sprintf(format, v...))
 }
 
 func WarningCf(ctx context.Context, format string, v ...any) {
 	if defaultLevel > LevelWarning {
 		return
 	}
-	log.Printf("[%s] [%s] %s", MustRequestID(ctx), defaultLevelName, fmt.Sprintf(format, v))
+	log.Printf("[%s] [%s] %s", MustRequestID(ctx), defaultLevelName, fmt.Sprintf(format, v...))
 }
 
 func Errorf(format string, v ...any) {
 	if defaultLevel > LevelError {
 		return
 	}
-	log.Printf("[%s] %s", defaultLevelName, fmt.Sprintf(format, v))
+	log.Printf("[%s] %s", defaultLevelName, fmt.Sprintf(format, v...))
 }
 
 func ErrorCf(ctx context.Context, format string, v ...any) {
 	if defaultLevel > LevelError {
 		return
 	}
-	log.Printf("[%s] [%s] %s", MustRequestID(ctx), defaultLevelName, fmt.Sprintf(format, v))
+	log.Printf("[%s] [%s] %s", MustRequestID(ctx), defaultLevelName, fmt.Sprintf(format, v...))
 }
 
 func Panicf(format string, v ...any) {
