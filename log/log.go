@@ -120,87 +120,87 @@ func Debugln(v ...any) {
 	if defaultLevel > LevelDebug {
 		return
 	}
-	log.Printf("[%s] %s", defaultLevelName, fmt.Sprintln(v...))
+	log.Printf("[%s] %s", LevelDebug.Name(), fmt.Sprintln(v...))
 }
 
 func Debugf(format string, v ...any) {
 	if defaultLevel > LevelDebug {
 		return
 	}
-	log.Printf("[%s] %s", defaultLevelName, fmt.Sprintf(format, v...))
+	log.Printf("[%s] %s", LevelDebug.Name(), fmt.Sprintf(format, v...))
 }
 
 func DebugCf(ctx context.Context, format string, v ...any) {
 	if defaultLevel > LevelDebug {
 		return
 	}
-	log.Printf("[%s] [%s] %s", defaultLevelName, MustRequestID(ctx), fmt.Sprintf(format, v...))
+	log.Printf("[%s] [%s] %s", LevelDebug.Name(), MustRequestID(ctx), fmt.Sprintf(format, v...))
 }
 
 func Infoln(format string, v ...any) {
 	if defaultLevel > LevelInfo {
 		return
 	}
-	log.Printf("[%s] %s", defaultLevelName, fmt.Sprintln(v...))
+	log.Printf("[%s] %s", LevelInfo.Name(), fmt.Sprintln(v...))
 }
 
 func Infof(format string, v ...any) {
 	if defaultLevel > LevelInfo {
 		return
 	}
-	log.Printf("[%s] %s", defaultLevelName, fmt.Sprintf(format, v...))
+	log.Printf("[%s] %s", LevelInfo.Name(), fmt.Sprintf(format, v...))
 }
 
 func InfoCf(ctx context.Context, format string, v ...any) {
 	if defaultLevel > LevelInfo {
 		return
 	}
-	log.Printf("[%s] [%s] %s", defaultLevelName, MustRequestID(ctx), fmt.Sprintf(format, v...))
+	log.Printf("[%s] [%s] %s", LevelInfo.Name(), MustRequestID(ctx), fmt.Sprintf(format, v...))
 }
 
 func Warningln(format string, v ...any) {
 	if defaultLevel > LevelWarning {
 		return
 	}
-	log.Printf("[%s] %s", defaultLevelName, fmt.Sprintln(v...))
+	log.Printf("[%s] %s", LevelWarning.Name(), fmt.Sprintln(v...))
 }
 
 func Warningf(format string, v ...any) {
 	if defaultLevel > LevelWarning {
 		return
 	}
-	log.Printf("[%s] %s", defaultLevelName, fmt.Sprintf(format, v...))
+	log.Printf("[%s] %s", LevelWarning.Name(), fmt.Sprintf(format, v...))
 }
 
 func WarningCf(ctx context.Context, format string, v ...any) {
 	if defaultLevel > LevelWarning {
 		return
 	}
-	log.Printf("[%s] [%s] %s", defaultLevelName, MustRequestID(ctx), fmt.Sprintf(format, v...))
+	log.Printf("[%s] [%s] %s", LevelWarning.Name(), MustRequestID(ctx), fmt.Sprintf(format, v...))
 }
 
 func Errorln(format string, v ...any) {
 	if defaultLevel > LevelError {
 		return
 	}
-	log.Printf("[%s] %s", defaultLevelName, fmt.Sprintln(v...))
+	log.Printf("[%s] %s", LevelError.Name(), fmt.Sprintln(v...))
 }
 
 func Errorf(format string, v ...any) {
 	if defaultLevel > LevelError {
 		return
 	}
-	log.Printf("[%s] %s", defaultLevelName, fmt.Sprintf(format, v...))
+	log.Printf("[%s] %s", LevelError.Name(), fmt.Sprintf(format, v...))
 }
 
 func ErrorCf(ctx context.Context, format string, v ...any) {
 	if defaultLevel > LevelError {
 		return
 	}
-	log.Printf("[%s] [%s] %s", defaultLevelName, MustRequestID(ctx), fmt.Sprintf(format, v...))
+	log.Printf("[%s] [%s] %s", LevelError.Name(), MustRequestID(ctx), fmt.Sprintf(format, v...))
 }
 
-func Panicln(format string, v ...any) {
+func Panicln(v ...any) {
 	log.Panicln(v...)
 }
 
@@ -208,7 +208,7 @@ func Panicf(format string, v ...any) {
 	log.Panicf(format, v...)
 }
 
-func Fatalln(format string, v ...any) {
+func Fatalln(v ...any) {
 	log.Fatalln(v...)
 }
 
