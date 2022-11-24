@@ -1,6 +1,8 @@
 package errorcode
 
-import "encoding/json"
+import (
+	"encoding/json"
+)
 
 var (
 	Success                          = NewErrorCode(0, "OK")
@@ -80,7 +82,8 @@ func (e *errorCode) SetMessage(message string) *errorCode {
 }
 
 func (e *errorCode) Error() string {
-	return e.message
+	result, _ := e.MarshalJSON()
+	return string(result)
 }
 
 // MarshalJSON implements the JSON encoding interface
@@ -91,6 +94,12 @@ func (e *errorCode) MarshalJSON() ([]byte, error) {
 	})
 }
 
-func NewErrorCode(code int32, message string) *errorCode {
+func New(code int32, message string) *errorCode {
 	return &errorCode{code: code, message: message}
+}
+
+// NewErrorCode
+// Deprecated
+func NewErrorCode(code int32, message string) *errorCode {
+	return New(code, message)
 }
