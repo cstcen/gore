@@ -11,7 +11,13 @@ import (
 
 var cli *http.Client
 
+// GetInstance is replaced by Instance()
+// Deprecated
 func GetInstance() *http.Client {
+	return Instance()
+}
+
+func Instance() *http.Client {
 	return cli
 }
 
