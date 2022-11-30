@@ -60,7 +60,7 @@ var (
 )
 
 type BaseResult struct {
-	Code    int    `json:"code"`
+	Code    int32  `json:"code"`
 	Message string `json:"message,omitempty"`
 }
 

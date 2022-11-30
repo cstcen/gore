@@ -29,18 +29,18 @@ func Setup() error {
 	return nil
 }
 
-func InternalPost(c context.Context, url, contentType string, body any, expectedPtr any, getInfraToken func(c context.Context) (string, error)) error {
+func InternalPost(ctx context.Context, url, contentType string, body any, expectedPtr any, getInfraToken func(c context.Context) (string, error)) error {
 	p, err := json.Marshal(body)
 	if err != nil {
 		return err
 	}
 
-	req, err := http.NewRequestWithContext(c, http.MethodPost, url, bytes.NewReader(p))
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewReader(p))
 	if err != nil {
 		return err
 	}
 
-	infraToken, err := getInfraToken(c)
+	infraToken, err := getInfraToken(ctx)
 	if err != nil {
 		return err
 	}
@@ -58,12 +58,12 @@ func InternalPost(c context.Context, url, contentType string, body any, expected
 	return nil
 }
 
-func Post(c context.Context, url, contentType string, body any, expectedPtr any) error {
+func Post(ctx context.Context, url, contentType string, body any, expectedPtr any) error {
 	p, err := json.Marshal(body)
 	if err != nil {
 		return err
 	}
-	req, err := http.NewRequestWithContext(c, http.MethodPost, url, bytes.NewReader(p))
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewReader(p))
 	if err != nil {
 		return err
 	}
@@ -80,13 +80,13 @@ func Post(c context.Context, url, contentType string, body any, expectedPtr any)
 	return nil
 }
 
-func InternalGet(c context.Context, url string, expectedPtr any, getInfraToken func(c context.Context) (string, error)) error {
-	req, err := http.NewRequestWithContext(c, http.MethodGet, url, nil)
+func InternalGet(ctx context.Context, url string, expectedPtr any, getInfraToken func(c context.Context) (string, error)) error {
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return err
 	}
 
-	infraToken, err := getInfraToken(c)
+	infraToken, err := getInfraToken(ctx)
 	if err != nil {
 		return err
 	}
@@ -102,8 +102,8 @@ func InternalGet(c context.Context, url string, expectedPtr any, getInfraToken f
 	return nil
 }
 
-func Get(c context.Context, url string, expectedPtr any) error {
-	req, err := http.NewRequestWithContext(c, http.MethodGet, url, nil)
+func Get(ctx context.Context, url string, expectedPtr any) error {
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return err
 	}
@@ -118,8 +118,8 @@ func Get(c context.Context, url string, expectedPtr any) error {
 	return nil
 }
 
-func Head(c context.Context, url string, expectedPtr any) error {
-	req, err := http.NewRequestWithContext(c, http.MethodHead, url, nil)
+func Head(ctx context.Context, url string, expectedPtr any) error {
+	req, err := http.NewRequestWithContext(ctx, http.MethodHead, url, nil)
 	if err != nil {
 		return err
 	}
