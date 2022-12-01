@@ -56,6 +56,7 @@ var (
 type ErrorCode interface {
 	error
 	Code() int32
+	Message() string
 }
 
 type errorCode struct {
