@@ -1,7 +1,7 @@
 package common
 
 import (
-	"fmt"
+	"encoding/json"
 )
 
 var (
@@ -65,5 +65,6 @@ type BaseResult struct {
 }
 
 func (r BaseResult) Error() string {
-	return fmt.Sprintf("{code: %v, message: %s}", r.Code, r.Message)
+	b, _ := json.Marshal(r)
+	return string(b)
 }
