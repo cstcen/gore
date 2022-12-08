@@ -64,7 +64,17 @@ type BaseResult struct {
 	Message string `json:"message,omitempty"`
 }
 
-func (r *BaseResult) Error() string {
-	b, _ := json.Marshal(r)
-	return string(b)
+func (b *BaseResult) Error() string {
+	raw, _ := json.Marshal(b)
+	return string(raw)
+}
+
+func (b *BaseResult) SetCode(code int32) *BaseResult {
+	b.Code = code
+	return b
+}
+
+func (b *BaseResult) SetMsg(msg string) *BaseResult {
+	b.Message = msg
+	return b
 }

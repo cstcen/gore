@@ -95,6 +95,8 @@ func (e *errorCode) MarshalJSON() ([]byte, error) {
 	})
 }
 
+// New use common.NewErrorCode
+// Deprecated
 func New(code int32, message string) *errorCode {
 	return &errorCode{code: code, message: message}
 }
