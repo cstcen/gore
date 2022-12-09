@@ -76,11 +76,6 @@ func (b *baseResult) Message() string {
 	return b.message
 }
 
-func (b *baseResult) Error() string {
-	raw, _ := json.Marshal(b)
-	return string(raw)
-}
-
 func (b *baseResult) SetCode(code int32) BaseResult {
 	tmp := *b
 	tmp.code = code
@@ -91,4 +86,17 @@ func (b *baseResult) SetMsg(msg string) BaseResult {
 	tmp := *b
 	tmp.message = msg
 	return &tmp
+}
+
+func (b *baseResult) Error() string {
+	raw, _ := b.MarshalJSON()
+	return string(raw)
+}
+
+// MarshalJSON implements the JSON encoding interface
+func (b *baseResult) MarshalJSON() ([]byte, error) {
+	return json.Marshal(map[string]interface{}{
+		"code":    b.code,
+		"message": b.message,
+	})
 }
