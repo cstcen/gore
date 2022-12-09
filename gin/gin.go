@@ -6,6 +6,7 @@ import (
 	"git.tenvine.cn/backend/gore/common"
 	"git.tenvine.cn/backend/gore/consul"
 	"git.tenvine.cn/backend/gore/gonfig"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -74,7 +75,8 @@ func Startup() error {
 
 func Setup() error {
 
-	if "xk5" == gonfig.Instance().GetString("env") {
+	dev := "xk5" == gonfig.Instance().GetString("env")
+	if !dev {
 		gin.SetMode(gin.ReleaseMode)
 	}
 
@@ -90,11 +92,15 @@ func Setup() error {
 
 	engine.Use(gin.Recovery())
 
+	if dev {
+		engine.Use(cors.Default())
+	}
+
 	// check health
 	routeHealthcheck(engine)
 
 	// swagger
-	routeSwagger(engine)
+	// routeSwagger(engine)
 
 	// pprof router
 	routePprof(engine)
@@ -110,6 +116,9 @@ const (
 
 func routeHealthcheck(e *gin.Engine) {
 	e.GET(RelativePathHealthCheck, func(c *gin.Context) {
+		c.JSON(http.StatusOK, common.BaseResultSuccess)
+	})
+	e.HEAD(RelativePathHealthCheck, func(c *gin.Context) {
 		c.JSON(http.StatusOK, common.BaseResultSuccess)
 	})
 }
