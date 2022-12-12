@@ -53,55 +53,55 @@ var (
 	BaseResultMetaServerDatabaseNotFound       = NewBaseResult(60104, "Meta server database not found")
 )
 
-type BaseResult interface {
+type Error interface {
 	error
 	Code() int32
 	Message() string
 }
 
-type baseResult struct {
+type BaseResult struct {
 	code    int32
 	message string
 }
 
-func NewBaseResult(code int32, message string) *baseResult {
-	return &baseResult{code: code, message: message}
+func NewBaseResult(code int32, message string) *BaseResult {
+	return &BaseResult{code: code, message: message}
 }
 
-func (b *baseResult) Code() int32 {
+func (b *BaseResult) Code() int32 {
 	return b.code
 }
 
-func (b *baseResult) Message() string {
+func (b *BaseResult) Message() string {
 	return b.message
 }
 
-func (b *baseResult) SetCode(code int32) BaseResult {
+func (b *BaseResult) SetCode(code int32) Error {
 	tmp := *b
 	tmp.code = code
 	return &tmp
 }
 
-func (b *baseResult) SetMsg(msg string) BaseResult {
+func (b *BaseResult) SetMsg(msg string) Error {
 	tmp := *b
 	tmp.message = msg
 	return &tmp
 }
 
-func (b *baseResult) Error() string {
+func (b *BaseResult) Error() string {
 	raw, _ := b.MarshalJSON()
 	return string(raw)
 }
 
 // MarshalJSON implements the JSON encoding interface
-func (b *baseResult) MarshalJSON() ([]byte, error) {
+func (b *BaseResult) MarshalJSON() ([]byte, error) {
 	return json.Marshal(map[string]interface{}{
 		"code":    b.code,
 		"message": b.message,
 	})
 }
 
-func (b *baseResult) UnmarshalJSON(data []byte) error {
+func (b *BaseResult) UnmarshalJSON(data []byte) error {
 	var result struct {
 		Code    int32
 		Message string
