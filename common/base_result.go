@@ -100,3 +100,16 @@ func (b *baseResult) MarshalJSON() ([]byte, error) {
 		"message": b.message,
 	})
 }
+
+func (b *baseResult) UnmarshalJSON(data []byte) error {
+	var result struct {
+		Code    int32
+		Message string
+	}
+	if err := json.Unmarshal(data, &result); err != nil {
+		return err
+	}
+	_ = b.SetCode(result.Code)
+	_ = b.SetMsg(result.Message)
+	return nil
+}
