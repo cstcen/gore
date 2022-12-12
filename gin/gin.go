@@ -20,7 +20,13 @@ import (
 
 var engine *gin.Engine
 
+// GetInstance Use Instance()
+// Deprecated
 func GetInstance() *gin.Engine {
+	return Instance()
+}
+
+func Instance() *gin.Engine {
 	return engine
 }
 
