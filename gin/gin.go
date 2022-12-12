@@ -91,7 +91,7 @@ func Setup() error {
 	engine = gin.New()
 
 	engine.Use(gin.CustomRecovery(func(c *gin.Context, err any) {
-		c.AbortWithStatusJSON(http.StatusOK, common.BaseResultService.SetMsg(fmt.Sprintf("%s", err)))
+		c.AbortWithStatusJSON(http.StatusOK, common.BaseResultService.WithMsg(fmt.Sprintf("%s", err)))
 	}))
 
 	if dev {
