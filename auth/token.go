@@ -22,7 +22,7 @@ func Check(ctx context.Context, token string, url string) (*Member, error) {
 	if err := goreHttp.RespHandler(resp, &result); err != nil {
 		return nil, err
 	}
-	if result.Code != common.BaseResultSuccess.Code {
+	if result.Code() != common.BaseResultSuccess.Code() {
 		return nil, errors.New("token verification failed")
 	}
 

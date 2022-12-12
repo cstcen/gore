@@ -3,7 +3,7 @@ module git.tenvine.cn/backend/gore/gin
 go 1.19
 
 require (
-	git.tenvine.cn/backend/gore/common v0.11.1-beta.5
+	git.tenvine.cn/backend/gore/common v0.11.1-beta.25
 	git.tenvine.cn/backend/gore/consul v0.11.1-beta.1
 	git.tenvine.cn/backend/gore/gonfig v0.11.1-beta.1
 	github.com/gin-contrib/pprof v1.4.0

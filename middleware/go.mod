@@ -3,7 +3,7 @@ module git.tenvine.cn/backend/gore/middleware
 go 1.19
 
 require (
-	git.tenvine.cn/backend/gore/common v0.11.1-beta.5
+	git.tenvine.cn/backend/gore/common v0.11.1-beta.25
 	git.tenvine.cn/backend/gore/db/mysql v0.0.0-20221117064047-1e95964cf9f5
 	git.tenvine.cn/backend/gore/log v0.11.1-beta.1
 	git.tenvine.cn/backend/gore/util v0.11.1-beta.2
