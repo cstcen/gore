@@ -117,7 +117,7 @@ func (b *BaseResult) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &result); err != nil {
 		return err
 	}
-	_ = b.WithCode(result.Code)
-	_ = b.WithMsg(result.Message)
+	b.SetCode(result.Code)
+	b.SetMsg(result.Message)
 	return nil
 }
