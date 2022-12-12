@@ -76,13 +76,21 @@ func (b *BaseResult) Message() string {
 	return b.message
 }
 
-func (b *BaseResult) SetCode(code int32) Error {
+func (b *BaseResult) SetCode(code int32) {
+	b.code = code
+}
+
+func (b *BaseResult) SetMsg(message string) {
+	b.message = message
+}
+
+func (b *BaseResult) WithCode(code int32) Error {
 	tmp := *b
 	tmp.code = code
 	return &tmp
 }
 
-func (b *BaseResult) SetMsg(msg string) Error {
+func (b *BaseResult) WithMsg(msg string) Error {
 	tmp := *b
 	tmp.message = msg
 	return &tmp
@@ -109,7 +117,7 @@ func (b *BaseResult) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &result); err != nil {
 		return err
 	}
-	_ = b.SetCode(result.Code)
-	_ = b.SetMsg(result.Message)
+	_ = b.WithCode(result.Code)
+	_ = b.WithMsg(result.Message)
 	return nil
 }
