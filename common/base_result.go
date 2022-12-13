@@ -72,12 +72,12 @@ func (b BaseResult) GetMessage() string {
 	return b.Message
 }
 
-func (b BaseResult) WithCode(code int32) Error {
+func (b BaseResult) WithCode(code int32) BaseResult {
 	b.Code = code
 	return b
 }
 
-func (b BaseResult) WithMsg(msg string) Error {
+func (b BaseResult) WithMsg(msg string) BaseResult {
 	b.Message = msg
 	return b
 }
