@@ -5,119 +5,84 @@ import (
 )
 
 var (
-	BaseResultSuccess                          = NewBaseResult(0, "OK")
-	BaseResultInvalidArgument                  = NewBaseResult(400, "Invalid argument")
-	BaseResultFailedPrecondition               = NewBaseResult(400, "Failed precondition")
-	BaseResultOutOfRange                       = NewBaseResult(400, "Out of range")
-	BaseResultUnauthenticated                  = NewBaseResult(401, "Unauthenticated")
-	BaseResultPermissionDenied                 = NewBaseResult(403, "Permission denied")
-	BaseResultNotFound                         = NewBaseResult(404, "Not found")
-	BaseResultAborted                          = NewBaseResult(409, "Aborted")
-	BaseResultAlreadyExists                    = NewBaseResult(409, "Already exists")
-	BaseResultResourceExhausted                = NewBaseResult(429, "Resource exhausted")
-	BaseResultCancelled                        = NewBaseResult(499, "Cancelled")
-	BaseResultService                          = NewBaseResult(500, "Service error, please contact us")
-	BaseResultDataLoss                         = NewBaseResult(500, "Data loss")
-	BaseResultNetwork                          = NewBaseResult(500, "Network error, please try again later")
-	BaseResultNotImplemented                   = NewBaseResult(501, "Not implemented")
-	BaseResultUnavailable                      = NewBaseResult(503, "Unavailable")
-	BaseResultDeadlineExceeded                 = NewBaseResult(504, "Deadline exceeded")
-	BaseResultAccountNotFound                  = NewBaseResult(40001, "Account not found")
-	BaseResultMoneyNotFound                    = NewBaseResult(40002, "Money not found")
-	BaseResultQuickSlotNotFound                = NewBaseResult(40003, "Quick slot not found")
-	BaseResultHomelandNotFound                 = NewBaseResult(40004, "Homeland not found")
-	BaseResultInventoryNotFound                = NewBaseResult(40005, "Inventory not found")
-	BaseResultEquipNotFound                    = NewBaseResult(40006, "Equip not found")
-	BaseResultCharacterNotFound                = NewBaseResult(40007, "Character not found")
-	BaseResultWorldNotFound                    = NewBaseResult(40008, "World not found")
-	BaseResultItemNotFound                     = NewBaseResult(40009, "Item not found")
-	BaseResultTransactionNotFound              = NewBaseResult(40010, "Transaction not found")
-	BaseResultSurnameNotFound                  = NewBaseResult(40011, "Surname not found")
-	BaseResultLoggedIn                         = NewBaseResult(41001, "Logged in")
-	BaseResultLoggedOut                        = NewBaseResult(41002, "Logged out")
-	BaseResultNotConnected                     = NewBaseResult(41003, "Not connected")
-	BaseResultTransactionCancelled             = NewBaseResult(41004, "Transaction cancelled")
-	BaseResultTransactionUsed                  = NewBaseResult(41005, "Transaction used")
-	BaseResultLackOfGold                       = NewBaseResult(41006, "Lack of gold")
-	BaseResultLackOfStarDiamond                = NewBaseResult(41007, "Lack of star diamond")
-	BaseResultInvalidRemark                    = NewBaseResult(41008, "Invalid remark")
-	BaseResultCannotDeleteItem                 = NewBaseResult(50001, "Cannot delete item")
-	BaseResultCannotModifyItem                 = NewBaseResult(50002, "Cannot modify item")
-	BaseResultPermissionDeniedModifyGold       = NewBaseResult(50003, "Permission denied modify gold")
-	BaseResultPermissionDeniedModifySarDiamond = NewBaseResult(50004, "Permission denied modify sar diamond")
-	BaseResultTCloudIM                         = NewBaseResult(60001, "Tcloud im")
-	BaseResultTCloudIMMessage                  = NewBaseResult(60002, "Tcloud immessage")
-	BaseResultMetaServer                       = NewBaseResult(60101, "MetaServer")
-	BaseResultMetaServerInvalidAccessLanguage  = NewBaseResult(60102, "Meta server invalid access language")
-	BaseResultMetaServerDatabaseUpgrading      = NewBaseResult(60103, "Meta server database upgrading")
-	BaseResultMetaServerDatabaseNotFound       = NewBaseResult(60104, "Meta server database not found")
+	BaseResultSuccess                          = BaseResult{0, "OK"}
+	BaseResultInvalidArgument                  = BaseResult{400, "Invalid argument"}
+	BaseResultFailedPrecondition               = BaseResult{400, "Failed precondition"}
+	BaseResultOutOfRange                       = BaseResult{400, "Out of range"}
+	BaseResultUnauthenticated                  = BaseResult{401, "Unauthenticated"}
+	BaseResultPermissionDenied                 = BaseResult{403, "Permission denied"}
+	BaseResultNotFound                         = BaseResult{404, "Not found"}
+	BaseResultAborted                          = BaseResult{409, "Aborted"}
+	BaseResultAlreadyExists                    = BaseResult{409, "Already exists"}
+	BaseResultResourceExhausted                = BaseResult{429, "Resource exhausted"}
+	BaseResultCancelled                        = BaseResult{499, "Cancelled"}
+	BaseResultService                          = BaseResult{500, "Service error, please contact us"}
+	BaseResultDataLoss                         = BaseResult{500, "Data loss"}
+	BaseResultNetwork                          = BaseResult{500, "Network error, please try again later"}
+	BaseResultNotImplemented                   = BaseResult{501, "Not implemented"}
+	BaseResultUnavailable                      = BaseResult{503, "Unavailable"}
+	BaseResultDeadlineExceeded                 = BaseResult{504, "Deadline exceeded"}
+	BaseResultAccountNotFound                  = BaseResult{40001, "Account not found"}
+	BaseResultMoneyNotFound                    = BaseResult{40002, "Money not found"}
+	BaseResultQuickSlotNotFound                = BaseResult{40003, "Quick slot not found"}
+	BaseResultHomelandNotFound                 = BaseResult{40004, "Homeland not found"}
+	BaseResultInventoryNotFound                = BaseResult{40005, "Inventory not found"}
+	BaseResultEquipNotFound                    = BaseResult{40006, "Equip not found"}
+	BaseResultCharacterNotFound                = BaseResult{40007, "Character not found"}
+	BaseResultWorldNotFound                    = BaseResult{40008, "World not found"}
+	BaseResultItemNotFound                     = BaseResult{40009, "Item not found"}
+	BaseResultTransactionNotFound              = BaseResult{40010, "Transaction not found"}
+	BaseResultSurnameNotFound                  = BaseResult{40011, "Surname not found"}
+	BaseResultLoggedIn                         = BaseResult{41001, "Logged in"}
+	BaseResultLoggedOut                        = BaseResult{41002, "Logged out"}
+	BaseResultNotConnected                     = BaseResult{41003, "Not connected"}
+	BaseResultTransactionCancelled             = BaseResult{41004, "Transaction cancelled"}
+	BaseResultTransactionUsed                  = BaseResult{41005, "Transaction used"}
+	BaseResultLackOfGold                       = BaseResult{41006, "Lack of gold"}
+	BaseResultLackOfStarDiamond                = BaseResult{41007, "Lack of star diamond"}
+	BaseResultInvalidRemark                    = BaseResult{41008, "Invalid remark"}
+	BaseResultCannotDeleteItem                 = BaseResult{50001, "Cannot delete item"}
+	BaseResultCannotModifyItem                 = BaseResult{50002, "Cannot modify item"}
+	BaseResultPermissionDeniedModifyGold       = BaseResult{50003, "Permission denied modify gold"}
+	BaseResultPermissionDeniedModifySarDiamond = BaseResult{50004, "Permission denied modify sar diamond"}
+	BaseResultTCloudIM                         = BaseResult{60001, "Tcloud im"}
+	BaseResultTCloudIMMessage                  = BaseResult{60002, "Tcloud immessage"}
+	BaseResultMetaServer                       = BaseResult{60101, "MetaServer"}
+	BaseResultMetaServerInvalidAccessLanguage  = BaseResult{60102, "Meta server invalid access language"}
+	BaseResultMetaServerDatabaseUpgrading      = BaseResult{60103, "Meta server database upgrading"}
+	BaseResultMetaServerDatabaseNotFound       = BaseResult{60104, "Meta server database not found"}
 )
 
 type Error interface {
 	error
-	Code() int32
-	Message() string
+	GetCode() int32
+	GetMessage() string
 }
 
 type BaseResult struct {
-	code    int32
-	message string
+	Code    int32  `json:"code,omitempty"`
+	Message string `json:"message,omitempty"`
 }
 
-func NewBaseResult(code int32, message string) *BaseResult {
-	return &BaseResult{code: code, message: message}
+func (b BaseResult) GetCode() int32 {
+	return b.Code
 }
 
-func (b *BaseResult) Code() int32 {
-	return b.code
+func (b BaseResult) GetMessage() string {
+	return b.Message
 }
 
-func (b *BaseResult) Message() string {
-	return b.message
+func (b BaseResult) WithCode(code int32) Error {
+	b.Code = code
+	return b
 }
 
-func (b *BaseResult) SetCode(code int32) {
-	b.code = code
+func (b BaseResult) WithMsg(msg string) Error {
+	b.Message = msg
+	return b
 }
 
-func (b *BaseResult) SetMsg(message string) {
-	b.message = message
-}
-
-func (b *BaseResult) WithCode(code int32) Error {
-	tmp := *b
-	tmp.code = code
-	return &tmp
-}
-
-func (b *BaseResult) WithMsg(msg string) Error {
-	tmp := *b
-	tmp.message = msg
-	return &tmp
-}
-
-func (b *BaseResult) Error() string {
-	raw, _ := b.MarshalJSON()
+func (b BaseResult) Error() string {
+	raw, _ := json.Marshal(b)
 	return string(raw)
-}
-
-// MarshalJSON implements the JSON encoding interface
-func (b *BaseResult) MarshalJSON() ([]byte, error) {
-	return json.Marshal(map[string]interface{}{
-		"code":    b.code,
-		"message": b.message,
-	})
-}
-
-func (b *BaseResult) UnmarshalJSON(data []byte) error {
-	var result struct {
-		Code    int32
-		Message string
-	}
-	if err := json.Unmarshal(data, &result); err != nil {
-		return err
-	}
-	b.SetCode(result.Code)
-	b.SetMsg(result.Message)
-	return nil
 }

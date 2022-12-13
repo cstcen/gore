@@ -6,5 +6,5 @@ type DataResult[T any] struct {
 }
 
 func NewDataResult[T any](data T) *DataResult[T] {
-	return &DataResult[T]{BaseResult: *BaseResultSuccess, Data: data}
+	return &DataResult[T]{BaseResult: BaseResultSuccess, Data: data}
 }
