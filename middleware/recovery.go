@@ -25,7 +25,7 @@ func SetupRecovery(handler http.Handler) http.Handler {
 				log.InfoCf(request.Context(), "%v", frames)
 
 				writer.WriteHeader(http.StatusOK)
-				_ = json.NewEncoder(writer).Encode(common.BaseResultMetaServer.SetMsg(err.Error()))
+				_ = json.NewEncoder(writer).Encode(common.BaseResultMetaServer.WithMsg(err.Error()))
 			}
 		}()
 
