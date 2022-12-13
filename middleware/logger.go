@@ -82,7 +82,7 @@ func Logger(skipLogResp func(path string) bool) gin.HandlerFunc {
 			param.ClientIP,
 		)
 		if !skipLogResp(path) {
-			log.DebugCf(c, "Response body : %s", respWriter.body.String())
+			log.DebugCf(c, "Response body : %q", respWriter.body.String())
 		}
 		log.DebugCf(c, logStr)
 	}
@@ -152,7 +152,7 @@ func SetupTrace(handler http.Handler, skipLogResp func(path string) bool) http.H
 			clientIP,
 		)
 		if !skipLogResp(path) {
-			log.DebugCf(c, "Response body : %s", respWriter.body.Bytes())
+			log.DebugCf(c, "Response body : %q", respWriter.body.Bytes())
 		}
 		log.DebugCf(c, logStr)
 	})
