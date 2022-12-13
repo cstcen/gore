@@ -15,12 +15,12 @@ type GinResponseWriter struct {
 	body *bytes.Buffer
 }
 
-func (w GinResponseWriter) Write(b []byte) (int, error) {
+func (w *GinResponseWriter) Write(b []byte) (int, error) {
 	w.body.Write(b)
 	return w.ResponseWriter.Write(b)
 }
 
-func (w GinResponseWriter) WriteString(s string) (int, error) {
+func (w *GinResponseWriter) WriteString(s string) (int, error) {
 	w.body.WriteString(s)
 	return w.ResponseWriter.WriteString(s)
 }
@@ -49,9 +49,9 @@ func Logger(skipLogResp func(path string) bool) gin.HandlerFunc {
 
 		c.Writer = respWriter
 
-		log.DebugCf(c, "HTTPClient Req URL:    %s", c.Request.URL.String())
-		log.DebugCf(c, "HTTPClient Req Header: %+v", header)
-		log.DebugCf(c, "HTTPClient Req Body:   %+v", string(reqBody))
+		log.DebugCf(c, "Req URL:    %s", c.Request.URL.String())
+		log.DebugCf(c, "Req Header: %+v", header)
+		log.DebugCf(c, "Req Body:   %q", string(reqBody))
 
 		// Process request
 		c.Next()
@@ -94,7 +94,7 @@ type ResponseWriter struct {
 	statusCode int
 }
 
-func (rw ResponseWriter) Write(b []byte) (int, error) {
+func (rw *ResponseWriter) Write(b []byte) (int, error) {
 	rw.body.Write(b)
 	return rw.ResponseWriter.Write(b)
 }
@@ -129,9 +129,9 @@ func SetupTrace(handler http.Handler, skipLogResp func(path string) bool) http.H
 
 		writer = respWriter
 
-		log.DebugCf(c, "HTTPClient Req URL:    %s", request.URL.String())
-		log.DebugCf(c, "HTTPClient Req Header: %+v", header)
-		log.DebugCf(c, "HTTPClient Req Body:   %+v", string(reqBody))
+		log.DebugCf(c, "Req URL:    %s", request.URL.String())
+		log.DebugCf(c, "Req Header: %+v", header)
+		log.DebugCf(c, "Req Body:   %q", string(reqBody))
 
 		// Process request
 		handler.ServeHTTP(writer, request)

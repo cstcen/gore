@@ -34,7 +34,7 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 
 	log.DebugCf(ctx, "HTTPClient Req URL:    %s", req.URL.String())
 	log.DebugCf(ctx, "HTTPClient Req Header: %+v", header)
-	log.DebugCf(ctx, "HTTPClient Req Body:   %+v", string(reqBody))
+	log.DebugCf(ctx, "HTTPClient Req Body:   %q", string(reqBody))
 
 	resp, err := t.RoundTripper.RoundTrip(req)
 	if err != nil {
@@ -51,7 +51,7 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 	method := req.Method
 	statusCode := resp.StatusCode
 
-	log.DebugCf(ctx, "HTTPClient Resp Body:   %+v", string(respBody))
+	log.DebugCf(ctx, "HTTPClient Resp Body:   %q", string(respBody))
 
 	log.DebugCf(ctx, "HTTPClient | %3d | %13v |%-7s %#v",
 		statusCode,
