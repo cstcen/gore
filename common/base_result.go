@@ -64,25 +64,29 @@ type BaseResult struct {
 	Message string `json:"message,omitempty"`
 }
 
-func (b BaseResult) GetCode() int32 {
+func NewBaseResult(code int32, message string) *BaseResult {
+	return &BaseResult{Code: code, Message: message}
+}
+
+func (b *BaseResult) GetCode() int32 {
 	return b.Code
 }
 
-func (b BaseResult) GetMessage() string {
+func (b *BaseResult) GetMessage() string {
 	return b.Message
 }
 
-func (b BaseResult) WithCode(code int32) BaseResult {
+func (b *BaseResult) WithCode(code int32) Error {
 	b.Code = code
 	return b
 }
 
-func (b BaseResult) WithMsg(msg string) BaseResult {
+func (b *BaseResult) WithMsg(msg string) Error {
 	b.Message = msg
 	return b
 }
 
-func (b BaseResult) Error() string {
+func (b *BaseResult) Error() string {
 	raw, _ := json.Marshal(b)
 	return string(raw)
 }
