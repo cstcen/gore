@@ -54,6 +54,10 @@ git.tenvine.cn/backend/gore/common v0.11.1-beta.25 h1:NakJq6WKfGXD9o9C4M9kq+EbuM
 git.tenvine.cn/backend/gore/common v0.11.1-beta.25/go.mod h1:60Tlu046Y3viRxTNXM7FWXJFN6ko3zcg5FJ709beBvU=
 git.tenvine.cn/backend/gore/common v0.11.1-beta.32 h1:C3NvX1Kcp/DnLrDooe/xyBGjuGkmS7r1X2CsPksZjmw=
 git.tenvine.cn/backend/gore/common v0.11.1-beta.32/go.mod h1:60Tlu046Y3viRxTNXM7FWXJFN6ko3zcg5FJ709beBvU=
+git.tenvine.cn/backend/gore/common v0.11.1-beta.35 h1:QFYfEy+1ViWzTu+jhnGTpNca0hUq2djq9uWWPTy6iJ4=
+git.tenvine.cn/backend/gore/common v0.11.1-beta.35/go.mod h1:60Tlu046Y3viRxTNXM7FWXJFN6ko3zcg5FJ709beBvU=
+git.tenvine.cn/backend/gore/common v0.11.1-beta.36 h1:pb2+ABoeZgZY0xvdznNjgDKlmxsN13f8Yg0Kf57C1pA=
+git.tenvine.cn/backend/gore/common v0.11.1-beta.36/go.mod h1:60Tlu046Y3viRxTNXM7FWXJFN6ko3zcg5FJ709beBvU=
 git.tenvine.cn/backend/gore/consul v0.11.1-beta.1 h1:FtDEkLobGU2bcqy9OPPjFgfnV++K5qyx8l4SBiP4PCg=
 git.tenvine.cn/backend/gore/consul v0.11.1-beta.1/go.mod h1:In0uDypUfO0jnA0OH+JjPGiNr/hl2m0jMLrVTu2/KFo=
 git.tenvine.cn/backend/gore/gonfig v0.11.1-beta.1 h1:OVJlgRLL06H35712bT4R36+2Nea3rB8QUNCXTVU4/xE=

@@ -52,6 +52,8 @@ git.tenvine.cn/backend/gore/common v0.11.1-beta.5 h1:wLRNmLnkvZq4tSQn4pAmoALlyer
 git.tenvine.cn/backend/gore/common v0.11.1-beta.5/go.mod h1:60Tlu046Y3viRxTNXM7FWXJFN6ko3zcg5FJ709beBvU=
 git.tenvine.cn/backend/gore/common v0.11.1-beta.25 h1:NakJq6WKfGXD9o9C4M9kq+EbuM7yXxAI2A5a8U8dRdc=
 git.tenvine.cn/backend/gore/common v0.11.1-beta.25/go.mod h1:60Tlu046Y3viRxTNXM7FWXJFN6ko3zcg5FJ709beBvU=
+git.tenvine.cn/backend/gore/common v0.11.1-beta.36 h1:pb2+ABoeZgZY0xvdznNjgDKlmxsN13f8Yg0Kf57C1pA=
+git.tenvine.cn/backend/gore/common v0.11.1-beta.36/go.mod h1:60Tlu046Y3viRxTNXM7FWXJFN6ko3zcg5FJ709beBvU=
 git.tenvine.cn/backend/gore/db/mysql v0.0.0-20221117064047-1e95964cf9f5 h1:6qbw8hzbiIWTPg6JnfxDoG5DeviH0NOh7KqcgH9yzbo=
 git.tenvine.cn/backend/gore/db/mysql v0.0.0-20221117064047-1e95964cf9f5/go.mod h1:ZYVcQbJBvgo2DgMqhQl71qlHfg6YX6XxjoL+yXpI6Yk=
 git.tenvine.cn/backend/gore/gonfig v0.11.1-beta.1 h1:OVJlgRLL06H35712bT4R36+2Nea3rB8QUNCXTVU4/xE=

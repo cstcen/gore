@@ -13,7 +13,7 @@ require (
 	cloud.google.com/go/compute v1.12.1 // indirect
 	cloud.google.com/go/compute/metadata v0.2.1 // indirect
 	cloud.google.com/go/firestore v1.8.0 // indirect
-	git.tenvine.cn/backend/gore/common v0.11.1-beta.5 // indirect
+	git.tenvine.cn/backend/gore/common v0.11.1-beta.36 // indirect
 	git.tenvine.cn/backend/gore/consul v0.11.1-beta.1 // indirect
 	git.tenvine.cn/backend/gore/http v0.11.1-beta.1 // indirect
 	git.tenvine.cn/backend/gore/log v0.11.1-beta.1 // indirect
