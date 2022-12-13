@@ -28,7 +28,7 @@ func DecryptToken(ctx context.Context, token string) (*string, error) {
 	if err := goreHttp.RespHandler(resp, &result); err != nil {
 		return nil, err
 	}
-	if result.Code() != common.BaseResultSuccess.Code() || len(result.Data.UserJwt) == 0 {
+	if result.GetCode() != common.BaseResultSuccess.GetCode() || len(result.Data.UserJwt) == 0 {
 		return nil, errors.New("token verification failed")
 	}
 
