@@ -24,7 +24,7 @@ func Error() gin.HandlerFunc {
 		last := errorMsgs.Last()
 
 		switch x := last.Err.(type) {
-		case common.BaseResult:
+		case common.Error:
 			c.JSON(http.StatusOK, x)
 		default:
 			c.JSON(http.StatusOK, common.BaseResult{Code: http.StatusInternalServerError, Message: x.Error()})
