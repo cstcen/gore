@@ -57,6 +57,8 @@ type Error interface {
 	error
 	GetCode() int32
 	GetMessage() string
+	WithCode(code int32) Error
+	WithMsg(msg string) Error
 }
 
 type BaseResult struct {
