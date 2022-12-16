@@ -48,10 +48,16 @@ cloud.google.com/go/storage v1.8.0/go.mod h1:Wv1Oy7z6Yz3DshWRJFhqM/UCfaWIRTdp0RX
 cloud.google.com/go/storage v1.10.0/go.mod h1:FLPqc6j+Ki4BU591ie1oL6qBQGu2Bl/tZ9ullr3+Kg0=
 cloud.google.com/go/storage v1.14.0/go.mod h1:GrKmX003DSIwi9o29oFT7YDnHYwZoctc3fOKtUw0Xmo=
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
+git.tenvine.cn/backend/gore/common v0.11.1-beta.36 h1:pb2+ABoeZgZY0xvdznNjgDKlmxsN13f8Yg0Kf57C1pA=
+git.tenvine.cn/backend/gore/common v0.11.1-beta.36/go.mod h1:60Tlu046Y3viRxTNXM7FWXJFN6ko3zcg5FJ709beBvU=
 git.tenvine.cn/backend/gore/gonfig v0.11.1-beta.1 h1:OVJlgRLL06H35712bT4R36+2Nea3rB8QUNCXTVU4/xE=
 git.tenvine.cn/backend/gore/gonfig v0.11.1-beta.1/go.mod h1:LXEQx71UOjQYQzZwEoQCDYXNZjTaJhDmlKPwtMHdnMg=
+git.tenvine.cn/backend/gore/gonfig v0.11.1-beta.37 h1:/0m8aamGBvtN8kOtuRrNAT0RNhaNGP39lu9iXYIu92I=
+git.tenvine.cn/backend/gore/gonfig v0.11.1-beta.37/go.mod h1:At0iY7BlcQFXLuhjX2/XkQ9mLUaQCBfFXL2w3iotOiA=
 git.tenvine.cn/backend/gore/log v0.11.1-beta.1 h1:Jo2/fY3Tt7eeuULk5KVU4nWTSb2EfXiLAKYpzwOM9/o=
 git.tenvine.cn/backend/gore/log v0.11.1-beta.1/go.mod h1:xH2yhYTMPnACMPsI+GF6hDn9rQT2pUS01ruzLuMorP8=
+git.tenvine.cn/backend/gore/log v0.11.1-beta.10 h1:YQFIV/2NzPtDAdPyz3HqQPkfSgI2PBc3h9Wp8jAFF8c=
+git.tenvine.cn/backend/gore/log v0.11.1-beta.10/go.mod h1:pn+MWQpOo1x56FbeQR2Fj04smpfE80JNAkVW/h9wXGs=
 git.tenvine.cn/backend/gore/util v0.11.1-beta.2 h1:29SzyhJL6f8VnuB4KgoVNkR++wEGJeNteE/CzBtdbek=
 git.tenvine.cn/backend/gore/util v0.11.1-beta.2/go.mod h1:11MM8quL/emlCd6nFrFQgqG3jukdKYDH5D5cG1aRbTY=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=

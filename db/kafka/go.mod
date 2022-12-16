@@ -3,8 +3,8 @@ module git.tenvine.cn/backend/gore/db/kafka
 go 1.19
 
 require (
-	git.tenvine.cn/backend/gore/gonfig v0.11.1-beta.1
-	git.tenvine.cn/backend/gore/log v0.11.1-beta.1
+	git.tenvine.cn/backend/gore/gonfig v0.11.1-beta.37
+	git.tenvine.cn/backend/gore/log v0.11.1-beta.10
 	git.tenvine.cn/backend/gore/util v0.11.1-beta.2
 	github.com/Shopify/sarama v1.37.2
 	github.com/pkg/errors v0.9.1
@@ -16,6 +16,7 @@ require (
 	cloud.google.com/go/compute v1.12.1 // indirect
 	cloud.google.com/go/compute/metadata v0.2.1 // indirect
 	cloud.google.com/go/firestore v1.8.0 // indirect
+	git.tenvine.cn/backend/gore/common v0.11.1-beta.36 // indirect
 	github.com/armon/go-metrics v0.4.0 // indirect
 	github.com/bketelsen/crypt v0.0.5 // indirect
 	github.com/coreos/go-semver v0.3.0 // indirect
