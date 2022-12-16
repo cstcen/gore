@@ -3,9 +3,9 @@ module git.tenvine.cn/backend/gore/memberinfo
 go 1.19
 
 require (
-	git.tenvine.cn/backend/gore/db/cache v0.0.0-20221117072701-4620398522ad
-	git.tenvine.cn/backend/gore/gonfig v0.11.1-beta.1
-	git.tenvine.cn/backend/gore/http v0.11.1-beta.1
+	git.tenvine.cn/backend/gore/db/cache v0.11.1-beta.10
+	git.tenvine.cn/backend/gore/gonfig v0.11.1-beta.37
+	git.tenvine.cn/backend/gore/http v0.11.1-beta.42
 	github.com/go-redis/cache/v8 v8.4.3
 )
 
@@ -14,6 +14,7 @@ require (
 	cloud.google.com/go/compute v1.12.1 // indirect
 	cloud.google.com/go/compute/metadata v0.2.1 // indirect
 	cloud.google.com/go/firestore v1.8.0 // indirect
+	git.tenvine.cn/backend/gore/common v0.11.1-beta.36 // indirect
 	git.tenvine.cn/backend/gore/log v0.11.1-beta.1 // indirect
 	github.com/armon/go-metrics v0.4.0 // indirect
 	github.com/bketelsen/crypt v0.0.5 // indirect
