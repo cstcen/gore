@@ -62,7 +62,7 @@ type Error interface {
 }
 
 type BaseResult struct {
-	Code    int32  `json:"code,omitempty"`
+	Code    int32  `json:"code"`
 	Message string `json:"message,omitempty"`
 }
 
