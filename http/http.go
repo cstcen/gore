@@ -30,7 +30,7 @@ func Setup() error {
 }
 
 func InternalPost(ctx context.Context, url, contentType string, body any, expectedPtr any, getInfraToken func(c context.Context) (string, error)) error {
-	var r *bytes.Reader
+	var r io.Reader
 	if body != nil {
 		p, err := json.Marshal(body)
 		if err != nil {
@@ -59,7 +59,7 @@ func InternalPost(ctx context.Context, url, contentType string, body any, expect
 }
 
 func Post(ctx context.Context, url, contentType string, body any, expectedPtr any) error {
-	var r *bytes.Reader
+	var r io.Reader
 	if body != nil {
 		p, err := json.Marshal(body)
 		if err != nil {
