@@ -30,12 +30,16 @@ func Setup() error {
 }
 
 func InternalPost(ctx context.Context, url, contentType string, body any, expectedPtr any, getInfraToken func(c context.Context) (string, error)) error {
-	p, err := json.Marshal(body)
-	if err != nil {
-		return err
+	var r *bytes.Reader
+	if body != nil {
+		p, err := json.Marshal(body)
+		if err != nil {
+			return err
+		}
+		r = bytes.NewReader(p)
 	}
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewReader(p))
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, r)
 	if err != nil {
 		return err
 	}
@@ -51,19 +55,19 @@ func InternalPost(ctx context.Context, url, contentType string, body any, expect
 		return err
 	}
 
-	if err := RespHandler(resp, expectedPtr); err != nil {
-		return err
-	}
-
-	return nil
+	return RespHandler(resp, expectedPtr)
 }
 
 func Post(ctx context.Context, url, contentType string, body any, expectedPtr any) error {
-	p, err := json.Marshal(body)
-	if err != nil {
-		return err
+	var r *bytes.Reader
+	if body != nil {
+		p, err := json.Marshal(body)
+		if err != nil {
+			return err
+		}
+		r = bytes.NewReader(p)
 	}
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewReader(p))
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, r)
 	if err != nil {
 		return err
 	}
@@ -74,10 +78,7 @@ func Post(ctx context.Context, url, contentType string, body any, expectedPtr an
 		return err
 	}
 
-	if err := RespHandler(resp, expectedPtr); err != nil {
-		return err
-	}
-	return nil
+	return RespHandler(resp, expectedPtr)
 }
 
 func InternalGet(ctx context.Context, url string, expectedPtr any, getInfraToken func(c context.Context) (string, error)) error {
@@ -96,10 +97,7 @@ func InternalGet(ctx context.Context, url string, expectedPtr any, getInfraToken
 		return err
 	}
 
-	if err := RespHandler(resp, expectedPtr); err != nil {
-		return err
-	}
-	return nil
+	return RespHandler(resp, expectedPtr)
 }
 
 func Get(ctx context.Context, url string, expectedPtr any) error {
@@ -112,10 +110,7 @@ func Get(ctx context.Context, url string, expectedPtr any) error {
 		return err
 	}
 
-	if err := RespHandler(resp, expectedPtr); err != nil {
-		return err
-	}
-	return nil
+	return RespHandler(resp, expectedPtr)
 }
 
 func Head(ctx context.Context, url string, expectedPtr any) error {
@@ -128,10 +123,7 @@ func Head(ctx context.Context, url string, expectedPtr any) error {
 		return err
 	}
 
-	if err := RespHandler(resp, expectedPtr); err != nil {
-		return err
-	}
-	return nil
+	return RespHandler(resp, expectedPtr)
 }
 
 func RespHandler(resp *http.Response, expectedPtr any) error {
