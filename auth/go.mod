@@ -1,12 +1,12 @@
 module git.tenvine.cn/backend/gore/auth
 
-go 1.19
+go 1.20
 
 require (
 	git.tenvine.cn/backend/gore/common v0.11.1-beta.36
 	git.tenvine.cn/backend/gore/gonfig v0.11.1-beta.1
 	git.tenvine.cn/backend/gore/http v0.11.1-beta.1
-	github.com/golang-jwt/jwt/v4 v4.4.2
+	github.com/golang-jwt/jwt/v4 v4.4.3
 	github.com/stretchr/testify v1.8.1
 )
 

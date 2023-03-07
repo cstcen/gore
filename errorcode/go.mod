@@ -1,3 +1,3 @@
 module git.tenvine.cn/backend/gore/errorcode
 
-go 1.19
+go 1.20

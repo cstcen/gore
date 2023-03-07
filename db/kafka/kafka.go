@@ -59,11 +59,11 @@ func NewKafkaConfig(cfg *Config) (*sarama.Config, error) {
 	if len(cfg.Assignor) > 0 {
 		switch cfg.Assignor {
 		case "sticky":
-			config.Consumer.Group.Rebalance.Strategy = sarama.BalanceStrategySticky
+			config.Consumer.Group.Rebalance.GroupStrategies = []sarama.BalanceStrategy{sarama.BalanceStrategySticky}
 		case "roundrobin":
-			config.Consumer.Group.Rebalance.Strategy = sarama.BalanceStrategyRoundRobin
+			config.Consumer.Group.Rebalance.GroupStrategies = []sarama.BalanceStrategy{sarama.BalanceStrategyRoundRobin}
 		case "range":
-			config.Consumer.Group.Rebalance.Strategy = sarama.BalanceStrategyRange
+			config.Consumer.Group.Rebalance.GroupStrategies = []sarama.BalanceStrategy{sarama.BalanceStrategyRange}
 		default:
 			return nil, errors.Wrap(ErrInvalidAssignor, cfg.Assignor)
 		}

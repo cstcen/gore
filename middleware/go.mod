@@ -1,6 +1,6 @@
 module git.tenvine.cn/backend/gore/middleware
 
-go 1.19
+go 1.20
 
 require (
 	git.tenvine.cn/backend/gore/common v0.11.1-beta.43

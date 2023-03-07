@@ -1,11 +1,12 @@
 module git.tenvine.cn/backend/gore/gin
 
-go 1.19
+go 1.20
 
 require (
 	git.tenvine.cn/backend/gore/common v0.11.1-beta.36
 	git.tenvine.cn/backend/gore/consul v0.11.1-beta.1
 	git.tenvine.cn/backend/gore/gonfig v0.11.1-beta.1
+	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-contrib/pprof v1.4.0
 	github.com/gin-gonic/gin v1.8.1
 	github.com/swaggo/files v0.0.0-20220728132757-551d4a08d97a
@@ -28,7 +29,6 @@ require (
 	github.com/coreos/go-systemd/v22 v22.3.2 // indirect
 	github.com/fatih/color v1.13.0 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
-	github.com/gin-contrib/cors v1.4.0 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-openapi/jsonpointer v0.19.5 // indirect
 	github.com/go-openapi/jsonreference v0.19.6 // indirect
