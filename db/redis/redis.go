@@ -6,6 +6,10 @@ import (
 	"github.com/go-redis/redis/v8"
 )
 
+const (
+	ErrNil = redis.Nil
+)
+
 var (
 	ErrEmptyHosts = errors.New("hosts is empty")
 
