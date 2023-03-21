@@ -1,9 +1,9 @@
 package redis
 
 import (
+	"errors"
 	"git.tenvine.cn/backend/gore/gonfig"
 	"github.com/go-redis/redis/v8"
-	"github.com/pkg/errors"
 )
 
 var (
