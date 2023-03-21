@@ -10,7 +10,8 @@ import (
 )
 
 var (
-	cc *cache.Cache
+	cc  *cache.Cache
+	cli redis.UniversalClient
 )
 
 type Config struct {
@@ -25,6 +26,10 @@ type Config struct {
 
 func Instance() *cache.Cache {
 	return cc
+}
+
+func Redis() redis.UniversalClient {
+	return cli
 }
 
 func SetupDefault() error {
@@ -69,18 +74,19 @@ func newOptions(cfg *Config) *cache.Options {
 		}
 		log.Infof("Current redis ring: %+v", addrs)
 
-		options.Redis = redis.NewRing(&redis.RingOptions{
+		cli = redis.NewRing(&redis.RingOptions{
 			Addrs:    addrs,
 			Username: cfg.Username,
 			Password: cfg.Password,
 		})
 	} else {
 		log.Infof("Current redis cluster: %+v", cfg.Hosts)
-		options.Redis = redis.NewClusterClient(&redis.ClusterOptions{
+		cli = redis.NewClusterClient(&redis.ClusterOptions{
 			Addrs:    cfg.Hosts,
 			Username: cfg.Username,
 			Password: cfg.Password,
 		})
 	}
+	options.Redis = cli
 	return options
 }
