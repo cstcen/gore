@@ -6,9 +6,7 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
-	"errors"
 	"fmt"
-	"hash"
 	"net/http"
 	"strings"
 )
@@ -17,10 +15,6 @@ type Algorithm string
 
 const (
 	AlgorithmSha256 Algorithm = "SHA-256"
-)
-
-var (
-	ErrAlgorithmNotFound = errors.New("algorithm not found")
 )
 
 type Signer interface {
@@ -35,7 +29,6 @@ type HMacSha256 struct {
 	SignedHeaders  string
 	RequestPayload []byte
 
-	Algorithm   Algorithm
 	RequestDate string
 	Request     string
 
@@ -82,19 +75,11 @@ func (h *HMacSha256) buildSigning(requestStr []byte) ([]byte, error) {
 	hs.Write(requestStr)
 	bs := hs.Sum(nil)
 	hashedRequest := strings.ToLower(hex.EncodeToString(bs))
-	return []byte(fmt.Sprintf("%s\n%s\n%s", h.Algorithm, h.RequestDate, hashedRequest)), nil
+	return []byte(fmt.Sprintf("%s\n%s\n%s", crypto.SHA256.String(), h.RequestDate, hashedRequest)), nil
 }
 
 func (h *HMacSha256) buildSignature(secret string, signatureStr []byte) (string, error) {
-	var fn func() hash.Hash
-	switch h.Algorithm {
-	case AlgorithmSha256:
-		fn = sha256.New
-	default:
-		return "", ErrAlgorithmNotFound
-	}
-
-	hs := hmac.New(fn, []byte(secret))
+	hs := hmac.New(sha256.New, []byte(secret))
 	hs.Write(signatureStr)
 	bs := hs.Sum(nil)
 	return hex.EncodeToString(bs), nil
