@@ -30,7 +30,6 @@ type HMacSha256 struct {
 	RequestPayload []byte
 
 	RequestDate string
-	Request     string
 
 	Secret string
 }
