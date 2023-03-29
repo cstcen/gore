@@ -2,10 +2,15 @@ package http
 
 import (
 	"bytes"
+	"errors"
 	"git.tenvine.cn/backend/gore/log"
 	"io"
 	"net/http"
 	"time"
+)
+
+var (
+	ErrUrlNotFound = errors.New("request URL not found")
 )
 
 type Transport struct {
@@ -18,8 +23,12 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 	// Start timer
 	start := time.Now()
 	header := req.Header
-	path := req.URL.Path
-	raw := req.URL.RawQuery
+	u := req.URL
+	if u == nil {
+		return nil, ErrUrlNotFound
+	}
+	path := u.Path
+	raw := u.RawQuery
 	if len(raw) > 0 {
 		path = path + "?" + raw
 	}
@@ -32,7 +41,7 @@ func (t *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 		req.Body = io.NopCloser(&reqBuf)
 	}
 
-	log.DebugCf(ctx, "HTTPClient Req URL:    %s", req.URL.String())
+	log.DebugCf(ctx, "HTTPClient Req URL:    %s", u.String())
 	log.DebugCf(ctx, "HTTPClient Req Header: %+v", header)
 	log.DebugCf(ctx, "HTTPClient Req Body:   %q", string(reqBody))
 

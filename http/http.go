@@ -9,34 +9,28 @@ import (
 	"time"
 )
 
-var cli *http.Client
-
-// GetInstance is replaced by Instance()
-// Deprecated
-func GetInstance() *http.Client {
-	return Instance()
-}
+var cli = &http.Client{Timeout: 3 * time.Second, Transport: &Transport{
+	RoundTripper: http.DefaultTransport,
+}}
 
 func Instance() *http.Client {
 	return cli
 }
 
+// Setup ...
+// Deprecated
 func Setup() error {
-	cli = &http.Client{Timeout: 3 * time.Second, Transport: &Transport{
-		RoundTripper: http.DefaultTransport,
-	}}
-
 	return nil
 }
 
-func InternalPost(ctx context.Context, url, contentType string, body any, expectedPtr any, getInfraToken func(c context.Context) (string, error)) error {
-	var r io.Reader
-	if body != nil {
-		p, err := json.Marshal(body)
-		if err != nil {
-			return err
-		}
-		r = bytes.NewReader(p)
+type AuthorizationInHeaderGetter interface {
+	GetAuthorizationInHeader(req *http.Request) (string, error)
+}
+
+func InternalPost(ctx context.Context, url, contentType string, body any, expectedPtr any, setAuthorizationInHeader func(request *http.Request) error) error {
+	r, err := getBodyReader(body)
+	if err != nil {
+		return err
 	}
 
 	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, r)
@@ -44,60 +38,39 @@ func InternalPost(ctx context.Context, url, contentType string, body any, expect
 		return err
 	}
 
-	infraToken, err := getInfraToken(ctx)
-	if err != nil {
-		return err
-	}
-	req.Header.Set("Content-Type", contentType)
-	req.Header.Set("Authorization", infraToken)
-	resp, err := cli.Do(req)
-	if err != nil {
-		return err
-	}
-
-	return RespHandler(resp, expectedPtr)
-}
-
-func Post(ctx context.Context, url, contentType string, body any, expectedPtr any) error {
-	var r io.Reader
-	if body != nil {
-		p, err := json.Marshal(body)
-		if err != nil {
-			return err
-		}
-		r = bytes.NewReader(p)
-	}
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, r)
-	if err != nil {
-		return err
-	}
 	req.Header.Set("Content-Type", contentType)
 
-	resp, err := cli.Do(req)
-	if err != nil {
+	if err := setAuthorizationInHeader(req); err != nil {
 		return err
 	}
 
-	return RespHandler(resp, expectedPtr)
+	return Do(req, expectedPtr)
 }
 
-func InternalGet(ctx context.Context, url string, expectedPtr any, getInfraToken func(c context.Context) (string, error)) error {
+func InternalGet(ctx context.Context, url string, expectedPtr any, setAuthorizationInHeader func(request *http.Request) error) error {
 	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
 		return err
 	}
 
-	infraToken, err := getInfraToken(ctx)
-	if err != nil {
+	if err := setAuthorizationInHeader(req); err != nil {
 		return err
 	}
-	req.Header.Set("Authorization", infraToken)
-	resp, err := cli.Do(req)
-	if err != nil {
-		return err
-	}
+	return Do(req, expectedPtr)
+}
 
-	return RespHandler(resp, expectedPtr)
+func Post(ctx context.Context, url, contentType string, body any, expectedPtr any) error {
+	r, err := getBodyReader(body)
+	if err != nil {
+		return err
+	}
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, r)
+	if err != nil {
+		return err
+	}
+	req.Header.Set("Content-Type", contentType)
+
+	return Do(req, expectedPtr)
 }
 
 func Get(ctx context.Context, url string, expectedPtr any) error {
@@ -105,12 +78,7 @@ func Get(ctx context.Context, url string, expectedPtr any) error {
 	if err != nil {
 		return err
 	}
-	resp, err := cli.Do(req)
-	if err != nil {
-		return err
-	}
-
-	return RespHandler(resp, expectedPtr)
+	return Do(req, expectedPtr)
 }
 
 func Head(ctx context.Context, url string, expectedPtr any) error {
@@ -118,6 +86,18 @@ func Head(ctx context.Context, url string, expectedPtr any) error {
 	if err != nil {
 		return err
 	}
+	return Do(req, expectedPtr)
+}
+
+func RespHandler(resp *http.Response, expectedPtr any) error {
+	if expectedPtr == nil {
+		return nil
+	}
+	defer resp.Body.Close()
+	return json.NewDecoder(resp.Body).Decode(expectedPtr)
+}
+
+func Do(req *http.Request, expectedPtr any) error {
 	resp, err := cli.Do(req)
 	if err != nil {
 		return err
@@ -126,20 +106,13 @@ func Head(ctx context.Context, url string, expectedPtr any) error {
 	return RespHandler(resp, expectedPtr)
 }
 
-func RespHandler(resp *http.Response, expectedPtr any) error {
-	if expectedPtr == nil {
-		return nil
+func getBodyReader(body any) (io.Reader, error) {
+	if body == nil {
+		return nil, nil
 	}
-	defer func(Body io.ReadCloser) {
-		_ = Body.Close()
-	}(resp.Body)
-	bodyBytes, err := io.ReadAll(resp.Body)
+	p, err := json.Marshal(body)
 	if err != nil {
-		return err
+		return nil, err
 	}
-
-	if err := json.Unmarshal(bodyBytes, expectedPtr); err != nil {
-		return err
-	}
-	return nil
+	return bytes.NewReader(p), nil
 }
