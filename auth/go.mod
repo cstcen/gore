@@ -6,7 +6,7 @@ require (
 	git.tenvine.cn/backend/gore/common v0.11.2
 	git.tenvine.cn/backend/gore/gonfig v0.11.3
 	git.tenvine.cn/backend/gore/http v0.11.3
-	git.tenvine.cn/backend/gore/util v0.11.2
+	git.tenvine.cn/backend/gore/util v0.11.3
 	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/stretchr/testify v1.8.2
 )
