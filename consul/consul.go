@@ -19,7 +19,7 @@ func SetupDefault() error {
 	url := gonfig.Instance().GetString("gore.consul.discovery.host")
 	conf = &api.Config{
 		Address:    url,
-		HttpClient: goreHttp.GetInstance(),
+		HttpClient: goreHttp.Instance(),
 	}
 	return nil
 }
