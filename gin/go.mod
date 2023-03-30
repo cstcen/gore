@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	git.tenvine.cn/backend/gore/common v0.11.2
-	git.tenvine.cn/backend/gore/consul v0.11.2
+	git.tenvine.cn/backend/gore/consul v0.11.4
 	git.tenvine.cn/backend/gore/gonfig v0.11.3
 	github.com/gin-contrib/cors v1.4.0
 	github.com/gin-contrib/pprof v1.4.0
@@ -19,8 +19,8 @@ require (
 	cloud.google.com/go/compute/metadata v0.2.3 // indirect
 	cloud.google.com/go/firestore v1.9.0 // indirect
 	cloud.google.com/go/longrunning v0.3.0 // indirect
-	git.tenvine.cn/backend/gore/http v0.11.1-beta.1 // indirect
-	git.tenvine.cn/backend/gore/log v0.11.1-beta.1 // indirect
+	git.tenvine.cn/backend/gore/http v0.11.3 // indirect
+	git.tenvine.cn/backend/gore/log v0.11.3 // indirect
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/PuerkitoBio/purell v1.1.1 // indirect
 	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect
@@ -47,7 +47,7 @@ require (
 	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.2.1 // indirect
 	github.com/googleapis/gax-go/v2 v2.7.0 // indirect
-	github.com/hashicorp/consul/api v1.18.0 // indirect
+	github.com/hashicorp/consul/api v1.20.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-hclog v1.2.0 // indirect
 	github.com/hashicorp/go-immutable-radix v1.3.1 // indirect
