@@ -18,14 +18,10 @@ func DecryptToken(ctx context.Context, token string) (*string, error) {
 		return nil, err
 	}
 	req.Header.Set("Authorization", token)
-	resp, err := goreHttp.GetInstance().Do(req)
-	if err != nil {
-		return nil, err
-	}
 	var result common.DataResult[struct {
 		UserJwt string `json:"user_jwt"`
 	}]
-	if err := goreHttp.RespHandler(resp, &result); err != nil {
+	if err := goreHttp.Do(req, &result); err != nil {
 		return nil, err
 	}
 	if result.GetCode() != common.BaseResultSuccess.GetCode() || len(result.Data.UserJwt) == 0 {

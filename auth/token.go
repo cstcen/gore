@@ -14,12 +14,8 @@ func Check(ctx context.Context, token string, url string) (*Member, error) {
 		return nil, err
 	}
 	req.Header.Set("Authorization", token)
-	resp, err := goreHttp.GetInstance().Do(req)
-	if err != nil {
-		return nil, err
-	}
 	var result common.DataResult[*Member]
-	if err := goreHttp.RespHandler(resp, &result); err != nil {
+	if err := goreHttp.Do(req, &result); err != nil {
 		return nil, err
 	}
 	if result.GetCode() != common.BaseResultSuccess.GetCode() || result.Data == nil {
