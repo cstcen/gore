@@ -6,6 +6,7 @@ import (
 	"git.tenvine.cn/backend/gore/common"
 	"git.tenvine.cn/backend/gore/consul"
 	"git.tenvine.cn/backend/gore/gonfig"
+	"git.tenvine.cn/backend/gore/util"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
@@ -87,14 +88,17 @@ func Setup() error {
 	}
 
 	// gin log to file
-	gin.DefaultWriter = log.Default().Writer()
-	gin.DefaultErrorWriter = log.Default().Writer()
+	writer := log.Default().Writer()
+	gin.DefaultWriter = writer
+	gin.DefaultErrorWriter = writer
 
 	gin.DebugPrintRouteFunc = func(httpMethod, absolutePath, handlerName string, nuHandlers int) {
 		log.Printf("%-6s %-25s --> %s (%d handlers)", httpMethod, absolutePath, handlerName, nuHandlers)
 	}
 
 	engine = gin.New()
+
+	engine.Use(gin.LoggerWithFormatter(LogFormatter))
 
 	engine.Use(gin.CustomRecovery(func(c *gin.Context, err any) {
 		c.AbortWithStatusJSON(http.StatusOK, common.BaseResultService.WithMsg(fmt.Sprintf("%s", err)))
@@ -163,4 +167,18 @@ func routeSwagger(e *gin.Engine) {
 		c.DefaultModelsExpandDepth = 0
 		c.DeepLinking = true
 	}))
+}
+
+func LogFormatter(param gin.LogFormatterParams) string {
+	requestId, _ := param.Keys[util.RequestIDContextKey].(string)
+	return fmt.Sprintf("%v [GORE] [%s] | %3d | %13v | %15s |%-7s %#v\n%s",
+		param.TimeStamp.Format("2006/01/02 15:04:05"),
+		requestId,
+		param.StatusCode,
+		param.Latency,
+		param.ClientIP,
+		param.Method,
+		param.Path,
+		param.ErrorMessage,
+	)
 }
