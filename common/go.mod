@@ -1,3 +1,3 @@
-module git.tenvine.cn/backend/gore/common
+module github.com/cstcen/gore/common
 
-go 1.20
+go 1.21.0
