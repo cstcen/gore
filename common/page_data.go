@@ -8,15 +8,36 @@ var (
 )
 
 type PageData[T any] struct {
-	PageNo             int       `json:"pageNo"`
-	PageSize           int       `json:"pageSize"`
+	PageNo             int       `json:"pageNo,omitempty"`
+	PageSize           int       `json:"pageSize,omitempty"`
 	Order              OrderEnum `json:"order,omitempty"`
 	OrderBy            string    `json:"orderBy,omitempty"`
 	List               []T       `json:"list"`
-	Total              int       `json:"total"`
-	TotalPages         int       `json:"totalPages"`
+	Total              int       `json:"total,omitempty"`
+	TotalPages         int       `json:"totalPages,omitempty"`
 	NeedlessData       bool      `json:"-"`
 	NeedlessTotalCount bool      `json:"-"`
+}
+
+func NewPageData[T any](list []T) *PageData[T] {
+	return &PageData[T]{List: list}
+}
+
+func (d *PageData[T]) WithTotal(total int) *PageData[T] {
+	d.Total = total
+	d.TotalPages = d.GetTotalPages()
+	return d
+}
+
+func (d *PageData[T]) WithPageNo(pageNo int) *PageData[T] {
+	d.PageNo = pageNo
+	return d
+}
+
+func (d *PageData[T]) WithPageSize(pageSize int) *PageData[T] {
+	d.PageSize = pageSize
+	d.TotalPages = d.GetTotalPages()
+	return d
 }
 
 func (d *PageData[T]) GetFirst() int {
@@ -24,8 +45,8 @@ func (d *PageData[T]) GetFirst() int {
 }
 
 func (d *PageData[T]) GetTotalPages() int {
-	if d.Total < 0 {
-		return -1
+	if d.Total <= 0 || d.PageSize == 0 {
+		return 0
 	}
 
 	count := d.Total / d.PageSize

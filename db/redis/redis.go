@@ -44,21 +44,29 @@ func Setup(cfg *Config) error {
 	}
 
 	if !cfg.DisableCluster {
-		cli = redis.NewClient(&redis.Options{
-			Addr:     cfg.Hosts[0],
-			Username: cfg.Username,
-			Password: cfg.Password,
-		})
+		cli = NewClient(cfg)
 		return nil
 	}
 
-	cli = redis.NewClusterClient(&redis.ClusterOptions{
+	cli = NewClusterClient(cfg)
+
+	return nil
+}
+
+func NewClusterClient(cfg *Config) *redis.ClusterClient {
+	return redis.NewClusterClient(&redis.ClusterOptions{
 		Addrs:    cfg.Hosts,
 		Username: cfg.Username,
 		Password: cfg.Password,
 	})
+}
 
-	return nil
+func NewClient(cfg *Config) *redis.Client {
+	return redis.NewClient(&redis.Options{
+		Addr:     cfg.Hosts[0],
+		Username: cfg.Username,
+		Password: cfg.Password,
+	})
 }
 
 func DefaultConfig() *Config {

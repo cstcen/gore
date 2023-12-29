@@ -1,0 +1,4 @@
+package: cligraph
+generate:
+  client: true
+  models: true

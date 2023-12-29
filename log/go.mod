@@ -1,11 +1,10 @@
-module git.tenvine.cn/backend/gore/log
+module git.tenvine.cn/backend/gore/log/v2
 
-go 1.20
+go 1.21
 
 require (
-	git.tenvine.cn/backend/gore/gonfig v0.11.3
+	git.tenvine.cn/backend/gore/gonfig v0.11.5
 	github.com/natefinch/lumberjack v2.0.0+incompatible
-	github.com/pkg/errors v0.9.1
 )
 
 require (
@@ -14,7 +13,7 @@ require (
 	cloud.google.com/go/compute/metadata v0.2.3 // indirect
 	cloud.google.com/go/firestore v1.9.0 // indirect
 	cloud.google.com/go/longrunning v0.3.0 // indirect
-	git.tenvine.cn/backend/gore/common v0.11.2 // indirect
+	git.tenvine.cn/backend/gore/common v0.11.15 // indirect
 	github.com/BurntSushi/toml v1.2.1 // indirect
 	github.com/armon/go-metrics v0.4.0 // indirect
 	github.com/bketelsen/crypt v0.0.5 // indirect
@@ -45,6 +44,7 @@ require (
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.6 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/sagikazarmark/crypt v0.9.0 // indirect
 	github.com/spf13/afero v1.9.3 // indirect
 	github.com/spf13/cast v1.5.0 // indirect

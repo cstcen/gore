@@ -2,26 +2,15 @@ package log
 
 import (
 	"context"
-	"fmt"
 	"git.tenvine.cn/backend/gore/gonfig"
 	"github.com/natefinch/lumberjack"
-	"github.com/pkg/errors"
 	"io"
-	"log"
+	"log/slog"
 	"os"
-	"strings"
-)
-
-const (
-	LevelDebug Level = iota
-	LevelInfo
-	LevelWarning
-	LevelError
+	"time"
 )
 
 var (
-	defaultLevel        = LevelDebug
-	defaultLevelName    = LevelDebug.Name()
 	defaultRequestIdKey = "X-Request-ID"
 )
 
@@ -33,44 +22,15 @@ func MustRequestID(c context.Context) string {
 	return id
 }
 
-func SetRequestIdKey(key string) {
-	defaultRequestIdKey = key
-}
-
-func GetLevel() Level {
-	return defaultLevel
-}
-
-func Default() *log.Logger {
-	return log.Default()
-}
-
-type Level uint8
-
-func (l Level) Name() string {
-	switch l {
-	case LevelDebug:
-		return "debug"
-	case LevelInfo:
-		return "info"
-	case LevelWarning:
-		return "warning"
-	case LevelError:
-		return "error"
-	default:
-		return "unknown"
-	}
-}
-
 type Config struct {
-	Logger *lumberjack.Logger
-	Level  string
+	*lumberjack.Logger
+	Level slog.Level
 }
 
 func SetupDefault() error {
-	cfg := Config{Level: gonfig.Instance().GetString("gore.logger.level")}
+	var cfg Config
 	if gonfig.Instance().GetBool("log") {
-		if err := gonfig.Instance().UnmarshalKey("gore.logger", &cfg.Logger); err != nil {
+		if err := gonfig.Instance().UnmarshalKey("gore.logger", &cfg); err != nil {
 			return err
 		}
 	}
@@ -78,140 +38,34 @@ func SetupDefault() error {
 }
 
 func Setup(cfg *Config) error {
-	if cfg == nil {
-		return errors.New("log config not found")
-	}
 
-	log.SetPrefix("[GORE] ")
-	log.SetFlags(log.LstdFlags | log.Lmsgprefix)
-
-	if cfg.Logger != nil {
-		multiWriter := io.MultiWriter(os.Stdout, cfg.Logger)
-		log.SetOutput(multiWriter)
+	var logWriter io.Writer
+	if cfg != nil {
+		logWriter = io.MultiWriter(os.Stdout, cfg)
 	} else {
-		log.SetOutput(os.Stdout)
+		logWriter = os.Stdout
 	}
-
-	level, err := ParseLevel(cfg.Level)
-	if err != nil {
-		log.Println(err.Error())
-	}
-	defaultLevel = level
+	slog.SetDefault(slog.New(NewSlogHandler(logWriter, &slog.HandlerOptions{Level: cfg.Level, ReplaceAttr: func(groups []string, a slog.Attr) slog.Attr {
+		if a.Key == slog.TimeKey {
+			a.Value = slog.StringValue(a.Value.Time().Format(time.DateTime))
+			return a
+		}
+		return a
+	}})))
 
 	return nil
 }
 
-func ParseLevel(level string) (Level, error) {
-	switch strings.ToLower(level) {
-	case "debug":
-		return LevelDebug, nil
-	case "info":
-		return LevelInfo, nil
-	case "warning":
-		return LevelWarning, nil
-	case "error":
-		return LevelError, nil
-	default:
-		return LevelDebug, errors.New("invalid log level")
-	}
+type SlogHandler struct {
+	*slog.TextHandler
 }
 
-func Debugln(v ...any) {
-	if defaultLevel > LevelDebug {
-		return
-	}
-	log.Printf("[%s] %s", LevelDebug.Name(), fmt.Sprintln(v...))
+func NewSlogHandler(w io.Writer, opts *slog.HandlerOptions) *SlogHandler {
+	return &SlogHandler{TextHandler: slog.NewTextHandler(w, opts)}
 }
 
-func Debugf(format string, v ...any) {
-	if defaultLevel > LevelDebug {
-		return
-	}
-	log.Printf("[%s] %s", LevelDebug.Name(), fmt.Sprintf(format, v...))
-}
-
-func DebugCf(ctx context.Context, format string, v ...any) {
-	if defaultLevel > LevelDebug {
-		return
-	}
-	log.Printf("[%s] [%s] %s", LevelDebug.Name(), MustRequestID(ctx), fmt.Sprintf(format, v...))
-}
-
-func Infoln(format string, v ...any) {
-	if defaultLevel > LevelInfo {
-		return
-	}
-	log.Printf("[%s] %s", LevelInfo.Name(), fmt.Sprintln(v...))
-}
-
-func Infof(format string, v ...any) {
-	if defaultLevel > LevelInfo {
-		return
-	}
-	log.Printf("[%s] %s", LevelInfo.Name(), fmt.Sprintf(format, v...))
-}
-
-func InfoCf(ctx context.Context, format string, v ...any) {
-	if defaultLevel > LevelInfo {
-		return
-	}
-	log.Printf("[%s] [%s] %s", LevelInfo.Name(), MustRequestID(ctx), fmt.Sprintf(format, v...))
-}
-
-func Warningln(format string, v ...any) {
-	if defaultLevel > LevelWarning {
-		return
-	}
-	log.Printf("[%s] %s", LevelWarning.Name(), fmt.Sprintln(v...))
-}
-
-func Warningf(format string, v ...any) {
-	if defaultLevel > LevelWarning {
-		return
-	}
-	log.Printf("[%s] %s", LevelWarning.Name(), fmt.Sprintf(format, v...))
-}
-
-func WarningCf(ctx context.Context, format string, v ...any) {
-	if defaultLevel > LevelWarning {
-		return
-	}
-	log.Printf("[%s] [%s] %s", LevelWarning.Name(), MustRequestID(ctx), fmt.Sprintf(format, v...))
-}
-
-func Errorln(format string, v ...any) {
-	if defaultLevel > LevelError {
-		return
-	}
-	log.Printf("[%s] %s", LevelError.Name(), fmt.Sprintln(v...))
-}
-
-func Errorf(format string, v ...any) {
-	if defaultLevel > LevelError {
-		return
-	}
-	log.Printf("[%s] %s", LevelError.Name(), fmt.Sprintf(format, v...))
-}
-
-func ErrorCf(ctx context.Context, format string, v ...any) {
-	if defaultLevel > LevelError {
-		return
-	}
-	log.Printf("[%s] [%s] %s", LevelError.Name(), MustRequestID(ctx), fmt.Sprintf(format, v...))
-}
-
-func Panicln(v ...any) {
-	log.Panicln(v...)
-}
-
-func Panicf(format string, v ...any) {
-	log.Panicf(format, v...)
-}
-
-func Fatalln(v ...any) {
-	log.Fatalln(v...)
-}
-
-func Fatalf(format string, v ...any) {
-	log.Fatalf(format, v...)
+func (h *SlogHandler) Handle(c context.Context, r slog.Record) error {
+	id := MustRequestID(c)
+	r.Add(defaultRequestIdKey, id)
+	return h.TextHandler.Handle(c, r)
 }

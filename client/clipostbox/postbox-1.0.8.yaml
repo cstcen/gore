@@ -1,0 +1,1959 @@
+openapi: 3.0.1
+info:
+  title: Postbox
+  version: 1.0.8 - BETA
+servers:
+  - url: https://api-{env}.xk5.com
+    description: Development & Test Environment
+    variables:
+      env:
+        enum:
+          - sdev0
+          - sdev
+          - dev
+          - dev2
+          - dev3
+          - mod
+          - stg
+        default: sdev0
+        description: "sdev0: 藤蔓开发环境, sdev: 研发开发环境, dev/dev2: 研发测试环境"
+  - url: https://api.xk5.com
+    description: Production Environment
+paths:
+  /postbox/v1.0/services/{serviceId}/postboxes/{postboxId}:
+    post:
+      description: 发送邮件
+      parameters:
+        - $ref: '#/components/parameters/serviceIdInPath'
+        - $ref: '#/components/parameters/postboxIdInPath'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendPostRequest'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResult'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/SendPostResponse'
+              examples:
+                Success:
+                  value: { "code": 0, "data": { "postNo": 722 }, "message": "OK" }
+                ServiceError:
+                  $ref: '#/components/examples/ServiceError'
+                PostboxNotFound:
+                  $ref: '#/components/examples/PostboxNotFound'
+                ServiceNotFound:
+                  $ref: '#/components/examples/ServiceNotFound'
+                DuplicateTransactionId:
+                  $ref: '#/components/examples/DuplicateTransactionId'
+                PartialSuccess:
+                  $ref: '#/components/examples/PartialSuccess'
+  /postbox/v1.0/services/{serviceId}/users/{userId}/posts:
+    get:
+      description: 批量查询用户邮件
+      parameters:
+        - $ref: '#/components/parameters/serviceIdInPath'
+        - $ref: "#/components/parameters/userIdInPath"
+        - $ref: "#/components/parameters/categoryInQuery"
+        - $ref: "#/components/parameters/messageTypeInQuery"
+        - $ref: "#/components/parameters/postboxIdInQuery"
+        - $ref: "#/components/parameters/postNosInQuery"
+        - $ref: "#/components/parameters/pageInQuery"
+        - $ref: "#/components/parameters/sizeInQuery"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResult'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          list:
+                            type: array
+                            items:
+                              $ref: '#/components/schemas/PostResponse'
+              examples:
+                Success:
+                  value: { "code": 0, "data": { "list": [ { "category": "GM", "categoryName": "英雄之路", "createdDate": 1696927708240, "deleted": false, "expireAfter": 603762398, "expireAt": 1697532508240, "itemSent": true, "itemSentDate": 1696927963031, "items": [ { "Data": {}, "ItemId": "et", "ItemTag": 2, "ItemType": "occaecat ut commodo", "Quantity": 10 } ], "messageType": 1000, "messages": [ { "Locale": "zh_CN", "Msg": { "body": "下午好", "title": "提示" } } ], "postNo": 719, "postTransactionId": "7266c335-5092-47a6-b59a-7ccea4831d56", "postboxId": "SGXQ-GM", "read": false, "sender": { "Name": "系统邮件", "UserId": "1002565", "UserType": "G" }, "serviceId": "SGXQ", "updatedDate": 1696927708240, "userId": "1002094" } ], "pageNo": 1, "pageSize": 1, "total": 1, "totalPages": 1 }, "message": "OK" }
+                ServiceNotFound:
+                  $ref: '#/components/examples/ServiceNotFound'
+    delete:
+      description: 批量删除邮件
+      parameters:
+        - $ref: '#/components/parameters/serviceIdInPath'
+        - $ref: "#/components/parameters/userIdInPath"
+        - $ref: "#/components/parameters/categoryInQuery"
+        - $ref: "#/components/parameters/messageTypeInQuery"
+        - $ref: "#/components/parameters/postboxIdInQuery"
+        - $ref: "#/components/parameters/postNosInQuery"
+        - $ref: '#/components/parameters/deleteItemSentInQuery'
+        - $ref: '#/components/parameters/deleteNoItemInQuery'
+        - $ref: '#/components/parameters/deleteReadInQuery'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResult'
+              examples:
+                Success:
+                  $ref: '#/components/examples/Success'
+                ServiceNotFound:
+                  $ref: '#/components/examples/ServiceNotFound'
+                UserPostNotFound:
+                  $ref: '#/components/examples/UserPostNotFound'
+  /postbox/v1.0/services/{serviceId}/users/{userId}/posts/items:
+    delete:
+      description: 批量领取道具
+      parameters:
+        - $ref: '#/components/parameters/serviceIdInPath'
+        - $ref: "#/components/parameters/userIdInPath"
+        - $ref: "#/components/parameters/deleteItemSentInQuery"
+        - $ref: '#/components/parameters/postNosInQuery'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResult'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/SuccessFailureResponse'
+              examples:
+                Success:
+                  value: { "code": 0, "data": { "failure": [ 722, 720, 721 ], "success": [ 723 ] }, "message": "OK" }
+                ServiceNotFound:
+                  $ref: '#/components/examples/ServiceNotFound'
+                WrongApiUsage:
+                  $ref: '#/components/examples/WrongApiUsage'
+                AllFailed:
+                  $ref: '#/components/examples/AllFailed'
+  /postbox/v1.0/services/{serviceId}/users/{userId}/posts/read:
+    put:
+      description: 批量修改邮件为已读
+      parameters:
+        - $ref: '#/components/parameters/serviceIdInPath'
+        - $ref: "#/components/parameters/userIdInPath"
+        - $ref: '#/components/parameters/postNosInQuery'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResult'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          list:
+                            type: array
+                            items:
+                              $ref: '#/components/schemas/PostResponse'
+              examples:
+                Success:
+                  $ref: '#/components/examples/Success'
+                ServiceNotFound:
+                  $ref: '#/components/examples/ServiceNotFound'
+                PostNotFound:
+                  $ref: '#/components/examples/PostNotFound'
+                UserPostNotFound:
+                  $ref: '#/components/examples/UserPostNotFound'
+  /postbox/v1.0/services/{serviceId}/users/{userId}/summary:
+    get:
+      description: 查询用户邮箱概览
+      parameters:
+        - $ref: '#/components/parameters/serviceIdInPath'
+        - $ref: "#/components/parameters/userIdInPath"
+        - $ref: "#/components/parameters/categoryInQuery"
+        - $ref: "#/components/parameters/messageTypeInQuery"
+        - $ref: "#/components/parameters/postboxIdInQuery"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResult'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          list:
+                            type: array
+                            items:
+                              $ref: '#/components/schemas/UserPostCountSummary'
+              examples:
+                Success:
+                  value: { "code": 0, "data": { "list": [ { "notItemSent": 0, "postboxId": "SGXQ-GM", "read": 0, "total": 1, "unread": 1 } ], "pageNo": 1, "pageSize": 20, "total": 1, "totalPages": 1 }, "message": "OK" }
+                ServiceNotFound:
+                  $ref: '#/components/examples/ServiceNotFound'
+                PostboxNotFound:
+                  $ref: '#/components/examples/PostboxNotFound'
+  /postbox/v1.0/services/{serviceId}/users/{userId}/posts/{postNo}:
+    get:
+      description: 查询单个邮件
+      parameters:
+        - $ref: '#/components/parameters/serviceIdInPath'
+        - $ref: "#/components/parameters/userIdInPath"
+        - $ref: "#/components/parameters/postNoInPath"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResult'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/PostResponse'
+              examples:
+                Success:
+                  value: { "code": 0, "data": { "category": "GM", "categoryName": "英雄之路", "createdDate": 1696927708240, "deleted": false, "expireAfter": 604098228, "expireAt": 1697532508240, "itemSent": true, "itemSentDate": 1696927963031, "items": [ { "Data": {}, "ItemId": "et", "ItemTag": 2, "ItemType": "occaecat ut commodo", "Quantity": 10 } ], "messageType": 1000, "messages": [ { "Locale": "zh_CN", "Msg": { "body": "下午好", "title": "提示" } } ], "postNo": 719, "postTransactionId": "7266c335-5092-47a6-b59a-7ccea4831d56", "postboxId": "SGXQ-GM", "read": false, "sender": { "Name": "系统邮件", "UserId": "1002565", "UserType": "G" }, "serviceId": "SGXQ", "updatedDate": 1696927708240, "userId": "1002094" }, "message": "OK" }
+                ServiceNotFound:
+                  $ref: '#/components/examples/ServiceNotFound'
+                UserPostNotFound:
+                  $ref: '#/components/examples/UserPostNotFound'
+    delete:
+      description: 删除单个邮件
+      parameters:
+        - $ref: '#/components/parameters/serviceIdInPath'
+        - $ref: "#/components/parameters/userIdInPath"
+        - $ref: "#/components/parameters/postNoInPath"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResult'
+              examples:
+                Success:
+                  $ref: '#/components/examples/Success'
+                ServiceNotFound:
+                  $ref: '#/components/examples/ServiceNotFound'
+                UserPostNotFound:
+                  $ref: '#/components/examples/UserPostNotFound'
+                ServiceError:
+                  $ref: '#/components/examples/ServiceError'
+  /postbox/v1.0/services/{serviceId}/users/{userId}/posts/{postNo}/items:
+    delete:
+      description: 领取道具
+      parameters:
+        - $ref: '#/components/parameters/serviceIdInPath'
+        - $ref: "#/components/parameters/userIdInPath"
+        - $ref: "#/components/parameters/postNoInPath"
+        - $ref: '#/components/parameters/deleteItemSentInQuery'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseResult'
+              examples:
+                Success:
+                  $ref: '#/components/examples/Success'
+                ServiceNotFound:
+                  $ref: '#/components/examples/ServiceNotFound'
+                UserPostNotFound:
+                  $ref: '#/components/examples/UserPostNotFound'
+                PostNotFound:
+                  $ref: '#/components/examples/PostNotFound'
+                NotAttachedItem:
+                  $ref: '#/components/examples/NotAttachedItem'
+                ServiceError:
+                  $ref: '#/components/examples/ServiceError'
+  /postbox/v1.0/services/{serviceId}/postboxes/{postboxId}/users/{userId}/count:
+    get:
+      description: 统计用户邮箱的邮件数量
+      parameters:
+        - $ref: '#/components/parameters/serviceIdInPath'
+        - $ref: "#/components/parameters/postboxIdInPath"
+        - $ref: "#/components/parameters/userIdInPath"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResult'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/UserPostCount'
+              examples:
+                Success:
+                  value: { "code": 0, "data": { "currentSize": 1, "maxSize": 4, "postboxId": "SGXQ-GM" }, "message": "OK" }
+                ServiceNotFound:
+                  $ref: '#/components/examples/ServiceNotFound'
+                PostboxNotFound:
+                  $ref: '#/components/examples/PostboxNotFound'
+components:
+  schemas:
+    BaseResult:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+      required:
+        - code
+        - message
+    BaseServiceResponse:
+      type: object
+      properties:
+        resultCode:
+          type: integer
+          format: int32
+          example: 0
+        resultMessage:
+          type: string
+          example: "OK"
+      required:
+        - resultCode
+        - resultMessage
+    Item:
+      type: object
+      properties:
+        data:
+          type: object
+          description: 预留字段
+          additionalProperties: true
+          example: { }
+        itemId:
+          type: string
+          description: 道具ID
+          example: "1"
+        itemTag:
+          type: integer
+          description: |
+            道具标签，根据道具数据库得知：
+             * `2` - 欢乐校园
+             * `3` - 职业模拟器
+             * `4` - 夺宝跑酷
+             * `5` - (花园广场、密石林、展览馆、花园广场、护卫战、丘陵单人战、丘陵双人战等)
+             * `6` - 英雄学校
+          format: int32
+          example: 2
+        itemType:
+          type: string
+          description: 道具类型
+          example: "3"
+        quantity:
+          type: integer
+          format: int64
+          description: 道具数量
+          example: 10
+    PBRecipientUser:
+      type: object
+      properties:
+        characterNo:
+          $ref: "#/components/schemas/CharacterNo"
+        name:
+          type: string
+          description: 游戏角色昵称
+          example: "TheOne"
+        userType:
+          $ref: "#/components/schemas/UserType"
+    UserType:
+      type: string
+      enum:
+        - CHARACTER
+        - SYSTEM
+      description: |
+        用户类型:
+         * `CHARACTER` - 玩家
+         * `SYSTEM` - 系统
+      example: "CHARACTER"
+    Category:
+      type: string
+      description: 当postboxId=SGXQ-MOD时，此字段值为UGC ID，e.g. 1991029608
+      example: GM
+    CategoryName:
+      type: string
+      description: 用于解释category的名称，例如：category=1991029608时，categoryName=英雄之路
+      example: 英雄之路
+    ExpireAt:
+      type: integer
+      description: |
+        到期时间,unit: Millisecond
+      format: int64
+      example: 1673338976000
+    Message:
+      type: object
+      additionalProperties: true
+      description: |
+        根据messageType情况而定：
+         * `1` - {"language": "", "title": "", "body": ""}
+      example: { "language": "zh_CN", "title": "提示", "body": "下午好" }
+    MemberNo:
+      type: integer
+      description: |
+        用户的memberNo:
+         * `userType=CHARACTER`时必填
+      format: int64
+      example: 1000000047946514
+    MessageType:
+      type: integer
+      format: int32
+      description: 信息类型
+      example: 1
+    PostTransactionId:
+      type: string
+      description: 流水号，例如：uuid
+      example: "311913e6-49ee-4147-a93b-dc0eefced1"
+    CharacterNo:
+      type: string
+      description: userType=CHARACTER时必填，游戏角色ID
+      example: "100386"
+    PostboxId:
+      type: string
+      description: |
+        邮箱ID:
+         * `SGXQ-GM`
+         * `SGXQ-GENERAL`
+         * `SGXQ-MOD`
+         * `SGXQ-SANDBOX`
+      example: "SGXQ-GM"
+    SendPostRequest:
+      required:
+        - category
+        - recipientType
+        - sender
+      type: object
+      properties:
+        category:
+          $ref: "#/components/schemas/Category"
+        categoryName:
+          $ref: "#/components/schemas/CategoryName"
+        expireAt:
+          $ref: "#/components/schemas/ExpireAt"
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Item"
+        messageType:
+          $ref: "#/components/schemas/MessageType"
+        messages:
+          type: array
+          description: 信息列表
+          items:
+            $ref: "#/components/schemas/Message"
+        postTransactionId:
+          $ref: "#/components/schemas/PostTransactionId"
+        recipientType:
+          type: string
+          enum:
+            - A
+            - L
+          description: |
+            * `A`: 全部玩家可接收
+            * `L`: 指定列表玩家可接收
+          example: "L"
+        recipients:
+          type: array
+          description: 当且仅当，recipientType=L时，填写
+          items:
+            $ref: "#/components/schemas/User"
+        RecipientCriteria:
+          $ref: "#/components/schemas/RecipientCriteria"
+        sender:
+          $ref: "#/components/schemas/User"
+    PBSendPostRequest:
+      required:
+        - category
+        - recipientType
+        - sender
+      type: object
+      properties:
+        category:
+          $ref: "#/components/schemas/Category"
+        categoryName:
+          $ref: "#/components/schemas/CategoryName"
+        countryCodes:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+            enum:
+              - CN
+            example: "CN"
+        expireAt:
+          $ref: "#/components/schemas/ExpireAt"
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Item"
+        messageType:
+          $ref: "#/components/schemas/MessageType"
+        messages:
+          type: array
+          description: 信息列表
+          items:
+            $ref: "#/components/schemas/Message"
+        postTransactionId:
+          $ref: "#/components/schemas/PostTransactionId"
+        recipientType:
+          type: string
+          enum:
+            - ALL
+            - RECIPIENT_LIST
+          description: |
+            * `ALL`: 全部玩家可接收
+            * `RECIPIENT_LIST`: 指定列表玩家可接收
+          example: "RECIPIENT_LIST"
+        recipients:
+          type: array
+          items:
+            $ref: "#/components/schemas/PBRecipientUser"
+        RecipientCriteria:
+          type: object
+          properties:
+            joinCountryCodes:
+              type: array
+              items:
+                type: string
+            openIdTypes:
+              type: array
+              items:
+                type: string
+        sender:
+          $ref: "#/components/schemas/PBUser"
+    PBSendPostResponse:
+      type: object
+      properties:
+        postNo:
+          type: integer
+          format: int64
+          description: 邮件编号
+          example: 101
+    PBUser:
+      required:
+        - userType
+      type: object
+      properties:
+        characterId:
+          $ref: "#/components/schemas/CharacterNo"
+        name:
+          type: string
+          description: 사용자 명<br/| - UserType.SYSTEM, UserType.CHARACTER일 경우 사용
+        systemId:
+          type: string
+          description: System ID<br/| - UserType.SYSTEM일 경우 필수
+        userType:
+          $ref: "#/components/schemas/UserType"
+    PBUserPostCountSummary:
+      type: object
+      properties:
+        notItemSent:
+          type: integer
+          format: int64
+          description: |
+            邮件是否未领取附件
+             * `0` - No
+             * `1` - Yes
+          example: 1
+        postboxId:
+          $ref: "#/components/schemas/PostboxId"
+        unread:
+          type: integer
+          format: int64
+          description: |
+            邮件是否未读
+              * `0` - No
+              * `1` - Yes
+          example: 1
+    PBUserPostCountSummaryResponse:
+      type: object
+      properties:
+        list:
+          type: array
+          items:
+            $ref: "#/components/schemas/PBUserPostCountSummary"
+    SuccessFailureResponse:
+      type: object
+      properties:
+        failure:
+          uniqueItems: true
+          type: array
+          items:
+            type: integer
+            format: int64
+          description: 失败（已知失败原因）的邮件编号列表
+          example: [ 101, 102 ]
+        retryableFailure:
+          uniqueItems: true
+          type: array
+          items:
+            type: integer
+            format: int64
+          description: 失败（未知失败原因）且可以重试的邮件编号列表
+          example: [ 103, 104 ]
+        success:
+          uniqueItems: true
+          type: array
+          items:
+            type: integer
+            format: int64
+          description: 处理成功的邮件编号列表
+          example: [ 100 ]
+    UserPostCount:
+      type: object
+      required:
+        - currentSize
+        - maxSize
+        - postboxId
+      properties:
+        currentSize:
+          type: integer
+          format: int64
+          description: 当前邮件数量
+          example: 10
+        maxSize:
+          type: integer
+          format: int64
+          description: 邮箱邮件数量上限
+          example: 100
+        postboxId:
+          $ref: "#/components/schemas/PostboxId"
+    V1User:
+      type: object
+      properties:
+        characterId:
+          type: string
+          description: userType=CHARACTER时必填，游戏角色ID
+          example: "100386"
+        name:
+          type: string
+          description: 游戏角色名称
+          example: "The One"
+        systemId:
+          type: string
+          description: 系统管理员ID，userType=SYSTEM时必填
+          example: "100387"
+        userType:
+          $ref: "#/components/schemas/UserType"
+      required:
+        - userType
+    V1UserPostDetail:
+      type: object
+      properties:
+        category:
+          $ref: "#/components/schemas/Category"
+        categoryName:
+          $ref: "#/components/schemas/CategoryName"
+        createdDate:
+          type: integer
+          format: int64
+          example: 1673338976
+        expireAfter:
+          type: integer
+          description: it expires after a few milliseconds
+          format: int64
+          example: 3000
+        expireAt:
+          type: integer
+          description: "expiration time, unit: millisecond"
+          format: int64
+          example: 1673338976
+        itemSent:
+          type: boolean
+          description: 邮件附件是否已领取
+          example: true
+        itemSentDate:
+          type: integer
+          format: int64
+          description: 邮件附件领取时间戳
+          example: 1673338976
+        items:
+          type: array
+          description: 邮件附件列表
+          items:
+            $ref: "#/components/schemas/Item"
+        message:
+          $ref: "#/components/schemas/Message"
+        messageType:
+          $ref: "#/components/schemas/MessageType"
+        postNo:
+          type: integer
+          format: int64
+          description: 邮件编号
+          example: 101
+        postTransactionId:
+          type: string
+          description: 流水号，例如：uuid
+          example: "311913e6-49ee-4147-a93b-dc0eefced1"
+        postboxId:
+          type: string
+          description: |
+            邮箱ID:
+             * `SGXQ-GM`
+             * `SGXQ-GENERAL`
+             * `SGXQ-MOD`
+             * `SGXQ-SANDBOX`
+          example: "SGXQ-GM"
+        read:
+          type: boolean
+          description: 是否已读
+          example: true
+        readDate:
+          type: integer
+          format: int64
+          description: 读取时间
+          example: 1673338976
+        sender:
+          $ref: "#/components/schemas/V1User"
+    AllTypeRecipients:
+      title: AllTypeRecipients
+      type: object
+      properties:
+        channel:
+          type: string
+        market:
+          type: string
+    ContentResponse«PostboxResponse»:
+      title: ContentResponse«PostboxResponse»
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostboxResponse'
+        size:
+          type: integer
+          format: int32
+    ContentResponse«ServiceInfoResponse»:
+      title: ContentResponse«ServiceInfoResponse»
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/ServiceInfoResponse'
+        size:
+          type: integer
+          format: int32
+    GdisCharacterPost:
+      title: GdisCharacterPost
+      type: object
+      properties:
+        category:
+          type: string
+        itemCount:
+          type: integer
+          format: int64
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/GdisItem'
+        message:
+          type: object
+          additionalProperties:
+            type: object
+            properties: { }
+        messageType:
+          type: integer
+          format: int32
+        postNo:
+          type: integer
+          format: int64
+        postboxId:
+          type: string
+        read:
+          type: boolean
+    GdisDeleteCharacterPostRequest:
+      title: GdisDeleteCharacterPostRequest
+      type: object
+      properties:
+        memberNo:
+          type: integer
+          format: int64
+        nicknameNo:
+          type: string
+        postNo:
+          type: integer
+          format: int64
+    GdisGetCharacterPostsRequest:
+      title: GdisGetCharacterPostsRequest
+      type: object
+      properties:
+        memberNo:
+          type: integer
+          format: int64
+        nicknameNo:
+          type: string
+        page:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+    GdisGetCharacterPostsResponse:
+      title: GdisGetCharacterPostsResponse
+      type: object
+      properties:
+        count:
+          type: integer
+          format: int64
+        posts:
+          type: array
+          items:
+            $ref: '#/components/schemas/GdisCharacterPost'
+        totalCount:
+          type: integer
+          format: int64
+    GdisItem:
+      title: GdisItem
+      type: object
+      properties:
+        data:
+          type: object
+          additionalProperties:
+            type: object
+            properties: { }
+        itemId:
+          type: string
+        itemQuantity:
+          type: integer
+          format: int64
+        itemType:
+          type: string
+    GdisSendCharacterPostRequest:
+      title: GdisSendCharacterPostRequest
+      type: object
+      properties:
+        body:
+          type: string
+        category:
+          type: string
+        categoryName:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/GdisItem'
+        locale:
+          type: string
+          enum:
+            - zh
+            - zh_CN
+        memberNo:
+          type: integer
+          format: int64
+        nicknameNo:
+          type: string
+        postboxId:
+          type: string
+        senderId:
+          type: string
+        senderName:
+          type: string
+        title:
+          type: string
+    GmDeletePostRequest:
+      title: GmDeletePostRequest
+      type: object
+      properties:
+        postNo:
+          type: integer
+          format: int64
+        senderId:
+          type: string
+    GmDeletedPostResult:
+      title: GmDeletedPostResult
+      type: object
+      properties:
+        createdDate:
+          type: integer
+          format: int64
+        resultState:
+          type: string
+          enum:
+            - FAILURE
+            - PROCESSING
+            - SUCCESS
+        senderId:
+          type: string
+        updatedDate:
+          type: integer
+          format: int64
+    GmGetPostRequest:
+      title: GmGetPostRequest
+      type: object
+      properties:
+        endDate:
+          type: integer
+          format: int64
+        page:
+          minimum: 1
+          exclusiveMinimum: false
+          type: integer
+          format: int32
+        search:
+          type: string
+        searchType:
+          type: string
+          enum:
+            - all
+            - body
+            - none
+            - sender
+            - title
+        sendType:
+          type: string
+          enum:
+            - A
+            - L
+            - N
+            - S
+        size:
+          type: integer
+          format: int32
+        startDate:
+          type: integer
+          format: int64
+    GmGetReservedPosts:
+      title: GmGetReservedPosts
+      type: object
+      properties:
+        endDate:
+          type: integer
+          format: int64
+        page:
+          minimum: 1
+          exclusiveMinimum: false
+          type: integer
+          format: int32
+        search:
+          type: string
+        searchType:
+          type: string
+          enum:
+            - all
+            - body
+            - none
+            - sender
+            - title
+        size:
+          type: integer
+          format: int32
+        startDate:
+          type: integer
+          format: int64
+    GmGetUserDetailRequest:
+      title: GmGetUserDetailRequest
+      type: object
+      properties:
+        nicknameNo:
+          type: string
+        postNo:
+          type: integer
+          format: int64
+    GmReservedPost:
+      title: GmReservedPost
+      type: object
+      properties:
+        body:
+          type: string
+        createdDate:
+          type: integer
+          format: int64
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/GdisItem'
+        postNo:
+          type: integer
+          format: int64
+        recipients:
+          type: string
+        reservationDate:
+          type: integer
+          format: int64
+        senderId:
+          type: string
+        title:
+          type: string
+    GmReservedPostsResponse:
+      title: GmReservedPostsResponse
+      type: object
+      properties:
+        posts:
+          type: array
+          items:
+            $ref: '#/components/schemas/GmReservedPost'
+        totalCount:
+          type: integer
+          format: int64
+    GmSendPostRequest:
+      title: GmSendPostRequest
+      required:
+        - recipientType
+      type: object
+      properties:
+        body:
+          type: string
+        category:
+          type: string
+        categoryName:
+          type: string
+        expireAt:
+          type: integer
+          format: int64
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/GdisItem'
+        nicknameNos:
+          type: array
+          items:
+            type: string
+        postboxId:
+          type: string
+        recipientCriteria:
+          $ref: '#/components/schemas/RecipientCriteria'
+        recipientType:
+          type: string
+          enum:
+            - A
+            - L
+        reservationDate:
+          type: integer
+          format: int64
+        senderId:
+          type: string
+        senderName:
+          type: string
+        title:
+          type: string
+    GmSentPost:
+      title: GmSentPost
+      type: object
+      properties:
+        allTypeRecipients:
+          $ref: '#/components/schemas/AllTypeRecipients'
+        body:
+          type: string
+        deleted:
+          type: boolean
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/GdisItem'
+        postNo:
+          type: integer
+          format: int64
+        recipients:
+          type: string
+        sendType:
+          type: string
+          enum:
+            - A
+            - L
+            - N
+            - S
+        senderId:
+          type: string
+        sentDate:
+          type: integer
+          format: int64
+        title:
+          type: string
+    GmSentPostUserDetail:
+      title: GmSentPostUserDetail
+      type: object
+      properties:
+        itemSent:
+          type: boolean
+        nicknameNo:
+          type: string
+    GmSentPostUserDetailResponse:
+      title: GmSentPostUserDetailResponse
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/GmSentPostUserDetail'
+    GmSentPostsResponse:
+      title: GmSentPostsResponse
+      type: object
+      properties:
+        posts:
+          type: array
+          items:
+            $ref: '#/components/schemas/GmSentPost'
+        totalCount:
+          type: integer
+          format: int64
+    GmToolMetaData:
+      title: GmToolMetaData
+      type: object
+      properties:
+        category:
+          type: string
+        categoryName:
+          type: string
+        postboxId:
+          type: string
+    PageResponse«PostResponse»:
+      title: PageResponse«PostResponse»
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostResponse'
+        number:
+          type: integer
+          format: int32
+        numberOfElements:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+    PageResponse«ReservationPostResponse»:
+      title: PageResponse«ReservationPostResponse»
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReservationPostResponse'
+        number:
+          type: integer
+          format: int32
+        numberOfElements:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+    PageResponse«UserPostDetail»:
+      title: PageResponse«UserPostDetail»
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserPostDetail'
+        number:
+          type: integer
+          format: int32
+        numberOfElements:
+          type: integer
+          format: int32
+        size:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+          format: int32
+    PageResult«UserPostDetail»:
+      title: PageResult«UserPostDetail»
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserPostDetail'
+        page:
+          type: integer
+          format: int64
+        size:
+          type: integer
+          format: int64
+    PostGroupingResponse:
+      title: PostGroupingResponse
+      type: object
+      properties:
+        category:
+          type: string
+        createdDate:
+          type: integer
+          format: int64
+        deleted:
+          type: boolean
+        expireAt:
+          type: integer
+          format: int64
+        groupingId:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Item'
+        messageType:
+          type: integer
+          format: int32
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostMessage'
+        name:
+          type: string
+        postNo:
+          type: integer
+          format: int64
+        postTransactionId:
+          type: string
+        postboxId:
+          type: string
+        recipientCriteria:
+          $ref: '#/components/schemas/RecipientCriteria'
+        recipientType:
+          type: string
+          enum:
+            - A
+            - L
+        recipients:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        reservationDate:
+          type: integer
+          format: int64
+        reservationPostNo:
+          type: integer
+          format: int64
+        sender:
+          $ref: '#/components/schemas/User'
+        updatedDate:
+          type: integer
+          format: int64
+    PostMessage:
+      title: PostMessage
+      required:
+        - locale
+        - msg
+      type: object
+      properties:
+        locale:
+          type: string
+          enum:
+            - zh
+            - zh_CN
+        msg:
+          type: object
+          additionalProperties:
+            type: object
+            properties: { }
+    PostMessageWrapper:
+      title: PostMessageWrapper
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostMessage'
+    PostRequest:
+      title: PostRequest
+      required:
+        - messageType
+        - recipientType
+        - sender
+      type: object
+      properties:
+        category:
+          type: string
+        expireAt:
+          type: integer
+          format: int64
+        force:
+          type: boolean
+        groupingId:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Item'
+        messageType:
+          minimum: 1
+          exclusiveMinimum: false
+          type: integer
+          format: int32
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostMessage'
+        postTransactionId:
+          type: string
+        postboxId:
+          type: string
+        recipientCriteria:
+          $ref: '#/components/schemas/RecipientCriteria'
+        recipientType:
+          type: string
+          enum:
+            - A
+            - L
+        recipients:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        sender:
+          $ref: '#/components/schemas/User'
+    PostResponse:
+      title: PostResponse
+      type: object
+      properties:
+        category:
+          type: string
+        createdDate:
+          type: integer
+          format: int64
+        deleted:
+          type: boolean
+        expireAt:
+          type: integer
+          format: int64
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Item'
+        messageType:
+          type: integer
+          format: int32
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostMessage'
+        postNo:
+          type: integer
+          format: int64
+        postTransactionId:
+          type: string
+        postboxId:
+          type: string
+        recipientCriteria:
+          $ref: '#/components/schemas/RecipientCriteria'
+        recipientType:
+          type: string
+          enum:
+            - A
+            - L
+        recipients:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        reservationDate:
+          type: integer
+          format: int64
+        reservationPostNo:
+          type: integer
+          format: int64
+        sender:
+          $ref: '#/components/schemas/User'
+        updatedDate:
+          type: integer
+          format: int64
+    PostboxRequest:
+      title: PostboxRequest
+      type: object
+      properties:
+        defaultValidPeriod:
+          type: integer
+          format: int64
+        name:
+          type: string
+        postboxId:
+          type: string
+        pushToList:
+          type: array
+          items:
+            type: string
+            enum:
+              - MESSENGER
+              - PRENSA_2PM
+        serviceId:
+          type: string
+    PostboxResponse:
+      title: PostboxResponse
+      type: object
+      properties:
+        createdDate:
+          type: integer
+          format: int64
+        defaultValidPeriod:
+          type: integer
+          format: int64
+        deleted:
+          type: boolean
+        name:
+          type: string
+        postboxId:
+          type: string
+        pushToList:
+          type: array
+          items:
+            type: string
+            enum:
+              - MESSENGER
+              - PRENSA_2PM
+        serviceId:
+          type: string
+        updatedDate:
+          type: integer
+          format: int64
+    RecipientCriteria:
+      title: RecipientCriteria
+      type: object
+      properties:
+        joinCountryCodes:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+            enum:
+              - CN
+        openIdTypes:
+          uniqueItems: true
+          type: array
+          items:
+            type: string
+    ReservationPostRequest:
+      title: ReservationPostRequest
+      required:
+        - category
+        - messageType
+        - postboxId
+        - recipientType
+        - reservationDate
+        - sender
+      type: object
+      properties:
+        category:
+          type: string
+        expireAt:
+          type: integer
+          format: int64
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Item'
+        messageType:
+          minimum: 1
+          exclusiveMinimum: false
+          type: integer
+          format: int32
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostMessage'
+        postTransactionId:
+          type: string
+        postboxId:
+          type: string
+        recipientCriteria:
+          $ref: '#/components/schemas/RecipientCriteria'
+        recipientType:
+          type: string
+          enum:
+            - A
+            - L
+        recipients:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        reservationDate:
+          type: integer
+          format: int64
+        sender:
+          $ref: '#/components/schemas/User'
+    ReservationPostResponse:
+      title: ReservationPostResponse
+      type: object
+      properties:
+        canceled:
+          type: boolean
+        category:
+          type: string
+        createdDate:
+          type: integer
+          format: int64
+        expireAt:
+          type: integer
+          format: int64
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Item'
+        messageType:
+          type: integer
+          format: int32
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/PostMessage'
+        name:
+          type: string
+        postNo:
+          type: integer
+          format: int64
+        postTransactionId:
+          type: string
+        postboxId:
+          type: string
+        recipientCriteria:
+          $ref: '#/components/schemas/RecipientCriteria'
+        recipientType:
+          type: string
+          enum:
+            - A
+            - L
+        recipients:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        reservationDate:
+          type: integer
+          format: int64
+        sendDate:
+          type: integer
+          format: int64
+        sender:
+          $ref: '#/components/schemas/User'
+        sent:
+          type: boolean
+        updatedDate:
+          type: integer
+          format: int64
+    SendPostResponse:
+      title: SendPostResponse
+      type: object
+      properties:
+        failure:
+          type: array
+          items:
+            type: string
+        postNo:
+          type: integer
+          format: int64
+        postTransactionId:
+          type: string
+    ServiceInfoRequest:
+      title: ServiceInfoRequest
+      type: object
+      properties:
+        gmToolMetaData:
+          $ref: '#/components/schemas/GmToolMetaData'
+        serviceId:
+          type: string
+        userIdType:
+          type: string
+          enum:
+            - C
+            - M
+    ServiceInfoResponse:
+      title: ServiceInfoResponse
+      type: object
+      properties:
+        createdDate:
+          type: integer
+          format: int64
+        deleted:
+          type: boolean
+        serviceId:
+          type: string
+        topic:
+          type: string
+        updatedDate:
+          type: integer
+          format: int64
+        userIdType:
+          type: string
+          enum:
+            - C
+            - M
+    ServiceResponse:
+      title: ServiceResponse
+      type: object
+      properties:
+        result:
+          type: object
+          properties: { }
+        resultCode:
+          type: integer
+          format: int32
+        resultMessage:
+          type: string
+    ServiceResponse«List«UserPostCountSummary»»:
+      title: ServiceResponse«List«UserPostCountSummary»»
+      type: object
+      properties:
+        result:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserPostCountSummary'
+        resultCode:
+          type: integer
+          format: int32
+        resultMessage:
+          type: string
+    ServiceResponse«PageResult«UserPostDetail»»:
+      title: ServiceResponse«PageResult«UserPostDetail»»
+      type: object
+      properties:
+        result:
+          $ref: '#/components/schemas/PageResult«UserPostDetail»'
+        resultCode:
+          type: integer
+          format: int32
+        resultMessage:
+          type: string
+    ServiceResponse«UserPostCount»:
+      title: ServiceResponse«UserPostCount»
+      type: object
+      properties:
+        result:
+          $ref: '#/components/schemas/UserPostCount'
+        resultCode:
+          type: integer
+          format: int32
+        resultMessage:
+          type: string
+    ServiceResponse«UserPostDetail»:
+      title: ServiceResponse«UserPostDetail»
+      type: object
+      properties:
+        result:
+          $ref: '#/components/schemas/UserPostDetail'
+        resultCode:
+          type: integer
+          format: int32
+        resultMessage:
+          type: string
+    PostNos:
+      type: string
+      description: |
+        邮件编号列表
+         * `单个邮件` - e.g. 32
+         * `多个邮件` - e.g. 32,42
+      example: 32
+    ServiceId:
+      type: string
+      description: 服务ID
+      example: "SGXQ"
+    Page:
+      type: integer
+      description: 页数
+      example: 1
+      default: 1
+    Size:
+      type: integer
+      description: 单页数量
+      example: 20
+      default: 20
+    UserId:
+      type: string
+      description: 用户ID(memberNo或characterNo)
+      example: "1002115"
+    User:
+      title: User
+      required:
+        - userType
+      type: object
+      properties:
+        data:
+          type: object
+          additionalProperties:
+            type: object
+            properties: { }
+        name:
+          type: string
+        userId:
+          type: string
+        userType:
+          type: string
+          enum:
+            - G
+            - S
+            - U
+    UserPostCountSummary:
+      title: UserPostCountSummary
+      type: object
+      properties:
+        notItemSent:
+          type: integer
+          format: int64
+        postboxId:
+          type: string
+        read:
+          type: integer
+          format: int64
+        total:
+          type: integer
+          format: int64
+        unread:
+          type: integer
+          format: int64
+    UserPostDetail:
+      title: UserPostDetail
+      type: object
+      properties:
+        category:
+          type: string
+        createdDate:
+          type: integer
+          format: int64
+        deleted:
+          type: boolean
+        deletedDate:
+          type: integer
+          format: int64
+        expireAt:
+          type: integer
+          format: int64
+        itemSent:
+          type: boolean
+        itemSentDate:
+          type: integer
+          format: int64
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Item'
+        message:
+          type: object
+          additionalProperties:
+            type: object
+            properties: { }
+        messageType:
+          type: integer
+          format: int32
+        postNo:
+          type: integer
+          format: int64
+        postTransactionId:
+          type: string
+        postboxId:
+          type: string
+        read:
+          type: boolean
+        readDate:
+          type: integer
+          format: int64
+        revoked:
+          type: boolean
+        revokedDate:
+          type: integer
+          format: int64
+        sender:
+          $ref: '#/components/schemas/User'
+        serviceId:
+          type: string
+        updatedDate:
+          type: integer
+          format: int64
+        userId:
+          type: string
+    PostNo:
+      type: integer
+      description: 邮件编号
+      example: 101
+  examples:
+    Success:
+      value: { "code": 0, "message": "Success" }
+    WrongApiUsage:
+      value: { "code": -1, "message": "Wrong API Usage" }
+    ServiceError:
+      value: { "code": -2, "message": "Service Error" }
+    AuthFail:
+      value: { "code": -3, "message": "Authentication Failure" }
+    UserNotFound:
+      value: { "code": -4, "message": "User NotFound" }
+    Unauthorized:
+      value: { "code": -5, "message": "Unauthorized" }
+    ExceededPostboxSize:
+      value: { "code": -6, "message": "Exceeded Postbox Size" }
+    ExceededMaxSizeOfRecipients:
+      value: { "code": -7, "message": "Exceeded Recipient Max Size" }
+    PartialSuccess:
+      value: { "code": -100, "message": "Partial Success" }
+    AllFailed:
+      value: { "code": -101, "message": "All Failed" }
+    DuplicatePostboxId:
+      value: { "code": -90001, "message": "Duplicate PostboxId" }
+    PostboxNotFound:
+      value: { "code": -90002, "message": "Postbox NotFound" }
+    DuplicateServiceId:
+      value: { "code": -90003, "message": "Duplicate ServiceId" }
+    ServiceNotFound:
+      value: { "code": -90004, "message": "ServiceInfo NotFound" }
+    InvalidRecipients:
+      value: { "code": -90005, "message": "Invalid Recipients" }
+    InvalidTransactionId:
+      value: { "code": -90006, "message": "Invalid Transaction Id" }
+    AlreadySentItem:
+      value: { "code": -90007, "message": "Already Sent Item" }
+    NotAttachedItem:
+      value: { "code": -90008, "message": "Not Attached Item" }
+    DuplicateTransactionId:
+      value: { "code": -90009, "message": "Duplicate Transaction Id" }
+    PostNotFound:
+      value: { "code": -90010, "message": "Post NotFound" }
+    InvalidReservationTime:
+      value: { "code": -90012, "message": "Invalid ReservationTime" }
+    ReservationPostNotFound:
+      value: { "code": -90013, "message": "Reservation Post NotFound" }
+    AlreadySentReservationPost:
+      value: { "code": -90014, "message": "Already Sent Reservation Post" }
+    CanceledReservationPost:
+      value: { "code": -90015, "message": "Canceled Reservation Post" }
+    UserPostNotFound:
+      value: { "code": -90016, "message": "User Post NotFound" }
+    InvalidExpireAt:
+      value: { "code": -90017, "message": "Invalid Expire Time" }
+    NotAllowModifyPost:
+      value: { "code": -90018, "message": "Not Allow Modify Post" }
+    MoreThan1Recipient:
+      value: { "code": -90019, "message": "There is more than 1 recipient" }
+    WrongPageNumber:
+      value: { "code": -90020, "message": "Page number must be greater than or equal to 1." }
+    UserIdIsMandatoryForAllType:
+      value: { "code": -90021, "message": "User ID is mandatory for all-type post." }
+  parameters:
+    postboxIdInPath:
+      name: postboxId
+      in: path
+      schema:
+        $ref: '#/components/schemas/PostboxId'
+      required: true
+    postboxIdInQuery:
+      name: postboxId
+      in: query
+      schema:
+        $ref: '#/components/schemas/PostboxId'
+      description: |
+        邮箱ID:
+         * `SGXQ-GM`
+         * `SGXQ-GENERAL`
+         * `SGXQ-MOD`
+         * `SGXQ-SANDBOX`
+      example: SGXQ-GM
+    characterNoInPath:
+      name: characterNo
+      in: path
+      description: 游戏角色编号
+      required: true
+      schema:
+        type: string
+      example: "100386"
+    postNoInPath:
+      name: postNo
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/PostNo'
+    deleteItemSentInQuery:
+      name: deleteItemSent
+      in: query
+      description: 删除已领取附件的邮件
+      schema:
+        type: boolean
+        default: false
+    deleteNoItemInQuery:
+      name: deleteNoItem
+      in: query
+      description: 删除没有附件的邮件
+      schema:
+        type: boolean
+        default: false
+    deleteReadInQuery:
+      name: deleteRead
+      in: query
+      description: 删除已读的邮件
+      schema:
+        type: boolean
+        default: false
+    postNosInQuery:
+      name: postNos
+      in: query
+      schema:
+        $ref: '#/components/schemas/PostNos'
+    pageInQuery:
+      name: page
+      in: query
+      schema:
+        $ref: '#/components/schemas/Page'
+    sizeInQuery:
+      name: size
+      in: query
+      schema:
+        $ref: '#/components/schemas/Size'
+    serviceIdInPath:
+      name: serviceId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/ServiceId'
+    userIdInPath:
+      name: userId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/UserId'
+    categoryInQuery:
+      name: category
+      in: query
+      schema:
+        $ref: '#/components/schemas/Category'
+    messageTypeInQuery:
+      name: messageType
+      in: query
+      schema:
+        $ref: '#/components/schemas/MessageType'
+  securitySchemes:
+    Internal:
+      in: header
+      name: Authorization
+      type: apiKey
+      description: 平台服务器认证Token
+    External:
+      in: header
+      name: Authorization
+      type: apiKey
+      description: 游戏服务器认证Token

@@ -1,0 +1,259 @@
+openapi: 3.0.1
+info:
+  description: Send logs to Tencent TLog
+  title: Tlogsender
+  version: "1.0.1"
+servers:
+  - url: https://api-{env}.xk5.com
+    description: Development & Test Environment
+    variables:
+      env:
+        enum:
+          - sdev0
+          - sdev
+          - dev
+          - dev2
+          - dev3
+          - mod
+          - stg
+        default: sdev0
+        description: "sdev0: 藤蔓开发环境, sdev: 研发开发环境, dev/dev2: 研发测试环境"
+  - url: https://api.xk5.com
+    description: Production Environment
+paths:
+  /tlogsender/v1.0/game/{gameNo}/report:
+    post:
+      parameters:
+        - description: |
+            手工星球: 224
+          in: path
+          name: gameNo
+          required: true
+          schema:
+            default: "224"
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReportRequest'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportResponse'
+          description: OK
+      security:
+        - Internal: [ ]
+      tags:
+        - Game
+components:
+  schemas:
+    DataResult:
+      properties:
+        code:
+          type: integer
+        message:
+          example: OK
+          type: string
+      required:
+        - code
+        - message
+    ReportRequest:
+      properties:
+        informantUserType:
+          $ref: "#/components/schemas/UserType"
+        informantUserId:
+          type: string
+          description: |
+            举报者账号ID，根据体系上报openId或者Gopenid
+          example: "25413DBCA5217507D964556F5A03814D"
+        informantPlatId:
+          $ref: "#/components/schemas/PlatId"
+        informantWorldId:
+          type: integer
+          description: 举报者的大区号，没有则不填
+          default: 0
+        informantName:
+          type: string
+          description: 举报者昵称
+          example: 张三
+        informantRoleId:
+          type: string
+          description: 举报者角色ID
+          example: 1003678
+        informantArea:
+          $ref: "#/components/schemas/AreaId"
+        reportedUserType:
+          $ref: "#/components/schemas/UserType"
+        reportedUserId:
+          type: string
+          description: |
+            被举报者账号ID，根据体系上报openId或者Gopenid
+          example: "25413DBCA5217507D964556F5A03814D"
+        reportedPlatId:
+          $ref: "#/components/schemas/PlatId"
+        reportedWorldId:
+          type: integer
+          description: 被举报者大区号，没有则不填
+          default: 0
+        reportedName:
+          type: string
+          description: 被举报者昵称
+          example: 张三
+        reportedRoleId:
+          type: string
+          description: 被举报者角色ID
+          example: 1003678
+        reportedArea:
+          $ref: "#/components/schemas/AreaId"
+        reportTime:
+          type: integer
+          description: 举报发生时间戳（秒）
+        businessData:
+          $ref: "#/components/schemas/ReportRequestData"
+      required:
+        - informantUserType
+        - informantUserId
+        - informantPlatId
+        - informantName
+        - informantRoleId
+        - reportedUserType
+        - reportedUserId
+        - reportedPlatId
+        - reportedName
+        - reportedRoleId
+        - businessData
+    ReportRequestData:
+      properties:
+        reportCategory:
+          type: integer
+          description: 举报大类，具体枚举等腾讯提供
+        reportReason:
+          type: array
+          items:
+            type: integer
+          description: 举报原因类型，具体枚举等腾讯提供
+        reportScene:
+          type: integer
+          enum:
+            - 1
+            - 2
+            - 3
+            - 4
+            - 8
+          description: |
+            举报场景类型:
+             * `1` - 会话发言场景举报
+             * `2` - 个人基本资料举报
+             * `3` - 对局场景举报
+             * `4` - 文章/帖子场景举报
+             * `8` - 自定义
+        reportedProfileUrl:
+          type: string
+          maxLength: 4096
+          description: 被举报者的头像url
+        reportBattleId:
+          type: string
+          description: 对局ID，若需要使用到这个参数，必须同时带上对局时间
+        reportBattleTime:
+          type: integer
+          description: 对局时间点，待对局时间点时必须带上对局ID
+        reportDesc:
+          type: string
+          maxLength: 1024
+          description: |
+            举报详细描述：用户在前端举报时，对举报者进行描述自定义填写的文本，最大长度=1024字节
+        reportContent:
+          type: string
+          maxLength: 1024
+          description: 举报的文本内容，最大长度=1024字节
+        picUrlArray:
+          type: array
+          maxItems: 12
+          items:
+            type: string
+            maxLength: 4096
+          description: 举报的图片url列表，单条最大长度=4096字节，列表最大长度=12
+        videoUrlArray:
+          type: array
+          maxItems: 12
+          items:
+            type: string
+            maxLength: 4096
+          description: 举报的视频url列表，单条最大长度=4096字节，列表最大长度=12
+        reportGroupId:
+          type: string
+          description: 被举报的工会ID
+        reportGroupName:
+          type: string
+          description: 被举报的工会名称
+        contentId:
+          type: array
+          items:
+            $ref: "#/components/schemas/ContentId"
+        callback:
+          type: string
+          description: 其他数据信息，没有则不填或者填空
+        reportEntrance:
+          type: integer
+          description: 举报入口表示，通常用来区分举报入口所在界面
+      required:
+        - reportCategory
+        - reportReason
+        - reportScene
+        - reportedProfileUrl
+    ReportResponse:
+      $ref: '#/components/schemas/DataResult'
+    PlatId:
+      type: integer
+      enum:
+        - 0
+        - 1
+      description: |
+        平台ID：
+         * `0` - iOS
+         * `1` - AOS
+    UserType:
+      type: integer
+      enum:
+        - 0
+        - 2
+        - 4
+        - 8
+      description: |
+        举报者的账号类型:
+         * `0` - 默认值无特殊
+         * `2` - WechatOpenId
+         * `4` - QQOpenid
+         * `8` - Gopenid
+    AreaId:
+      type: integer
+      enum:
+        - 1
+        - 2
+      description: |
+        举报者area:
+         * `1` - Wechat
+         * `2` - QQ
+    ContentId:
+      type: object
+      properties:
+        idType:
+          type: string
+          description: id类型，用一个字符串标识，如：roomid，personid，feedid
+        idList:
+          type: array
+          items:
+            type: string
+          description: 上报的id列表
+      required:
+        - idType
+        - idList
+  securitySchemes:
+    Internal:
+      in: header
+      name: Authorization
+      type: apiKey

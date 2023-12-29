@@ -27,7 +27,7 @@ func Error() gin.HandlerFunc {
 		case common.Error:
 			c.JSON(http.StatusOK, x)
 		default:
-			c.JSON(http.StatusOK, common.BaseResult{Code: http.StatusInternalServerError, Message: x.Error()})
+			c.JSON(http.StatusOK, common.NewBaseResult(http.StatusInternalServerError, x.Error()))
 		}
 		return
 

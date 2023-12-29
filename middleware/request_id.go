@@ -15,7 +15,7 @@ func RequestID() gin.HandlerFunc {
 
 		c.Next()
 
-		c.Request.Header.Set(util.RequestIDContextKey, id)
+		c.Writer.Header().Set(util.RequestIDContextKey, id)
 	}
 }
 
@@ -26,7 +26,7 @@ func SetupRequestID(handler http.Handler) http.Handler {
 
 		handler.ServeHTTP(writer, request)
 
-		request.Header.Add(util.RequestIDContextKey, id)
+		request.Response.Header.Add(util.RequestIDContextKey, id)
 
 	})
 }

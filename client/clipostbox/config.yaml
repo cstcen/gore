@@ -1,0 +1,4 @@
+package: clipostgox
+generate:
+  client: true
+  models: true

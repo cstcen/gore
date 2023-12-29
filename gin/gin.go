@@ -7,7 +7,6 @@ import (
 	"git.tenvine.cn/backend/gore/consul"
 	"git.tenvine.cn/backend/gore/gonfig"
 	"git.tenvine.cn/backend/gore/util"
-	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/pprof"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
@@ -20,6 +19,7 @@ import (
 )
 
 var engine *gin.Engine
+var shutdownHooks = make([]func() error, 0)
 
 // GetInstance Use Instance()
 // Deprecated
@@ -29,6 +29,10 @@ func GetInstance() *gin.Engine {
 
 func Instance() *gin.Engine {
 	return engine
+}
+
+func AddShutdownHook(fn func() error) {
+	shutdownHooks = append(shutdownHooks, fn)
 }
 
 func Startup() error {
@@ -77,12 +81,16 @@ func Startup() error {
 		}
 	}
 
+	for _, fn := range shutdownHooks {
+		_ = fn()
+	}
+
 	return nil
 }
 
 func Setup() error {
 
-	dev := "xk5" == gonfig.Instance().GetString("env")
+	dev := "xk5" != gonfig.Instance().GetString("env")
 	if !dev {
 		gin.SetMode(gin.ReleaseMode)
 	}
@@ -101,12 +109,13 @@ func Setup() error {
 	engine.Use(gin.LoggerWithFormatter(LogFormatter))
 
 	engine.Use(gin.CustomRecovery(func(c *gin.Context, err any) {
-		c.AbortWithStatusJSON(http.StatusOK, common.BaseResultService.WithMsg(fmt.Sprintf("%s", err)))
+		switch e := err.(type) {
+		default:
+			c.AbortWithStatusJSON(http.StatusOK, common.ErrService.WithMsg(fmt.Sprintf("%s", err)))
+		case common.Error:
+			c.AbortWithStatusJSON(e.GetHttpStatus(), e)
+		}
 	}))
-
-	if dev {
-		engine.Use(cors.Default())
-	}
 
 	// check health
 	routeHealthcheck(engine)

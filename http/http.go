@@ -13,6 +13,12 @@ var cli = &http.Client{Timeout: 3 * time.Second, Transport: &Transport{
 	RoundTripper: http.DefaultTransport,
 }}
 
+// GetInstance removed, please use Instance
+// Deprecated
+func GetInstance() *http.Client {
+	return cli
+}
+
 func Instance() *http.Client {
 	return cli
 }
@@ -27,7 +33,17 @@ type AuthorizationInHeaderGetter interface {
 	GetAuthorizationInHeader(req *http.Request) (string, error)
 }
 
-func InternalPost(ctx context.Context, url, contentType string, body any, expectedPtr any, setAuthorizationInHeader func(request *http.Request) error) error {
+type AuthorizationInHeaderSetter interface {
+	SetAuthorizationInHeader(request *http.Request) error
+}
+
+type AuthorizationInHeaderSetterFunc func(request *http.Request) error
+
+func (fn AuthorizationInHeaderSetterFunc) SetAuthorizationInHeader(request *http.Request) error {
+	return fn(request)
+}
+
+func InternalPost(ctx context.Context, url, contentType string, body any, expectedPtr any, authorizationInHeaderSetter AuthorizationInHeaderSetter) error {
 	r, err := getBodyReader(body)
 	if err != nil {
 		return err
@@ -40,7 +56,7 @@ func InternalPost(ctx context.Context, url, contentType string, body any, expect
 
 	req.Header.Set("Content-Type", contentType)
 
-	if err := setAuthorizationInHeader(req); err != nil {
+	if err := authorizationInHeaderSetter.SetAuthorizationInHeader(req); err != nil {
 		return err
 	}
 

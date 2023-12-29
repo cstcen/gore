@@ -6,5 +6,5 @@ type PageResult[T any] struct {
 }
 
 func NewPageResult[T any](data PageData[T]) *PageResult[T] {
-	return &PageResult[T]{BaseResult: BaseResultSuccess, Data: data}
+	return &PageResult[T]{BaseResult: BaseResult{ErrSuccess}, Data: data}
 }

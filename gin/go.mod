@@ -1,13 +1,12 @@
 module git.tenvine.cn/backend/gore/gin
 
-go 1.20
+go 1.21
 
 require (
-	git.tenvine.cn/backend/gore/common v0.11.2
+	git.tenvine.cn/backend/gore/common v0.11.23
 	git.tenvine.cn/backend/gore/consul v0.11.4
-	git.tenvine.cn/backend/gore/gonfig v0.11.3
-	git.tenvine.cn/backend/gore/util v0.11.3
-	github.com/gin-contrib/cors v1.4.0
+	git.tenvine.cn/backend/gore/gonfig v0.11.5
+	git.tenvine.cn/backend/gore/util v0.11.8
 	github.com/gin-contrib/pprof v1.4.0
 	github.com/gin-gonic/gin v1.9.0
 	github.com/swaggo/files v1.0.1

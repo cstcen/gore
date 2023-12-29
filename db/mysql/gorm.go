@@ -20,7 +20,7 @@ func SetupGorm() error {
 		logLvl = logger.Error
 	case log.LevelWarning:
 		logLvl = logger.Warn
-	case log.LevelInfo:
+	case log.LevelInfo, log.LevelDebug:
 		logLvl = logger.Info
 	}
 	newLogger := logger.New(log.Default(), logger.Config{

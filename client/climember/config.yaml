@@ -1,0 +1,4 @@
+package: climember
+generate:
+  client: true
+  models: true

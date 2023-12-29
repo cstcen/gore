@@ -6,6 +6,7 @@ import (
 	goreHttp "git.tenvine.cn/backend/gore/http"
 	"git.tenvine.cn/backend/gore/log"
 	"git.tenvine.cn/backend/gore/util"
+	"net/http"
 )
 
 var (
@@ -26,6 +27,15 @@ type Response struct {
 	ExpiresDt     uint   `json:"expires_dt,omitempty"`
 	AccessToken   string `json:"access_token,omitempty"`
 	TokenType     string `json:"token_type,omitempty"`
+}
+
+func SetAuthorizationInHeader(request *http.Request) error {
+	token, err := Get(request.Context())
+	if err != nil {
+		return err
+	}
+	request.Header.Set("Authorization", token)
+	return nil
 }
 
 func Get(c context.Context) (string, error) {

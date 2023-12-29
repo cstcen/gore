@@ -1,0 +1,4 @@
+package: cliauth
+generate:
+  client: true
+  models: true
