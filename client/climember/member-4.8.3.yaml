@@ -1,0 +1,4947 @@
+openapi: 3.0.1
+info:
+  title: Member
+  description: Member
+  version: "4.8.3"
+servers:
+  - url: https://api-{env}.xk5.com
+    description: Development & Test Environment
+    variables:
+      env:
+        enum:
+          - sdev0
+          - sdev
+          - dev
+          - dev2
+          - dev3
+          - mod
+          - stg
+        default: sdev0
+        description: "sdev0: 藤蔓开发环境, sdev: 研发开发环境, dev/dev2: 研发测试环境"
+  - url: https://api.xk5.com
+    description: Production Environment
+  - url: http://localhost:8000
+    description: Production Environment
+  - url: https://i-api-sdev0.xk5.com
+    description: Internal Environment
+
+paths:
+  /member/v4.1/app/{app_id}/members/privilege/launch:
+    post:
+      tags:
+        - "通用"
+      security:
+        - userJwtToken: []
+      description: "更新特权登陆时间"
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/UpdatePrivilegeLoginRequestBody'
+      parameters:
+        - $ref: '#/components/parameters/PathAppId'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.1/app/{app_id}/oauth2/members/{member_no}/punishments:
+    get:
+      tags:
+        - "oauth2"
+      security:
+        - basicAuth: [ ]
+      description: "获取用户的所有惩罚信息"
+      parameters:
+        - $ref: '#/components/parameters/PathMemberNo'
+        - $ref: '#/components/parameters/PathAppId'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/PunishmentListResponse'
+              examples:
+                PunishmentListResponse:
+                  $ref: '#/components/examples/PunishmentListResponse'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.1/app/{app_id}/oauth2/members/{member_no}:
+    get:
+      tags:
+        - "oauth2"
+      security:
+        - basicAuth: [ ]
+      description: "根据 memberNo 查询用户信息"
+      parameters:
+        - $ref: '#/components/parameters/PathMemberNo'
+        - $ref: '#/components/parameters/PathAppId'
+        - $ref: '#/components/parameters/QueryLoginType'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/InternalMemberResponse'
+              examples:
+                InternalMemberResponse:
+                  $ref: '#/components/examples/InternalMemberResponse'
+                MemberDoesNotExist:
+                  $ref: '#/components/examples/MemberDoesNotExist'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.1/app/{app_id}/oauth2/members:
+    post:
+      tags:
+        - "oauth2"
+      security:
+        - basicAuth: [ ]
+      description: "新增用户信息"
+      parameters:
+        - $ref: '#/components/parameters/PathAppId'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/InternalAddMemberRequestBody'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/InternalAddMemberResponse'
+              examples:
+                InternalMemberResponse:
+                  $ref: '#/components/examples/InternalAddMemberResponse'
+                AddMemberFailed:
+                  $ref: '#/components/examples/AddMemberFailed'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.1/app/{app_id}/characters:
+    get:
+      tags:
+        - "通用"
+      security:
+        - userJwtToken: [ ]
+      description: "通用获取角色信息接口"
+      parameters:
+        - $ref: '#/components/parameters/PathAppId'
+        - $ref: '#/components/parameters/QueryWorldId'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/CharacterInfoArrayResponse'
+              examples:
+                CharacterInfoArrayResponse:
+                  $ref: '#/components/examples/CharacterInfoArrayResponse'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+    post:
+      tags:
+        - "通用"
+      security:
+        - userJwtToken: [ ]
+      description: "游戏新增角色信息接口"
+      parameters:
+        - $ref: '#/components/parameters/HeaderOsType'
+        - $ref: '#/components/parameters/HeaderDeviceId'
+        - $ref: '#/components/parameters/PathAppId'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/AddCharacterRequestBody'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/AddCharacterResponse'
+              examples:
+                AddCharacterResponse:
+                  $ref: '#/components/examples/AddCharacterResponse'
+                InvalidMember4AddCharacter:
+                  $ref: '#/components/examples/InvalidMember4AddCharacter'
+                AddCharacterFailed:
+                  $ref: '#/components/examples/AddCharacterFailed'
+                CharacterNoCountLimit:
+                  $ref: '#/components/examples/CharacterNoCountLimit'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.1/app/{app_id}/characters/nickname/validate:
+    get:
+      tags:
+        - "游戏测"
+      security:
+        - userOrServerJwtToken: []
+      description: "兼容接口, 校验角色昵称是否可用，针对游戏测业务的接口，包含违规检测，白名单检测"
+      parameters:
+        - $ref: '#/components/parameters/QueryNickname'
+        - $ref: '#/components/parameters/PathAppId'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+              examples:
+                CompatibleResponse:
+                  $ref: '#/components/examples/Success'
+                BadNickname:
+                  $ref: '#/components/examples/BadNickname'
+                PALMPLE_ERR_EXISTS_NICKNAME:
+                  $ref: '#/components/examples/PALMPLE_ERR_EXISTS_NICKNAME'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.1/app/{app_id}/characters/{character_no}:
+    get:
+      tags:
+        - "通用"
+      security:
+        - serverJwtToken: [ ]
+      description: "根据 characterNo 查询角色信息"
+      parameters:
+        - $ref: '#/components/parameters/PathAppId'
+        - $ref: '#/components/parameters/PathCharacterNo'
+        - $ref: '#/components/parameters/QueryWorldId'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/CharacterInfoResponse'
+              examples:
+                CharacterInfoResponse:
+                  $ref: '#/components/examples/CharacterInfoResponse'
+                CharacterDoesNotExist:
+                  $ref: '#/components/examples/CharacterDoesNotExist'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+    delete:
+      tags:
+        - "通用"
+      security:
+        - serverJwtToken: [ ]
+      description: "删除角色信息"
+      parameters:
+        - $ref: '#/components/parameters/PathAppId'
+        - $ref: '#/components/parameters/PathCharacterNo'
+        - $ref: '#/components/parameters/QueryWorldId'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+              examples:
+                Success:
+                  $ref: '#/components/examples/Success'
+                CharacterDoesNotExist:
+                  $ref: '#/components/examples/CharacterDoesNotExist'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.1/app/{app_id}/characters/nickname:
+    put:
+      tags:
+        - "通用"
+      security:
+        - userOrServerJwtToken: [ ]
+      description: "更新角色昵称"
+      parameters:
+        - $ref: '#/components/parameters/HeaderOsType'
+        - $ref: '#/components/parameters/PathAppId'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/UpdateCharacterNicknameRequestBody'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+              examples:
+                Success:
+                  $ref: '#/components/examples/Success'
+                CharacterDoesNotExist:
+                  $ref: '#/components/examples/CharacterDoesNotExist'
+                CharacterBanned:
+                  $ref: '#/components/examples/CharacterBanned'
+                CharacterNicknameExits:
+                  $ref: '#/components/examples/CharacterNicknameExits'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.1/app/{app_id}/characters/member_no/{member_no}:
+    get:
+      tags:
+        - "通用"
+      security:
+        - serverJwtToken: [ ]
+      description: "通过 member_no 获取角色信息接口"
+      parameters:
+        - $ref: "#/components/parameters/PathMemberNo"
+        - $ref: "#/components/parameters/PathAppId"
+        - $ref: "#/components/parameters/QueryWorldId"
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/CharacterInfoArrayResponse'
+              examples:
+                CharacterInfoArrayResponse:
+                  $ref: '#/components/examples/CharacterInfoArrayResponse'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.1/app/{app_id}/oauth2/members/{member_no}/device_os_name:
+    put:
+      tags:
+        - "oauth2"
+      security:
+        - basicAuth: [ ]
+      description: "修改操作系统类型信息接口"
+      parameters:
+        - $ref: '#/components/parameters/PathMemberNo'
+        - $ref: '#/components/parameters/PathAppId'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/UpdateDeviceOsNameRequestBody'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+              examples:
+                Success:
+                  $ref: '#/components/examples/Success'
+                MemberDoesNotExist:
+                  $ref: '#/components/examples/MemberDoesNotExist'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.1/app/{app_id}/members:
+    get:
+      tags:
+        - "通用"
+      security:
+        - userJwtToken: [ ]
+      description: "根据 jwt token 查询用户信息"
+      parameters:
+        - $ref: '#/components/parameters/PathAppId'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/MemberResponse'
+              examples:
+                MemberResponse:
+                  $ref: '#/components/examples/MemberResponse'
+                MemberDoesNotExist:
+                  $ref: '#/components/examples/MemberDoesNotExist'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.1/app/{app_id}/members/{member_no}:
+    get:
+      tags:
+        - "通用"
+      security:
+        - serverJwtToken: [ ]
+      description: "根据 memberNo 查询用户信息"
+      parameters:
+        - $ref: '#/components/parameters/PathMemberNo'
+        - $ref: '#/components/parameters/PathAppId'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/MemberResponse'
+              examples:
+                MemberResponse:
+                  $ref: '#/components/examples/MemberResponse'
+                MemberDoesNotExist:
+                  $ref: '#/components/examples/MemberDoesNotExist'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+    delete:
+      tags:
+        - "通用"
+      security:
+        - serverJwtToken: [ ]
+      description: "根据 memberNo 刪除用户信息"
+      parameters:
+        - $ref: '#/components/parameters/PathAppId'
+        - $ref: '#/components/parameters/PathMemberNo'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+              examples:
+                Success:
+                  $ref: '#/components/examples/Success'
+                MemberDoesNotExist:
+                  $ref: '#/components/examples/MemberDoesNotExist'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.1/app/{app_id}/members/memberNos:
+    get:
+      tags:
+        - "通用"
+      security:
+        - serverJwtToken: [ ]
+      description: "根据 memberNos 查询多个用户信息"
+      parameters:
+        - $ref: '#/components/parameters/QueryMemberNos'
+        - $ref: '#/components/parameters/PathAppId'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/MemberListResponse'
+              examples:
+                MemberListResponse:
+                  $ref: '#/components/examples/MemberListResponse'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.0/app/{app_id}/limit/social/batch_status:
+    post:
+      tags:
+        - "通用"
+      security:
+        - serverJwtToken: [ ]
+      description: "查询玩家单个社交限制状态[punishId=T0100]"
+      parameters:
+        - $ref: '#/components/parameters/PathAppId'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/SocialLimitStatusRequest'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/SocialLimitStatusResponse'
+              examples:
+                SocialLimitStatusResponse:
+                  $ref: '#/components/examples/SocialLimitStatusResponse'
+                AppIdNotExist:
+                  $ref: '#/components/examples/AppIdNotExist'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+    get:
+      tags:
+        - "通用"
+      security:
+        - serverJwtToken: [ ]
+      description: "查询玩家所有社交限制状态"
+      parameters:
+        - $ref: '#/components/parameters/PathAppId'
+        - $ref: '#/components/parameters/QueryCharacterIdList'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/SocialLimitInfoResponse'
+              examples:
+                SocialLimitInfoResponse:
+                  $ref: '#/components/examples/SocialLimitInfoResponse'
+                AppIdNotExist:
+                  $ref: '#/components/examples/AppIdNotExist'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.1/app/{app_id}/characters/character_nos:
+    get:
+      tags:
+        - "通用"
+      security:
+        - serverJwtToken: [ ]
+      description: "根据角色编号列表获取角色信息"
+      parameters:
+        - $ref: '#/components/parameters/QueryCharacterNos'
+        - $ref: '#/components/parameters/PathAppId'
+        - $ref: '#/components/parameters/QueryWorldId'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/MemberCharactersResponse'
+              examples:
+                CharacterInfoArrayResponse:
+                  $ref: '#/components/examples/MemberCharactersResponse'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.1/app/{app_id}/members/punishments:
+    post:
+      tags:
+        - "通用"
+      security:
+        - serverJwtToken: [ ]
+      description: "对 member 进行惩罚"
+      parameters:
+        - $ref: '#/components/parameters/PathAppId'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/AddMemberPunishmentRequestBody'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+              examples:
+                Success:
+                  $ref: '#/components/examples/Success'
+                MemberDoesNotExist:
+                  $ref: '#/components/examples/MemberDoesNotExist'
+                PunishIdNotExist:
+                  $ref: '#/components/examples/PunishIdNotExist'
+                PunishmentHasExist:
+                  $ref: '#/components/examples/PunishmentHasExist'
+                PunishTimeInvalid:
+                  $ref: '#/components/examples/PunishTimeInvalid'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+    delete:
+      tags:
+        - "通用"
+      security:
+        - serverJwtToken: [ ]
+      description: "解除 member 的惩罚"
+      parameters:
+        - $ref: '#/components/parameters/PathAppId'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/DeleteMemberPunishmentRequestBody'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+              examples:
+                Success:
+                  $ref: '#/components/examples/Success'
+                MemberDoesNotExist:
+                  $ref: '#/components/examples/MemberDoesNotExist'
+                PunishIdNotExist:
+                  $ref: '#/components/examples/PunishIdNotExist'
+                PunishmentHadBeenReleasedOrNotExist:
+                  $ref: '#/components/examples/PunishmentHadBeenReleasedOrNotExist'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.1/app/{app_id}/characters/punishments:
+    post:
+      tags:
+        - "通用"
+      security:
+        - serverJwtToken: [ ]
+      description: "对 character 进行惩罚"
+      parameters:
+        - $ref: '#/components/parameters/PathAppId'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/AddCharacterPunishmentRequestBody'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+              examples:
+                Success:
+                  $ref: '#/components/examples/Success'
+                CharacterDoesNotExist:
+                  $ref: '#/components/examples/CharacterDoesNotExist'
+                PunishIdNotExist:
+                  $ref: '#/components/examples/PunishIdNotExist'
+                PunishmentHasExist:
+                  $ref: '#/components/examples/PunishmentHasExist'
+                PunishTimeInvalid:
+                  $ref: '#/components/examples/PunishTimeInvalid'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+    delete:
+      tags:
+        - "通用"
+      security:
+        - serverJwtToken: [ ]
+      description: "解除 member 的惩罚"
+      parameters:
+        - $ref: '#/components/parameters/PathAppId'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/DeleteCharacterPunishmentRequestBody'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+              examples:
+                Success:
+                  $ref: '#/components/examples/Success'
+                CharacterDoesNotExist:
+                  $ref: '#/components/examples/CharacterDoesNotExist'
+                PunishIdNotExist:
+                  $ref: '#/components/examples/PunishIdNotExist'
+                PunishmentHadBeenReleasedOrNotExist:
+                  $ref: '#/components/examples/PunishmentHadBeenReleasedOrNotExist'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.1/app/{app_id}/members/{member_no}/punishments/{punish_id}:
+    get:
+      tags:
+        - "通用"
+      security:
+        - serverJwtToken: [ ]
+      description: "根据 memberNo 和 punishId 查询惩罚信息"
+      parameters:
+        - $ref: '#/components/parameters/PathAppId'
+        - $ref: '#/components/parameters/PathMemberNo'
+        - $ref: '#/components/parameters/PathPunishId'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/PunishmentResponse'
+              examples:
+                PunishmentResponse:
+                  $ref: '#/components/examples/PunishmentResponse'
+                PunishmentHadBeenReleasedOrNotExist:
+                  $ref: '#/components/examples/PunishmentHadBeenReleasedOrNotExist'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.1/app/{app_id}/characters/{character_no}/punishments/{punish_id}:
+    get:
+      tags:
+        - "通用"
+      security:
+        - serverJwtToken: [ ]
+      description: "根据 characterNo 和 punishId 查询惩罚信息"
+      parameters:
+        - $ref: '#/components/parameters/PathAppId'
+        - $ref: '#/components/parameters/PathCharacterNo'
+        - $ref: '#/components/parameters/PathPunishId'
+        - $ref: '#/components/parameters/QueryWorldId'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/PunishmentResponse'
+              examples:
+                PunishmentResponse:
+                  $ref: '#/components/examples/PunishmentResponse'
+                PunishmentHadBeenReleasedOrNotExist:
+                  $ref: '#/components/examples/PunishmentHadBeenReleasedOrNotExist'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.1/app/{app_id}/members/{member_no}/punishments:
+    get:
+      tags:
+        - "通用"
+      security:
+        - serverJwtToken: [ ]
+      description: "根据 memberNo 查询惩罚信息"
+      parameters:
+        - $ref: '#/components/parameters/PathAppId'
+        - $ref: '#/components/parameters/PathMemberNo'
+        - $ref: '#/components/parameters/QueryPunishType'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/PunishmentListResponse'
+              examples:
+                PunishmentListResponse:
+                  $ref: '#/components/examples/PunishmentListResponse'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.0/app/{app_id}/characters/reset:
+    post:
+      tags:
+        - "IDIP"
+      security:
+        - serverJwtToken: [ ]
+      description: "重置角色接口"
+      parameters:
+        - $ref: '#/components/parameters/PathAppId'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/ResetCharacterPunishmentRequestBody'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+              examples:
+                Success:
+                  $ref: '#/components/examples/Success'
+                CharacterDoesNotExist:
+                  $ref: '#/components/examples/CharacterDoesNotExist'
+                MemberDoesNotExist:
+                  $ref: '#/components/examples/MemberDoesNotExist'
+                PunishIdNotExist:
+                  $ref: '#/components/examples/PunishIdNotExist'
+                CharacterResetStatusExist:
+                  $ref: '#/components/examples/CharacterResetStatusExist'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.0/app/{app_id}/characters/reduce:
+    post:
+      tags:
+        - "IDIP"
+      security:
+        - serverJwtToken: [ ]
+      description: "解除角色接口"
+      parameters:
+        - $ref: '#/components/parameters/PathAppId'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/ReduceCharacterPunishmentRequestBody'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+              examples:
+                Success:
+                  $ref: '#/components/examples/Success'
+                CharacterDoesNotExist:
+                  $ref: '#/components/examples/CharacterDoesNotExist'
+                MemberDoesNotExist:
+                  $ref: '#/components/examples/MemberDoesNotExist'
+                PunishIdNotExist:
+                  $ref: '#/components/examples/PunishmentHadBeenReleasedOrNotExist'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.1/idcard/{name}/{id_card}/verification:
+    get:
+      tags:
+        - "身份证校验"
+      security:
+        - serverJwtToken: [ ]
+      description: "根据姓名和身份证号判断是否属于同一人"
+      parameters:
+        - $ref: '#/components/parameters/PathRealName'
+        - $ref: '#/components/parameters/PathIdCard'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+              examples:
+                Success:
+                  $ref: '#/components/examples/Success'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.1/idcard/ocr_verification:
+    get:
+      tags:
+        - "身份证校验"
+      security:
+        - serverJwtToken: [ ]
+      description: "根据身份证人像面照片 url 验证姓名和身份证号的真实性和一致性，并获取到解析的身份证信息"
+      parameters:
+        - $ref: '#/components/parameters/QueryIdCardImgUrl'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/IdCardVerificationResponse'
+              examples:
+                IdCardVerificationResponse:
+                  $ref: '#/components/examples/IdCardVerificationResponse'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+    post:
+      tags:
+        - "身份证校验"
+      security:
+        - serverJwtToken: [ ]
+      description: "根据身份证人像面照片文件验证姓名和身份证号的真实性和一致性，并获取到解析的身份证信息"
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+                  description: 身份证图片文件
+            encoding:
+              image:
+                contentType: application/octet-stream
+        required: false
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/IdCardVerificationResponse'
+              examples:
+                IdCardVerificationResponse:
+                  $ref: '#/components/examples/IdCardVerificationResponse'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.1/app/{app_id}/members/identification:
+    get:
+      tags:
+        - "通用"
+      security:
+        - userJwtToken: [ ]
+      description: "根据认证类型查询认证状态"
+      parameters:
+        - $ref: '#/components/parameters/PathAppId'
+        - $ref: '#/components/parameters/QueryIdentificationType'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/MemberIdentificationStatusResponse'
+              examples:
+                Success:
+                  $ref: '#/components/examples/MemberIdentificationStatusResponse'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.1/app/{app_id}/members/identification/individual:
+    post:
+      tags:
+        - "通用"
+      security:
+        - userJwtToken: [ ]
+      description: "个人实名认证"
+      parameters:
+        - $ref: '#/components/parameters/PathAppId'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/AddIndividualIdentification'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+              examples:
+                Success:
+                  $ref: '#/components/examples/Success'
+                MemberIdentifyFailed:
+                  $ref: '#/components/examples/MemberIdentifyFailed'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.1/applications:
+    get:
+      tags:
+        - "通用"
+      security:
+        - serverJwtToken: [ ]
+      description: "分页查询应用信息"
+      parameters:
+        - $ref: '#/components/parameters/QueryPageNo'
+        - $ref: '#/components/parameters/QueryPageSize'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApplicationListResponse'
+              examples:
+                ApplicationListResponse:
+                  $ref: '#/components/examples/ApplicationListResponse'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+    post:
+      tags:
+        - "通用"
+      security:
+        - serverJwtToken: [ ]
+      description: "新增应用信息"
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/AddApplicationRequestBody'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/AddApplicationResponse'
+              examples:
+                AddApplicationResponse:
+                  $ref: '#/components/examples/AddApplicationResponse'
+                ApplicationAlreadyExists:
+                  $ref: '#/components/examples/ApplicationAlreadyExists'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.1/applications/{app_id}:
+    get:
+      tags:
+        - "通用"
+      security:
+        - serverJwtToken: [ ]
+      description: "根据 appId 查询应用信息"
+      parameters:
+        - $ref: '#/components/parameters/PathAppId'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ApplicationResponse'
+              examples:
+                ApplicationResponse:
+                  $ref: '#/components/examples/ApplicationResponse'
+                AppIdNotExist:
+                  $ref: '#/components/examples/AppIdNotExist'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+    put:
+      tags:
+        - "通用"
+      security:
+        - serverJwtToken: [ ]
+      description: "根据 appId 更新应用信息"
+      parameters:
+        - $ref: '#/components/parameters/PathAppId'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/UpdateApplicationRequestBody'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+              examples:
+                Success:
+                  $ref: '#/components/examples/Success'
+                AppIdNotExist:
+                  $ref: '#/components/examples/AppIdNotExist'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+    delete:
+      tags:
+        - "通用"
+      security:
+        - serverJwtToken: [ ]
+      description: "根据 appId 删除应用信息"
+      parameters:
+        - $ref: '#/components/parameters/PathAppId'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+              examples:
+                Success:
+                  $ref: '#/components/examples/Success'
+                AppIdNotExist:
+                  $ref: '#/components/examples/AppIdNotExist'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.1/channels:
+    get:
+      tags:
+        - "通用"
+      security:
+        - serverJwtToken: [ ]
+      description: "分页查询渠道信息"
+      parameters:
+        - $ref: '#/components/parameters/QueryPageNo'
+        - $ref: '#/components/parameters/QueryPageSize'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ChannelListResponse'
+              examples:
+                ChannelListResponse:
+                  $ref: '#/components/examples/ChannelListResponse'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+    post:
+      tags:
+        - "通用"
+      security:
+        - serverJwtToken: [ ]
+      description: "新增渠道信息"
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/AddChannelRequestBody'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/AddChannelResponse'
+              examples:
+                AddChannelResponse:
+                  $ref: '#/components/examples/AddChannelResponse'
+                ChannelAlreadyExists:
+                  $ref: '#/components/examples/ChannelAlreadyExists'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.1/channels/{channel_id}:
+    get:
+      tags:
+        - "通用"
+      security:
+        - serverJwtToken: [ ]
+      description: "根据 channel id 查询应用信息"
+      parameters:
+        - $ref: '#/components/parameters/PathChannelId'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/ChannelResponse'
+              examples:
+                ChannelResponse:
+                  $ref: '#/components/examples/ChannelResponse'
+                ChannelIdNotExist:
+                  $ref: '#/components/examples/ChannelIdNotExist'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+    put:
+      tags:
+        - "通用"
+      security:
+        - serverJwtToken: [ ]
+      description: "根据 channel id 更新渠道信息"
+      parameters:
+        - $ref: '#/components/parameters/PathChannelId'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/UpdateChannelRequestBody'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+              examples:
+                Success:
+                  $ref: '#/components/examples/Success'
+                ChannelIdNotExist:
+                  $ref: '#/components/examples/ChannelIdNotExist'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+    delete:
+      tags:
+        - "通用"
+      security:
+        - serverJwtToken: [ ]
+      description: "根据 channel id 删除渠道信息"
+      parameters:
+        - $ref: '#/components/parameters/PathChannelId'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+              examples:
+                Success:
+                  $ref: '#/components/examples/Success'
+                ChannelIdNotExist:
+                  $ref: '#/components/examples/ChannelIdNotExist'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.1/organizations:
+    get:
+      tags:
+        - "通用"
+      security:
+        - userJwtToken: [ ]
+      description: "分页查询组织信息"
+      parameters:
+        - $ref: '#/components/parameters/QueryPageNo'
+        - $ref: '#/components/parameters/QueryPageSize'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/OrganizationListResponse'
+              examples:
+                OrganizationListResponse:
+                  $ref: '#/components/examples/OrganizationListResponse'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+    post:
+      tags:
+        - "通用"
+      security:
+        - userJwtToken: [ ]
+      description: "新增组织信息"
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/AddOrganizationRequestBody'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/AddOrganizationResponse'
+              examples:
+                AddOrganizationResponse:
+                  $ref: '#/components/examples/AddOrganizationResponse'
+                OrganizationAlreadyExists:
+                  $ref: '#/components/examples/OrganizationAlreadyExists'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.1/organizations/{organization_id}:
+    get:
+      tags:
+        - "通用"
+      security:
+        - userJwtToken: [ ]
+      description: "根据 organization id 查询组织信息"
+      parameters:
+        - $ref: '#/components/parameters/PathOrganizationId'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/OrganizationResponse'
+              examples:
+                OrganizationResponse:
+                  $ref: '#/components/examples/OrganizationResponse'
+                OrganizationIdNotExist:
+                  $ref: '#/components/examples/OrganizationIdNotExist'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+    put:
+      tags:
+        - "通用"
+      security:
+        - userJwtToken: [ ]
+      description: "根据 organization id 更新组织信息"
+      parameters:
+        - $ref: '#/components/parameters/PathOrganizationId'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/UpdateOrganizationRequestBody'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+              examples:
+                Success:
+                  $ref: '#/components/examples/Success'
+                OrganizationIdNotExist:
+                  $ref: '#/components/examples/OrganizationIdNotExist'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+    delete:
+      tags:
+        - "通用"
+      security:
+        - userJwtToken: [ ]
+      description: "根据 organization id 删除组织信息"
+      parameters:
+        - $ref: '#/components/parameters/PathOrganizationId'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+              examples:
+                Success:
+                  $ref: '#/components/examples/Success'
+                OrganizationIdNotExist:
+                  $ref: '#/components/examples/OrganizationIdNotExist'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.1/organizations/{organization_id}/roles:
+    get:
+      tags:
+        - "通用"
+      security:
+        - userJwtToken: [ ]
+      description: "分页查询组织下的角色信息"
+      parameters:
+        - $ref: '#/components/parameters/PathOrganizationId'
+        - $ref: '#/components/parameters/QueryPageNo'
+        - $ref: '#/components/parameters/QueryPageSize'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/OrganizationRoleListResponse'
+              examples:
+                OrganizationRoleListResponse:
+                  $ref: '#/components/examples/OrganizationRoleListResponse'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+    post:
+      tags:
+        - "通用"
+      security:
+        - userJwtToken: [ ]
+      description: "新增组织下的角色信息"
+      parameters:
+        - $ref: '#/components/parameters/PathOrganizationId'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/AddOrganizationRoleRequestBody'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/AddOrganizationRoleResponse'
+              examples:
+                AddOrganizationRoleResponse:
+                  $ref: '#/components/examples/AddOrganizationRoleResponse'
+                OrganizationRoleAlreadyExists:
+                  $ref: '#/components/examples/OrganizationRoleAlreadyExists'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.1/organizations/{organization_id}/roles/{role_id}:
+    get:
+      tags:
+        - "通用"
+      security:
+        - userJwtToken: [ ]
+      description: "根据 organization role id 查询组织下的角色信息"
+      parameters:
+        - $ref: '#/components/parameters/PathOrganizationId'
+        - $ref: '#/components/parameters/PathOrganizationRoleId'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/OrganizationRoleResponse'
+              examples:
+                OrganizationRoleResponse:
+                  $ref: '#/components/examples/OrganizationRoleResponse'
+                OrganizationIdNotExist:
+                  $ref: '#/components/examples/OrganizationIdNotExist'
+                OrganizationRoleIdNotExist:
+                  $ref: '#/components/examples/OrganizationRoleIdNotExist'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+    put:
+      tags:
+        - "通用"
+      security:
+        - userJwtToken: [ ]
+      description: "根据 organization role id 更新组织下的角色信息"
+      parameters:
+        - $ref: '#/components/parameters/PathOrganizationId'
+        - $ref: '#/components/parameters/PathOrganizationRoleId'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/UpdateOrganizationRoleRequestBody'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+              examples:
+                Success:
+                  $ref: '#/components/examples/Success'
+                OrganizationRoleIdNotExist:
+                  $ref: '#/components/examples/OrganizationRoleIdNotExist'
+                OrganizationIdNotExist:
+                  $ref: '#/components/examples/OrganizationIdNotExist'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+    delete:
+      tags:
+        - "通用"
+      security:
+        - userJwtToken: [ ]
+      description: "根据 organization role id 删除组织下的角色信息"
+      parameters:
+        - $ref: '#/components/parameters/PathOrganizationId'
+        - $ref: '#/components/parameters/PathOrganizationRoleId'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+              examples:
+                Success:
+                  $ref: '#/components/examples/Success'
+                OrganizationRoleIdNotExist:
+                  $ref: '#/components/examples/OrganizationRoleIdNotExist'
+                OrganizationIdNotExist:
+                  $ref: '#/components/examples/OrganizationIdNotExist'
+                DeleteRoleButExistMembers:
+                  $ref: '#/components/examples/DeleteRoleButExistMembers'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.1/organizations/{organization_id}/members:
+    get:
+      tags:
+        - "通用"
+      security:
+        - userJwtToken: [ ]
+      description: "分页查询组织下的成员信息"
+      parameters:
+        - $ref: '#/components/parameters/PathOrganizationId'
+        - $ref: '#/components/parameters/QueryPageNo'
+        - $ref: '#/components/parameters/QueryPageSize'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/OrganizationMemberListResponse'
+              examples:
+                OrganizationMemberListResponse:
+                  $ref: '#/components/examples/OrganizationMemberListResponse'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+    post:
+      tags:
+        - "通用"
+      security:
+        - userJwtToken: [ ]
+      description: "添加组织成员"
+      parameters:
+        - $ref: '#/components/parameters/PathOrganizationId'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/OrgMemberRequestBody'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+              examples:
+                Success:
+                  $ref: '#/components/examples/Success'
+                MemberDoesNotExist:
+                  $ref: '#/components/examples/MemberDoesNotExist'
+                OrganizationIdNotExist:
+                  $ref: '#/components/examples/OrganizationIdNotExist'
+                OrgMemberAlreadyExists:
+                  $ref: '#/components/examples/OrgMemberAlreadyExists'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.1/organizations/{organization_id}/members/{member_no}:
+    get:
+      tags:
+        - "通用"
+      security:
+        - userJwtToken: [ ]
+      description: "查询单个成员信息"
+      parameters:
+        - $ref: '#/components/parameters/PathOrganizationId'
+        - $ref: '#/components/parameters/PathMemberNo'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/OrganizationMemberResponse'
+              examples:
+                OrganizationMemberResponse:
+                  $ref: '#/components/examples/OrganizationMemberResponse'
+                OrganizationIdNotExist:
+                  $ref: '#/components/examples/OrganizationIdNotExist'
+                MemberDoesNotExist:
+                  $ref: '#/components/examples/MemberDoesNotExist'
+                OrgMemberDoesNotExist:
+                  $ref: '#/components/examples/OrgMemberDoesNotExist'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+    put:
+      tags:
+        - "通用"
+      security:
+        - userJwtToken: [ ]
+      description: "更新组织成员信息（包括更新角色）"
+      parameters:
+        - $ref: '#/components/parameters/PathOrganizationId'
+        - $ref: '#/components/parameters/PathMemberNo'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/UpdateOrgMemberRequestBody'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+              examples:
+                Success:
+                  $ref: '#/components/examples/Success'
+                OrganizationIdNotExist:
+                  $ref: '#/components/examples/OrganizationIdNotExist'
+                MemberDoesNotExist:
+                  $ref: '#/components/examples/MemberDoesNotExist'
+                OrgMemberDoesNotExist:
+                  $ref: '#/components/examples/OrgMemberDoesNotExist'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+    delete:
+      tags:
+        - "通用"
+      security:
+        - userJwtToken: [ ]
+      description: "删除组织成员"
+      parameters:
+        - $ref: '#/components/parameters/PathOrganizationId'
+        - $ref: '#/components/parameters/PathMemberNo'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+              examples:
+                Success:
+                  $ref: '#/components/examples/Success'
+                MemberDoesNotExist:
+                  $ref: '#/components/examples/MemberDoesNotExist'
+                OrganizationIdNotExist:
+                  $ref: '#/components/examples/OrganizationIdNotExist'
+                OrgMemberDoesNotExist:
+                  $ref: '#/components/examples/OrgMemberDoesNotExist'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.1/app/{app_id}/characters/open_id/{open_id}:
+    get:
+      tags:
+        - "通用"
+      security:
+        - serverJwtToken: [ ]
+      description: "通过 open id 获取角色信息接口"
+      parameters:
+        - $ref: "#/components/parameters/PathOpenId"
+        - $ref: "#/components/parameters/PathAppId"
+        - $ref: "#/components/parameters/QueryWorldId"
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/MemberCharactersResponse'
+              examples:
+                CharacterInfoArrayResponse:
+                  $ref: '#/components/examples/MemberCharactersResponse'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        401:
+          $ref: '#/components/responses/AuthFailed'
+        500:
+          $ref: '#/components/responses/ServiceError'
+  /member/v4.1/app/{app_id}/test/privilege/launch/{member_no}:
+    delete:
+      tags:
+        - "通用"
+      description: "测试接口，清除特权登陆状态"
+      parameters:
+        - $ref: '#/components/parameters/PathMemberNo'
+        - $ref: '#/components/parameters/PathAppId'
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/UpdatePrivilegeLoginRequestBody'
+      responses:
+        200:
+          description: "OK"
+          content:
+            'application/json':
+              schema:
+                $ref: '#/components/schemas/BaseResponse'
+              examples:
+                Success:
+                  $ref: '#/components/examples/Success'
+        400:
+          $ref: '#/components/responses/InvalidArgument'
+        500:
+          $ref: '#/components/responses/ServiceError'
+components:
+  responses:
+    InvalidArgument:
+      description: "Invalid argument"
+      content:
+        'application/json':
+          schema:
+            $ref: '#/components/schemas/BaseResponse'
+          examples:
+            InvalidArgument:
+              $ref: '#/components/examples/InvalidArgument'
+    AuthFailed:
+      description: "认证失败"
+      content:
+        'application/json':
+          schema:
+            $ref: '#/components/schemas/BaseResponse'
+          examples:
+            Unauthenticated:
+              $ref: '#/components/examples/Unauthenticated'
+    ServiceError:
+      description: "服务未知错误"
+      content:
+        'application/json':
+          schema:
+            $ref: '#/components/schemas/BaseResponse'
+          examples:
+            Unauthenticated:
+              $ref: '#/components/examples/ServiceError'
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    oAuth2ClientCredentials:
+      type: oauth2
+      description: See https://xk5.com/oauth2.html
+      flows:
+        clientCredentials:
+          tokenUrl: https://api-sdev0.xk5.com/auth/v4.0/oauth2/token
+          scopes: { }
+    userJwtToken:
+      type: apiKey
+      in: header
+      description: "user jwt token"
+      name: Authorization
+    serverJwtToken:
+      type: apiKey
+      in: header
+      description: "server jwt token"
+      name: Authorization
+    userOrServerJwtToken:
+      type: apiKey
+      in: header
+      description: "server or user jwt token"
+      name: Authorization
+  # examples
+  examples:
+    MemberLoginResponse:
+      description: "正常响应"
+      value:
+        code: 0
+        message: "OK"
+        data:
+          account_info:
+            account_nickname: "天下第一"
+            account_type: 0
+            last_launch_time: ""
+            member_id: ""
+            member_no: 1000000000381718
+            picture_url: "https://dev3-m-static-1255385461.file.myqcloud.com/image/default_profile_135x135.png"
+            provider_cd: ""
+            rail_id: ""
+            terms_info: "https://m-static-tsdev0-1255385461.file.myqcloud.com/terms/projectB/terms_projectb.txt"
+            terms_list:
+              - language: "zh"
+                terms_type: "SERVICE"
+                terms_url: "https://game.qq.com/tencent_other_contract.shtml"
+              - language: "zh"
+                terms_type: "PRIVACY"
+                terms_url: "https://game.qq.com/tencent_other_privacy.shtml"
+              - language: "zh"
+                terms_type": "PRIVACY"
+                terms_url": "https://game.qq.com/tencent_other_children_privacy.shtml"
+              - language": "zh"
+                terms_type: "PRIVACY"
+                terms_url: "https://game.qq.com/zlkdatasys/privacy_SDK.html"
+        extra_data: ""
+        member_no: 1000000000381718
+        nickname: "天下第一"
+        xk5_open_id: "8DC22387F02200A0B2F204F1F54F43DA"
+    InternalMemberResponse:
+      description: 内部用户信息响应体
+      value:
+        code: 0
+        message: "OK"
+        data:
+          channel_id: 2017
+          date_of_birth: "2023-07-11"
+          gender: 1
+          last_launch_time: "20230711"
+          member_no: 1000000000451704
+          nickname: "天下第一"
+          open_id: "A99DA2C71CAA4BB34901856E0AB1A7DE"
+          profile_img: "https://dev3-m-static-1255385461.file.myqcloud.com/image/default_profile_135x135.png"
+          reg_ts: 1690424820
+    InternalAddMemberResponse:
+      description: 内部新增用户信息响应体
+      value:
+        code: 0
+        message: "OK"
+        data:
+          member_no: 1000000000571704
+          open_id: "B0EDEC517C019B88755CF49A9F215895"
+    MemberCharactersResponse:
+      description: 角色信息列表
+      value:
+        code: 0
+        message: "OK"
+        data:
+          character_list:
+            - character_no: 1000000
+              nickname: "南丶"
+              create_time: 1692695501
+              member_no: 1000000000451704
+              profile_img: "https://dev3-m-static-1255385461.file.myqcloud.com/image/default_profile_135x135.png"
+            - character_no: 1000001
+              nickname: "南"
+              create_time: 1692695501
+              member_no: 1000000000451704
+              profile_img: "https://dev3-m-static-1255385461.file.myqcloud.com/image/default_profile_135x135.png"
+    CompatibleNicknameCharactersResponse:
+      description: 角色信息列表
+      value:
+        character_info_list:
+          - member_no: 1000000001621701
+            nickname: "lol"
+            nickname_no: 1000036
+        return_code: 0
+        return_message: "Success"
+    CompatibleCharactersResponse:
+      description: 角色信息列表
+      value:
+        character_info_list:
+          - create_time: "2023-09-04 09:49:23"
+            member_no: 1000000001621701
+            nickname: "lol"
+            nickname_no: 1000036
+            picture_url: "http://thirdqq.qlogo.cn/g?b=oidb&k=0oVjPgj4ac4y8TNgwwnlZg&kti=ZPU3owAAAAA&s=40&t=1611302704"
+            profile_img_url: "http://thirdqq.qlogo.cn/g?b=oidb&k=0oVjPgj4ac4y8TNgwwnlZg&kti=ZPU3owAAAAA&s=40&t=1611302704"
+            provider_cd: "QQ"
+            provider_id: "9B3FA93D63FFD477B9DF7FFD6D371B24"
+            game_id: "SGXQ"
+        return_code: 0
+        return_message: "Success"
+        account_type: "QQ"
+        member_no: 1000000001621701
+    CharacterInfoArrayResponse:
+      description: 角色信息列表
+      value:
+        code: 0
+        message: "OK"
+        data:
+          member_no: 1000000000451704
+          profile_img: "https://dev3-m-static-1255385461.file.myqcloud.com/image/default_profile_135x135.png"
+          character_list:
+            - character_no: 1000000
+              nickname: "南丶"
+              world_id: 0
+              create_time: 1692695501
+            - character_no: 1000001
+              nickname: "南"
+              world_id: 0
+              create_time: 1692695501
+    RankingCharacterInfoArrayResponse:
+      description: 角色信息列表
+      value:
+        code: 0
+        message: "OK"
+        data:
+          list:
+            - character_no: 1000000
+              nickname: "南丶"
+              member_no: 1000000000451704
+              last_launch_time: 1690424820000
+              create_time: 1692695501
+            - character_no: 1000001
+              nickname: "南"
+              member_no: 1000000000451704
+              last_launch_time: 1690424820000
+              create_time: 1692695501
+    CompatibleCharacterNicknameResponse:
+      description: 角色信息
+      value:
+        return_code: 0
+        return_message: "OK"
+        value:
+          country_cd: "CN"
+          member_no: 1000000001621701
+          nickname: "lol"
+          nickname_no: 1000037
+          profile_img: "http://thirdqq.qlogo.cn/g?b=oidb&k=0oVjPgj4ac4y8TNgwwnlZg&kti=ZPU3owAAAAA&s=40&t=1611302704"
+          profile_img_url: "http://thirdqq.qlogo.cn/g?b=oidb&k=0oVjPgj4ac4y8TNgwwnlZg&kti=ZPU3owAAAAA&s=40&t=1611302704"
+          provider_id: "9B3FA93D63FFD477B9DF7FFD6D371B24"
+        response_code: 0
+        response_message: "OK"
+        context:
+          country_cd: "CN"
+          member_no: 1000000001621701
+          nickname: "lol"
+          nickname_no: 1000037
+          profile_img: "http://thirdqq.qlogo.cn/g?b=oidb&k=0oVjPgj4ac4y8TNgwwnlZg&kti=ZPU3owAAAAA&s=40&t=1611302704"
+          profile_img_url: "http://thirdqq.qlogo.cn/g?b=oidb&k=0oVjPgj4ac4y8TNgwwnlZg&kti=ZPU3owAAAAA&s=40&t=1611302704"
+          provider_id: "9B3FA93D63FFD477B9DF7FFD6D371B24"
+    CompatibleCharacterInfoResponse:
+      description: 角色信息
+      value:
+        return_code: 0
+        return_message: "OK"
+        value:
+          create_time: "2023-09-04 09:49:23"
+          member_no: 1000000001621701
+          nickname: "lol"
+          nickname_no: 1000036
+          picture_url: "http://thirdqq.qlogo.cn/g?b=oidb&k=0oVjPgj4ac4y8TNgwwnlZg&kti=ZPU3owAAAAA&s=40&t=1611302704"
+          profile_img_url: "http://thirdqq.qlogo.cn/g?b=oidb&k=0oVjPgj4ac4y8TNgwwnlZg&kti=ZPU3owAAAAA&s=40&t=1611302704"
+          provider_cd: "QQ"
+          provider_id: "9B3FA93D63FFD477B9DF7FFD6D371B24"
+        response_code: 0
+        response_message: "OK"
+        context:
+          create_time: "2023-09-04 09:49:23"
+          member_no: 1000000001621701
+          nickname: "lol"
+          nickname_no: 1000036
+          picture_url: "http://thirdqq.qlogo.cn/g?b=oidb&k=0oVjPgj4ac4y8TNgwwnlZg&kti=ZPU3owAAAAA&s=40&t=1611302704"
+          profile_img_url: "http://thirdqq.qlogo.cn/g?b=oidb&k=0oVjPgj4ac4y8TNgwwnlZg&kti=ZPU3owAAAAA&s=40&t=1611302704"
+          provider_cd: "QQ"
+          provider_id: "9B3FA93D63FFD477B9DF7FFD6D371B24"
+    CompatibleCharacterResponse:
+      description: 角色信息
+      value:
+        character_id: "1000036"
+        character_name: "lol"
+        character_reg_dt: "2023-09-12T10:16:53+08:00"
+        game_id: "SGXQ"
+        member_no: 1000000001621701
+        provider_cd: "QQ"
+        return_code: 0
+        return_message: "Success"
+    CharacterInfoResponse:
+      description: 角色信息
+      value:
+        code: 0
+        message: "OK"
+        data:
+          character_no: 1000001
+          nickname: "南"
+          member_no: 1000000000451704
+          world_id: 0
+          profile_img: "https://dev3-m-static-1255385461.file.myqcloud.com/image/default_profile_135x135.png"
+          create_time: 1692695501
+    MemberResponse:
+      description: "member 信息"
+      value:
+        code: 0
+        message: "OK"
+        data:
+          date_of_birth: "2023-07-11"
+          gender: 1
+          member_no: 1000000000451704
+          nickname: "天下第一"
+          open_id: "A99DA2C71CAA4BB34901856E0AB1A7DE"
+          profile_img: "https://dev3-m-static-1255385461.file.myqcloud.com/image/default_profile_135x135.png"
+          reg_ts: 1690424820
+    CompatibleJwtMemberInfoResponse:
+      description: "member 信息"
+      value:
+        message: "OK"
+        result: "000"
+        value:
+          birth_dt: -62135596800000
+          country_cd: "CN"
+          is_default: false
+          jid: "1000000001621701@"
+          l_type: "QQ"
+          language_cd: "ZH"
+          login_country_cd: "CN"
+          login_provider_cd: "QQ"
+          member_no: 1000000001621701
+          nickname: "XK51000000001621701"
+          offset: 480
+          parent_verify_yn: "N"
+          person_verify_yn: "N"
+          profile_img: "http://thirdqq.qlogo.cn/g?b=oidb&k=0oVjPgj4ac4y8TNgwwnlZg&kti=ZPU3owAAAAA&s=40&t=1611302704"
+          profile_img_original: "http://thirdqq.qlogo.cn/g?b=oidb&k=0oVjPgj4ac4y8TNgwwnlZg&kti=ZPU3owAAAAA&s=40&t=1611302704"
+          provider_id: "9B3FA93D63FFD477B9DF7FFD6D371B24"
+          reg_dt: 1693792163000
+          status: "OK"
+          timezone: "Asia/Shanghai"
+          user_id: "9B3FA93D63FFD477B9DF7FFD6D371B24"
+    CompatibleComplexMemberInfoResponse:
+      description: "member 信息"
+      value:
+        context:
+          member_no: 1000000001621701
+          nickname: "lol"
+          profile_img: "http://thirdqq.qlogo.cn/g?b=oidb&k=0oVjPgj4ac4y8TNgwwnlZg&kti=ZPU3owAAAAA&s=40&t=1611302704"
+          profile_img_url: "http://thirdqq.qlogo.cn/g?b=oidb&k=0oVjPgj4ac4y8TNgwwnlZg&kti=ZPU3owAAAAA&s=40&t=1611302704"
+          provider_cd: "QQ"
+          provider_id: "9B3FA93D63FFD477B9DF7FFD6D371B24"
+          provider_os: "Android"
+        response_code: 0
+        response_message: "Success"
+        return_code: 0
+        return_message: "Success"
+        value:
+          member_no: 1000000001621701
+          nickname: "lol"
+          profile_img: "http://thirdqq.qlogo.cn/g?b=oidb&k=0oVjPgj4ac4y8TNgwwnlZg&kti=ZPU3owAAAAA&s=40&t=1611302704"
+          profile_img_url: "http://thirdqq.qlogo.cn/g?b=oidb&k=0oVjPgj4ac4y8TNgwwnlZg&kti=ZPU3owAAAAA&s=40&t=1611302704"
+          provider_cd: "QQ"
+          provider_id: "9B3FA93D63FFD477B9DF7FFD6D371B24"
+          provider_os: "Android"
+    MemberListResponse:
+      description: "member 信息"
+      value:
+        code: 0
+        message: "OK"
+        data:
+          list:
+            - date_of_birth: "2023-08-03"
+              gender: 1
+              member_no: 1000000000871702
+              nickname: "Nora"
+              open_id: "2AC2624FCCC4F3D21BE4DBBFD308FC93"
+              profile_img: "https://m-static-tsdev0-1255385461.file.myqcloud.com/image/default_profile_135x135.png"
+              reg_ts: 1690276275
+            - date_of_birth: "2023-08-03"
+              gender: 1
+              member_no: 1000000000921701
+              nickname: "○y"
+              open_id: "117B0A03242CC130646C652D98CD093F"
+              profile_img: "https://m-static-tsdev0-1255385461.file.myqcloud.com/image/default_profile_135x135.png"
+              reg_ts: 1690424820
+    GameMemberResponse:
+      description: "针对游戏测的 member 信息"
+      value:
+        code: 0
+        message: "OK"
+        data:
+          member_no: 1000000000921701
+          nickname: "○y"
+          open_id: "ASD12312"
+          open_type: "QQ"
+          profile_img: "https://m-static-tsdev0-1255385461.file.myqcloud.com/image/default_profile_135x135.png"
+          reg_ts: 1690424820
+          provider_os: "iOS"
+          last_launch_time: "20230807"
+    GameMemberCharacterResponse:
+      description: "获取用户信息和角色信息"
+      value:
+        code: 0
+        message: "OK"
+        data:
+          character_no: 0
+          member_no: 1000000000921701
+          nickname: "PJB#1000000000921701"
+          open_id: "ASD12312"
+          profile_img: "https://m-static-tsdev0-1255385461.file.myqcloud.com/image/default_profile_135x135.png"
+          provider_cd: "QQ"
+          provider_os: "Android"
+          reg_dt: "2023-07-27 10:27:00"
+    IdCardVerificationResponse:
+      description: "个人信息"
+      value:
+        code: 0
+        message: "OK"
+        data:
+          name: "陈明勇"
+          id_card: "46000*******1234"
+          address: "广东省深圳市南山区科兴科学园"
+          birth: "2023/08/25"
+          nation: "汉"
+          sex: "男"
+    MemberIdentificationStatusResponse:
+      description: "实名认证状态响应"
+      value:
+        code: 0
+        message: "OK"
+        data:
+          identification_status: 0
+    OrganizationMemberResponse:
+      description: "组织成员信息"
+      value:
+        code: 0
+        message: "OK"
+        data:
+          create_time: 1694054156
+          member_no: 1000000001601701
+          nickname: "Take It Easy"
+          organization_id: 7
+          role_id: 2005
+          role_name: "bbb"
+          update_time: 1694060339
+    OrganizationRoleResponse:
+      description: "组织角色信息"
+      value:
+        code: 0
+        message: "OK"
+        data:
+          role_id: 1
+          organization_id: 2
+          create_time: 1687680189
+          role_name: "管理员"
+          update_time: 1690353140
+    OrganizationResponse:
+      description: "组织信息"
+      value:
+        code: 0
+        message: "OK"
+        data:
+          organization_id: 10000
+          owner_id: 1000000000451704
+          create_time: 1687680189
+          organization_name: "藤蔓"
+          update_time: 1690353140
+    ChannelResponse:
+      description: "渠道信息"
+      value:
+        code: 0
+        message: "OK"
+        data:
+          channel_id: 1000002
+          create_time: 1687680189
+          name: "官方渠道"
+          update_time: 1690353140
+    ApplicationResponse:
+      description: "应用信息"
+      value:
+        code: 0
+        message: "OK"
+        data:
+          app_id: 10001
+          create_time: 1687680189
+          name: "sgxq"
+          owner_id: 1000000000771703
+          update_time: 1690353140
+    AddOrganizationRoleResponse:
+      description: "添加成功"
+      value:
+        code: 0
+        message: "OK"
+        data:
+          role_id: 10001
+    AddOrganizationResponse:
+      description: "添加成功"
+      value:
+        code: 0
+        message: "OK"
+        data:
+          organization_id: 10001
+    AddChannelResponse:
+      description: "添加成功"
+      value:
+        code: 0
+        message: "OK"
+        data:
+          channel_id: 1000003
+    AddApplicationResponse:
+      description: "添加成功"
+      value:
+        code: 0
+        message: "OK"
+        data:
+          app_id: 12004
+    Success:
+      description: OK
+      value:
+        code: 0
+        message: "OK"
+    MemberDoesNotExist:
+      description: "用户不存在，查询失败"
+      value:
+        code: 1
+        message: "Member does not exist."
+    AddMemberFailed:
+      description: "添加玩家失败，另一个添加操作正在进行中..."
+      value:
+        code: 2
+        message: "Add member failed, another add-operate is processing."
+    AppIdNotExist:
+      description: "app id 不存在"
+      value:
+        code: 3
+        message: "App id does not exist."
+    NotFoundPunishment:
+      description: "未找到封禁信息"
+      value:
+        code: 4
+        message: "Not Found Punishment."
+    BadNickname:
+      description: "角色昵称违规了"
+      value:
+        code: 5
+        message: "Bad nickname."
+    CharacterDoesNotExist:
+      description: "角色不存在，查询失败"
+      value:
+        code: 6
+        message: "Character does not exist."
+    CharacterBanned:
+      description: "角色或角色昵称被惩罚状态，无法更新昵称"
+      value:
+        code: 7
+        message: "The character is banned, it take 2023-07-20 14:00:00 seconds to be released."
+    InvalidMember4AddCharacter:
+      description: "无效的用户，用户不属于 SGXQ 或账号类型不是在 QQ 或微信里面"
+      value:
+        code: 8
+        message: "The member is not a SGXQ member or open type is not in (QQ, WECHAT)"
+    PunishIdNotExist:
+      description: "punish id 不存在"
+      value:
+        code: 9
+        message: "Punish id does not exist."
+    PunishmentHasExist:
+      description: "惩罚已存在"
+      value:
+        code: 10
+        message: "Punishment has exist."
+    PunishTimeInvalid:
+      description: "惩罚时间是非法的。起始时间不能为0，且必须晚于当前系统时间。结束时间必须晚于开始时间"
+      value:
+        code: 11
+        message: "The punishment time is illegal. The start time cannot be 0 and must be later than the current system time. The end time must be later than the start time"
+    PunishmentHadBeenReleasedOrNotExist:
+      description: "惩罚已被释放过或不存在"
+      value:
+        code: 12
+        message: "Punishment had been released or didn't exist."
+    CharacterResetStatusExist:
+      description: "角色重置操作已存在"
+      value:
+        code: 13
+        message: "Character's reset status already exists."
+    MemberIdentifyFailed:
+      description: "认证失败"
+      value:
+        code: 14
+        message: "Member identify failed."
+    ApplicationAlreadyExists:
+      description: "应用已存在"
+      value:
+        code: 15
+        message: "The application name already exists."
+    ChannelAlreadyExists:
+      description: "渠道已存在"
+      value:
+        code: 16
+        message: "The channel name already exists."
+    ChannelIdNotExist:
+      description: "channel id 不存在"
+      value:
+        code: 17
+        message: "Channel id does not exist."
+    OrganizationAlreadyExists:
+      description: "组织已存在"
+      value:
+        code: 18
+        message: "The organization name already exists."
+    OrganizationIdNotExist:
+      description: "organization id 不存在"
+      value:
+        code: 19
+        message: "Organization id does not exist."
+    OrganizationRoleAlreadyExists:
+      description: "组织的角色已存在"
+      value:
+        code: 20
+        message: "The organization role name already exists."
+    OrganizationRoleIdNotExist:
+      description: "organization role id 不存在"
+      value:
+        code: 21
+        message: "Organization role id does not exist."
+    DeleteRoleButExistMembers:
+      description: "删除角色之前请清空该角色关联的组织成员"
+      value:
+        code: 22
+        message: "Before deleting a role, delete the organization members associated with the role."
+    OrgMemberAlreadyExists:
+      description: "组织成员已存在"
+      value:
+        code: 23
+        message: "Organization member already exists."
+    OrgMemberDoesNotExist:
+      description: "组织成员不存在"
+      value:
+        code: 24
+        message: "Organization member does not exist."
+    AddCharacterFailed:
+      description: "操作频繁"
+      value:
+        code: 25
+        message: "Add character failed, another add-operate is processing."
+    CharacterNoCountLimit:
+      description: "当前区服角色数量已达上限"
+      value:
+        code: 26
+        message: "The number of characters has reached the upper limit in this world."
+    CharacterNicknameExits:
+      description: "角色昵称已存在"
+      value:
+        code: 27
+        message: "Character nickname already exists."
+    PALMPLE_ERR_EXISTS_NICKNAME:
+      description: "昵称已存在"
+      value:
+        code: 10106
+        message: "Error : Nickname already exists."
+    GamePunishmentResponse:
+      description: "封号"
+      value:
+        code: 0
+        message: "OK"
+        data:
+          notice_code: 3
+          notice_title: "根据相关规定，自 2023/06/28 11:21:47 截至止 2023/06/28 11:24:47，您无法登录游戏。\n请您好好休息"
+          notice_message: "根据相关规定，自 2023/06/28 11:21:47 截至止 2023/06/28 11:24:47，您无法登录游戏。\n请您好好休息|其他|1687922507000|1687922687000"
+    OrganizationMemberListResponse:
+      description: "组织成员信息分页列表"
+      value:
+        code: 0
+        message: "OK"
+        data:
+          pageNo: 1
+          pageSize: 5
+          list:
+            - create_time: 1694054156
+              member_no: 1000000001601701
+              nickname: "Take It Easy"
+              organization_id: 7
+              role_id: 2005
+              role_name: "bbb"
+              update_time: 1694060339
+          total: 1
+          totalPages: 1
+    OrganizationRoleListResponse:
+      description: "组织下的角色信息分页列表"
+      value:
+        code: 0
+        message: "OK"
+        data:
+          pageNo: 1
+          pageSize: 5
+          list:
+            - role_id: 1
+              organization_id: 2
+              create_time: 1687680189
+              role_name: "管理员"
+              update_time: 1690353140
+          total: 1
+          totalPages: 1
+    OrganizationListResponse:
+      description: "组织信息分页列表"
+      value:
+        code: 0
+        message: "OK"
+        data:
+          pageNo: 1
+          pageSize: 5
+          list:
+            - organization_id: 10000
+              owner_id: 1000000000451704
+              create_time: 1687680189
+              organization_name: "藤蔓"
+              update_time: 1690353140
+          total: 1
+          totalPages: 1
+    ChannelListResponse:
+      description: "渠道信息分页列表"
+      value:
+        code: 0
+        message: "OK"
+        data:
+          pageNo: 1
+          pageSize: 5
+          list:
+            - channel_id: 1000002
+              create_time: 1687680189
+              name: "官方渠道"
+              update_time: 1690353140
+          total: 1
+          totalPages: 1
+    ApplicationListResponse:
+      description: "应用信息分页列表"
+      value:
+        code: 0
+        message: "OK"
+        data:
+          pageNo: 1
+          pageSize: 5
+          list:
+            - app_id: 10001
+              create_time: 1687680189
+              name: "sgxq"
+              owner_id: 1000000000771703
+              update_time: 1690353140
+          total: 1
+          totalPages: 1
+    PunishmentHistoryPageResponse:
+      description: "惩罚历史列表"
+      value:
+        code: 0
+        message: "OK"
+        data:
+          pageNo: 1
+          pageSize: 5
+          list:
+            - punish_id: "T025"
+              title: "标题"
+              content: "内容"
+              begin_time: 1689731788469
+              end_time: 1689731788490
+              punish_type: "2"
+          total: 1
+          totalPages: 1
+    PunishmentListResponse:
+      description: "惩罚列表"
+      value:
+        code: 0
+        message: "OK"
+        data:
+          list:
+            - punish_id: "T025"
+              title: "标题"
+              content: "内容"
+              begin_time: 1689731788469
+              end_time: 1689731788490
+    PunishmentResponse:
+      description: "惩罚列表"
+      value:
+        code: 0
+        message: "OK"
+        data:
+          punish_id: "T025"
+          title: "标题"
+          content: "内容"
+          begin_time: 1689731788469
+          end_time: 1689731788490
+    AddCharacterResponse:
+      description: OK
+      value:
+        code: 0
+        message: "OK"
+        data:
+          character_no: 1000001
+    SocialLimitInfoResponse:
+      value:
+        code: 0
+        message: "OK"
+        data:
+          list:
+            - characterNo: 123,
+              limitInfo:
+                - banCd: "T0100"
+                  limitStatus: false
+                - banCd: "T0101"
+                  limitStatus: false
+                - banCd: "T0102"
+                  limitStatus: false
+                - banCd: "T0103"
+                  limitStatus: false
+                - banCd: "T0104"
+                  limitStatus: false
+    SocialLimitStatusResponse:
+      value:
+        code: 0
+        message: "OK"
+        data:
+          list:
+            - characterNo: 1000001
+              limitStatus: false
+    CompatibleResponse:
+      description: OK
+      value:
+        return_code: 0
+        return_message: "Success"
+    CheckCharacterNicknameResponse:
+      description: OK
+      value:
+        code: 0
+        message: "OK"
+        data:
+          available: true
+    PalmpleErrBanMember:
+      description: "封号"
+      value:
+        code: 10122
+        message: "Error : This member is a ban member."
+        data:
+          notice_info:
+            notice_code: 3
+            notice_title: "根据相关规定，自 2023/06/28 11:21:47 截至止 2023/06/28 11:24:47，您无法登录游戏。\n请您好好休息"
+            notice_message: "根据相关规定，自 2023/06/28 11:21:47 截至止 2023/06/28 11:24:47，您无法登录游戏。\n请您好好休息|其他|1687922507000|1687922687000"
+    SimulatorLogin:
+      description: "非法模拟器登陆"
+      value:
+        code: 20056
+        message: "Sorry, The simulator cannot log in."
+    InvalidArgument:
+      description: "参数无效"
+      value:
+        code: 400
+        message: "Invalid argument:xxx"
+    Unauthenticated:
+      description: "认证失败"
+      value:
+        code: 401
+        message: "Unauthenticated"
+    ServiceError:
+      description: "服务未知错误"
+      value:
+        code: 500
+        message: "Service error, please contact us"
+  schemas:
+    # response
+    CompatibleResponse:
+      type: object
+      required:
+        - return_code
+        - return_message
+      properties:
+        return_code:
+          $ref: '#/components/schemas/Code'
+        return_message:
+          $ref: '#/components/schemas/Message'
+    CompatibleComplexResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/CompatibleResponse'
+        - type: object
+          required:
+            - response_code
+            - response_message
+          properties:
+            response_code:
+              $ref: '#/components/schemas/Code'
+            response_message:
+              $ref: '#/components/schemas/Message'
+    BaseResponse:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          $ref: '#/components/schemas/Code'
+        message:
+          $ref: '#/components/schemas/Message'
+    AddApplicationResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/AddApplicationVO'
+    AddOrganizationRoleResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/AddOrganizationRoleVO'
+    AddOrganizationResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/AddOrganizationVO'
+    AddChannelResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/AddChannelVO'
+    OrganizationMemberResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/OrganizationMemberVO'
+    OrganizationRoleResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/OrganizationRoleVO'
+    OrganizationResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/OrganizationVO'
+    ChannelResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/ChannelVO'
+    ApplicationResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/ApplicationVO'
+    MemberLoginResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/LoginMemberVO'
+    MemberIdentificationStatusResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/MemberIdentificationStatusVO'
+    GamePunishmentResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/GamePunishmentVO'
+    InternalMemberResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/InternalMemberVO'
+    MemberResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/MemberVO'
+    CompatibleJwtMemberInfoResponse:
+      type: object
+      required:
+        - result
+        - message
+      properties:
+        result:
+          type: string
+          description: "响应码"
+          example: "000"
+        message:
+          $ref: '#/components/schemas/Message'
+        value:
+          $ref: '#/components/schemas/CompatibleJwtMemberVO'
+    CompatibleJwtMemberVO:
+      type: object
+      required:
+        - l_type
+        - member_no
+        - user_id
+        - reg_dt
+        - nickname
+        - jid
+        - profile_img
+        - profile_img_original
+        - person_verify_yn
+        - parent_verify_yn
+        - login_country_cd
+        - login_provider_cd
+        - country_cd
+        - language_cd
+        - timezone
+        - offset
+        - is_default
+        - provider_id
+        - status
+      properties:
+        l_type:
+          $ref: '#/components/schemas/ProviderCd'
+        withdraw_type:
+          type: integer
+        sleep_yn:
+          type: string
+        withdraw_request_yn:
+          type: string
+        last_login_save_yn:
+          type: string
+        member_no:
+          $ref: '#/components/schemas/MemberNo'
+        user_id:
+          $ref: '#/components/schemas/OpenId'
+        reg_dt:
+          $ref: '#/components/schemas/RegisterTimeStamp'
+        nickname:
+          $ref: '#/components/schemas/Nickname'
+        birth_dt:
+          $ref: '#/components/schemas/BirthDateTs'
+        login_cnt:
+          type: integer
+          description: 登陆次数
+          example: 0
+        last_login_dt:
+          $ref: '#/components/schemas/LastLaunchTs'
+        jid:
+          type: string
+        profile_img:
+          $ref: '#/components/schemas/ProfileImg'
+        profile_img_original:
+          $ref: '#/components/schemas/ProfileImg'
+        email_verify_yn:
+          type: string
+        person_verify_yn:
+          type: string
+        parent_verify_yn:
+          type: string
+        login_country_cd:
+          type: string
+        login_provider_cd:
+          $ref: '#/components/schemas/ProviderCd'
+        country_cd:
+          $ref: '#/components/schemas/Country'
+        language_cd:
+          $ref: '#/components/schemas/Language'
+        withdraw_request_dt:
+          type: integer
+        email:
+          type: string
+        phone:
+          type: string
+        timezone:
+          type: string
+        offset:
+          type: integer
+        is_default:
+          type: boolean
+        provider_id:
+          $ref: '#/components/schemas/OpenId'
+        tps:
+          type: string
+        status:
+          type: string
+    CompatibleComplexMemberInfoResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/CompatibleComplexResponse'
+        - type: object
+          properties:
+            value:
+              $ref: '#/components/schemas/MemberInfoV1VO'
+            context:
+              $ref: '#/components/schemas/MemberInfoV1VO'
+    MemberListResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/MemberArrayVO'
+    IdCardVerificationResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/IdCardVerificationVO'
+    GameMemberResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/GameMemberVO'
+    GameMemberCharacterResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/GameMemberCharacterVO'
+    InternalAddMemberResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/InternalAddMemberVO'
+    PunishmentListResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/PunishmentListVO'
+    OrganizationMemberListResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/OrganizationMemberPageVO'
+    OrganizationRoleListResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/OrganizationRolePageVO'
+    OrganizationListResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/OrganizationPageVO'
+    ChannelListResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/ChannelPageVO'
+    ApplicationListResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/ApplicationPageVO'
+    PunishmentHistoryListResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/PunishmentPageVO'
+    PunishmentResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/PunishmentVO'
+    MemberCharactersResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/CharacterListVO'
+    CompatibleNicknameCharactersResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/CompatibleResponse'
+        - type: object
+          required:
+            - game_character_info_list
+          properties:
+            game_character_info_list:
+              type: array
+              items:
+                $ref: '#/components/schemas/NicknameCharacterVO'
+    NicknameCharacterVO:
+      type: object
+      required:
+        - member_no
+        - nickname
+        - nickname_no
+      properties:
+        member_no:
+          $ref: '#/components/schemas/MemberNo'
+        nickname:
+          $ref: '#/components/schemas/Nickname'
+        nickname_no:
+          $ref: '#/components/schemas/CharacterNo'
+    CompatibleCharactersResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/CompatibleResponse'
+        - type: object
+          properties:
+            character_info_list:
+              $ref: '#/components/schemas/CompatibleCharactersVO'
+            member_no:
+              $ref: '#/components/schemas/MemberNo'
+            account_type:
+              $ref: '#/components/schemas/ProviderCd'
+    CharacterInfoArrayResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/MemberAndCharactersVO'
+    RankingCharacterInfoArrayResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/RankingCharacterInfoArrayVO'
+    CheckCharacterNicknameResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/CheckCharacterNicknameVO'
+    SocialLimitInfoResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/SocialLimitInfoListVO'
+    SocialLimitStatusResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/SocialLimitStatusListVO'
+    AddCharacterResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/AddCharacterVO'
+    CompatibleCharacterNicknameResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/CompatibleComplexResponse'
+        - type: object
+          properties:
+            value:
+              $ref: '#/components/schemas/CompatibleCharacterNicknameVO'
+            context:
+              $ref: '#/components/schemas/CompatibleCharacterNicknameVO'
+    CompatibleCharacterInfoResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/CompatibleComplexResponse'
+        - type: object
+          properties:
+            value:
+              $ref: '#/components/schemas/CompatibleMemberCharacterVO'
+            context:
+              $ref: '#/components/schemas/CompatibleMemberCharacterVO'
+    CompatibleCharacterResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/CompatibleResponse'
+        - $ref: '#/components/schemas/CompatibleCharacterVO'
+    CharacterInfoResponse:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/BaseResponse'
+        - type: object
+          properties:
+            data:
+              $ref: '#/components/schemas/MemberCharacterVO'
+    # VO
+    AddOrganizationRoleVO:
+      type: object
+      required:
+        - role_id
+      properties:
+        role_id:
+          $ref: '#/components/schemas/OrganizationRoleId'
+    AddOrganizationVO:
+      type: object
+      required:
+        - organization_id
+      properties:
+        organization_id:
+          $ref: '#/components/schemas/OrganizationId'
+    AddChannelVO:
+      type: object
+      required:
+        - channel_id
+      properties:
+        channel_id:
+          $ref: '#/components/schemas/IntChannelId'
+    AddApplicationVO:
+      type: object
+      required:
+        - app_id
+      properties:
+        app_id:
+          $ref: '#/components/schemas/IntAppId'
+    OrganizationMemberVO:
+      type: object
+      required:
+        - organization_id
+        - role_id
+        - role_name
+        - member_no
+        - nickname
+        - create_time
+        - update_time
+      properties:
+        organization_id:
+          $ref: '#/components/schemas/OrganizationId'
+        role_id:
+          $ref: '#/components/schemas/OrganizationRoleId'
+        role_name:
+          $ref: '#/components/schemas/OrganizationRoleName'
+        member_no:
+          $ref: '#/components/schemas/MemberNo'
+        nickname:
+          $ref: '#/components/schemas/Nickname'
+        create_time:
+          $ref: '#/components/schemas/CreateTime'
+        update_time:
+          $ref: '#/components/schemas/CreateTime'
+    OrganizationRoleVO:
+      type: object
+      required:
+        - role_id
+        - role_name
+        - organization_id
+        - create_time
+        - update_time
+      properties:
+        role_id:
+          $ref: '#/components/schemas/OrganizationRoleId'
+        role_name:
+          $ref: '#/components/schemas/OrganizationRoleName'
+        organization_id:
+          $ref: '#/components/schemas/OrganizationId'
+        create_time:
+          $ref: '#/components/schemas/CreateTime'
+        update_time:
+          $ref: '#/components/schemas/CreateTime'
+    OrganizationVO:
+      type: object
+      required:
+        - organization_id
+        - organization_name
+        - owner_id
+        - create_time
+        - update_time
+      properties:
+        organization_id:
+          $ref: '#/components/schemas/OrganizationId'
+        organization_name:
+          $ref: '#/components/schemas/OrganizationName'
+        owner_id:
+          $ref: '#/components/schemas/OwnerId'
+        create_time:
+          $ref: '#/components/schemas/CreateTime'
+        update_time:
+          $ref: '#/components/schemas/CreateTime'
+    ChannelVO:
+      type: object
+      required:
+        - channel_id
+        - name
+        - create_time
+        - update_time
+      properties:
+        channel_id:
+          $ref: '#/components/schemas/IntChannelId'
+        name:
+          $ref: '#/components/schemas/ChannelName'
+        create_time:
+          $ref: '#/components/schemas/CreateTime'
+        update_time:
+          $ref: '#/components/schemas/CreateTime'
+    ApplicationVO:
+      type: object
+      required:
+        - app_id
+        - name
+        - owner_id
+        - create_time
+        - update_time
+      properties:
+        app_id:
+          $ref: '#/components/schemas/IntAppId'
+        name:
+          $ref: '#/components/schemas/ApplicationName'
+        owner_id:
+          $ref: '#/components/schemas/OwnerId'
+        create_time:
+          $ref: '#/components/schemas/CreateTime'
+        update_time:
+          $ref: '#/components/schemas/CreateTime'
+    OrganizationMemberPageVO:
+      allOf:
+        - $ref: '#/components/schemas/PageData'
+        - type: object
+          required:
+            - list
+          properties:
+            list:
+              $ref: '#/components/schemas/OrganizationMemberVO'
+    OrganizationRolePageVO:
+      allOf:
+        - $ref: '#/components/schemas/PageData'
+        - type: object
+          required:
+            - list
+          properties:
+            list:
+              $ref: '#/components/schemas/OrganizationRoleVO'
+    OrganizationPageVO:
+      allOf:
+        - $ref: '#/components/schemas/PageData'
+        - type: object
+          required:
+            - list
+          properties:
+            list:
+              $ref: '#/components/schemas/OrganizationVO'
+    ChannelPageVO:
+      allOf:
+        - $ref: '#/components/schemas/PageData'
+        - type: object
+          required:
+            - list
+          properties:
+            list:
+              $ref: '#/components/schemas/ChannelVO'
+    ApplicationPageVO:
+      allOf:
+        - $ref: '#/components/schemas/PageData'
+        - type: object
+          required:
+            - list
+          properties:
+            list:
+              $ref: '#/components/schemas/ApplicationVO'
+    PunishmentPageVO:
+      allOf:
+        - $ref: '#/components/schemas/PageData'
+        - type: object
+          required:
+            - list
+          properties:
+            list:
+              $ref: '#/components/schemas/PunishmentHistoryVO'
+    PunishmentHistoryVO:
+      allOf:
+        - $ref: '#/components/schemas/PunishmentVO'
+        - type: object
+          required:
+            - punish_type
+          properties:
+            punish_type:
+              $ref: '#/components/schemas/PunishType'
+    PunishmentListVO:
+      type: object
+      required:
+        - list
+      properties:
+        list:
+          type: array
+          items:
+            $ref: '#/components/schemas/PunishmentVO'
+    SocialLimitInfoListVO:
+      type: object
+      required:
+        - list
+      properties:
+        list:
+          type: array
+          items:
+            $ref: '#/components/schemas/SocialLimitInfoVO'
+    SocialLimitInfoVO:
+      type: object
+      required:
+        - characterNo
+        - limitInfo
+      properties:
+        characterNo:
+          $ref: '#/components/schemas/CharacterNo'
+        limitInfo:
+          type: array
+          items:
+            $ref: '#/components/schemas/SocialLimitInfo'
+    SocialLimitInfo:
+      type: object
+      required:
+        - banCd
+        - limitStatus
+      properties:
+        banCd:
+          $ref: '#/components/schemas/PunishId'
+        limitStatus:
+          $ref: '#/components/schemas/PunishLimitStatus'
+        tipInfo:
+          $ref: '#/components/schemas/PunishTipInfo'
+    SocialLimitStatusListVO:
+      type: object
+      required:
+        - list
+      properties:
+        list:
+          type: array
+          items:
+            $ref: '#/components/schemas/SocialLimitStatusVO'
+    SocialLimitStatusVO:
+      type: object
+      required:
+        - characterNo
+        - limitStatus
+      properties:
+        characterNo:
+          $ref: '#/components/schemas/CharacterNo'
+        limitStatus:
+          $ref: '#/components/schemas/PunishLimitStatus'
+    CheckCharacterNicknameVO:
+      type: object
+      required:
+        - available
+      properties:
+        available:
+          $ref: '#/components/schemas/Available'
+    AddCharacterVO:
+      type: object
+      required:
+        - character_no
+      properties:
+        character_no:
+          $ref: '#/components/schemas/CharacterNo'
+    CompatibleCharactersVO:
+      type: array
+      items:
+        $ref: '#/components/schemas/CompatibleMemberCharacterVO'
+    MemberAndCharactersVO:
+      type: object
+      required:
+        - character_list
+        - member_no
+        - profile_img
+      properties:
+        member_no:
+          $ref: '#/components/schemas/MemberNo'
+        profile_img:
+          $ref: '#/components/schemas/ProfileImg'
+        character_list:
+          type: array
+          items:
+            $ref: '#/components/schemas/CharacterVO'
+    RankingCharacterInfoArrayVO:
+      type: object
+      required:
+        - list
+      properties:
+        list:
+          type: array
+          items:
+            $ref: '#/components/schemas/RankingCharacterVO'
+    MemberInfoV1VO:
+      type: object
+      required:
+        - profile_img
+        - profile_img_url
+        - provider_os
+        - member_no
+        - nickname
+        - provider_id
+        - provider_cd
+      properties:
+        country_cd:
+          $ref: '#/components/schemas/Country'
+        profile_img:
+          $ref: '#/components/schemas/ProfileImg'
+        provider_os:
+          $ref: '#/components/schemas/OsType'
+        profile_img_url:
+          $ref: '#/components/schemas/ProfileImg'
+        member_no:
+          $ref: '#/components/schemas/MemberNo'
+        nickname:
+          $ref: '#/components/schemas/Nickname'
+        provider_id:
+          $ref: '#/components/schemas/OpenId'
+        provider_cd:
+          $ref: '#/components/schemas/ProviderCd'
+    MemberArrayVO:
+      type: object
+      required:
+        - list
+      properties:
+        list:
+          type: array
+          items:
+            $ref: '#/components/schemas/MemberVO'
+    InternalAddMemberVO:
+      type: object
+      required:
+        - member_no
+        - open_id
+      properties:
+        member_no:
+          $ref: '#/components/schemas/MemberNo'
+        open_id:
+          $ref: '#/components/schemas/Xk5OpenId'
+    MemberVO:
+      type: object
+      required:
+        - member_no
+        - open_id
+        - profile_img
+        - gender
+        - nickname
+        - reg_ts
+      properties:
+        member_no:
+          $ref: '#/components/schemas/MemberNo'
+        open_id:
+          $ref: '#/components/schemas/Xk5OpenId'
+        profile_img:
+          $ref: '#/components/schemas/ProfileImg'
+        gender:
+          $ref: '#/components/schemas/Gender'
+        date_of_birth:
+          $ref: '#/components/schemas/BirthDate'
+        nickname:
+          $ref: '#/components/schemas/Nickname'
+        reg_ts:
+          $ref: '#/components/schemas/RegisterTimeStamp'
+    IdCardVerificationVO:
+      type: object
+      required:
+        - name
+        - id_card
+      properties:
+        name:
+          $ref: '#/components/schemas/RealName'
+        id_card:
+          $ref: '#/components/schemas/IdCard'
+        sex:
+          $ref: '#/components/schemas/Sex'
+        nation:
+          $ref: '#/components/schemas/Nation'
+        birth:
+          $ref: '#/components/schemas/Birth'
+        address:
+          $ref: '#/components/schemas/Address'
+    GameMemberVO:
+      type: object
+      required:
+        - member_no
+        - open_id
+        - open_type
+        - profile_img
+        - nickname
+        - provider_os
+        - reg_ts
+      properties:
+        member_no:
+          $ref: '#/components/schemas/MemberNo'
+        open_id:
+          $ref: '#/components/schemas/OpenId'
+        open_type:
+          $ref: '#/components/schemas/OpenTypeVO'
+        profile_img:
+          $ref: '#/components/schemas/ProfileImg'
+        nickname:
+          $ref: '#/components/schemas/Nickname'
+        provider_os:
+          $ref: '#/components/schemas/DeviceOsName'
+        reg_ts:
+          $ref: '#/components/schemas/RegisterTimeStamp'
+        last_launch_time:
+          $ref: '#/components/schemas/LastLaunchTime'
+    GameMemberCharacterVO:
+      type: object
+      required:
+        - member_no
+        - character_no
+        - nickname
+        - provider_os
+        - open_id
+        - provider_os
+        - provider_cd
+        - reg_dt
+      properties:
+        member_no:
+          $ref: '#/components/schemas/MemberNo'
+        character_no:
+          $ref: '#/components/schemas/CharacterNo'
+        nickname:
+          $ref: '#/components/schemas/Nickname'
+        profile_img:
+          $ref: '#/components/schemas/ProfileImg'
+        open_id:
+          $ref: '#/components/schemas/OpenId'
+        provider_os:
+          $ref: '#/components/schemas/OsType'
+        provider_cd:
+          $ref: '#/components/schemas/OpenTypeVO'
+        reg_dt:
+          $ref: '#/components/schemas/RegisterDatetime'
+    InternalMemberVO:
+      type: object
+      required:
+        - member_no
+        - open_id
+        - nickname
+        - profile_img
+        - gender
+        - reg_ts
+      properties:
+        member_no:
+          $ref: '#/components/schemas/MemberNo'
+        open_id:
+          $ref: '#/components/schemas/Xk5OpenId'
+        profile_img:
+          $ref: '#/components/schemas/ProfileImg'
+        channel_id:
+          $ref: '#/components/schemas/IntChannelId'
+        gender:
+          $ref: '#/components/schemas/Gender'
+        date_of_birth:
+          $ref: '#/components/schemas/BirthDate'
+        last_launch_time:
+          $ref: '#/components/schemas/LastLaunchTime'
+        nickname:
+          $ref: '#/components/schemas/Nickname'
+        reg_ts:
+          $ref: '#/components/schemas/RegisterTimeStamp'
+    CharacterListVO:
+      type: object
+      required:
+        - character_list
+      properties:
+        character_list:
+          type: array
+          items:
+            $ref: '#/components/schemas/MemberCharacterVO'
+    CharacterVO:
+      type: object
+      required:
+        - character_no
+        - nickname
+        - world_id
+        - create_time
+      properties:
+        character_no:
+          $ref: '#/components/schemas/CharacterNo'
+        nickname:
+          $ref: '#/components/schemas/Nickname'
+        world_id:
+          $ref: '#/components/schemas/WorldId'
+        create_time:
+          $ref: '#/components/schemas/RegisterTimeStamp'
+    CompatibleCharacterNicknameVO:
+      type: object
+      required:
+        - member_no
+        - profile_img_url
+        - profile_img
+        - nickname_no
+        - nickname
+        - country_cd
+        - provider_id
+      properties:
+        member_no:
+          $ref: '#/components/schemas/MemberNo'
+        profile_img_url:
+          $ref: '#/components/schemas/ProfileImg'
+        profile_img:
+          $ref: '#/components/schemas/ProfileImg'
+        nickname_no:
+          $ref: '#/components/schemas/CharacterNo'
+        nickname:
+          $ref: '#/components/schemas/Nickname'
+        country_cd:
+          $ref: '#/components/schemas/Country'
+        provider_id:
+          $ref: '#/components/schemas/OpenId'
+    CompatibleMemberCharacterVO:
+      type: object
+      required:
+        - member_no
+        - profile_img_url
+        - picture_url
+        - nickname_no
+        - nickname
+        - reg_dt
+        - provider_cd
+        - provider_id
+        - game_id
+      properties:
+        member_no:
+          $ref: '#/components/schemas/MemberNo'
+        profile_img_url:
+          $ref: '#/components/schemas/ProfileImg'
+        picture_url:
+          $ref: '#/components/schemas/ProfileImg'
+        nickname_no:
+          $ref: '#/components/schemas/CharacterNo'
+        nickname:
+          $ref: '#/components/schemas/Nickname'
+        reg_dt:
+          $ref: '#/components/schemas/DateTime'
+        provider_cd:
+          $ref: '#/components/schemas/ProviderCd'
+        provider_id:
+          $ref: '#/components/schemas/OpenId'
+        game_id:
+          $ref: '#/components/schemas/GameId'
+    CompatibleCharacterVO:
+      type: object
+      required:
+        - member_no
+        - game_id
+        - character_id
+        - character_name
+        - character_reg_dt
+        - provider_cd
+      properties:
+        member_no:
+          $ref: '#/components/schemas/MemberNo'
+        game_id:
+          $ref: '#/components/schemas/GameId'
+        character_id:
+          $ref: '#/components/schemas/CharacterId'
+        character_name:
+          $ref: '#/components/schemas/CharacterName'
+        character_reg_dt:
+          $ref: '#/components/schemas/IRegisterDatetime'
+        provider_cd:
+          $ref: '#/components/schemas/ProviderCd'
+    MemberCharacterVO:
+      type: object
+      required:
+        - member_no
+        - character_no
+        - nickname
+        - create_time
+        - world_id
+        - profile_img
+      properties:
+        member_no:
+          $ref: '#/components/schemas/MemberNo'
+        profile_img:
+          $ref: '#/components/schemas/ProfileImg'
+        character_no:
+          $ref: '#/components/schemas/CharacterNo'
+        nickname:
+          $ref: '#/components/schemas/Nickname'
+        world_id:
+          $ref: '#/components/schemas/WorldId'
+        create_time:
+          $ref: '#/components/schemas/RegisterTimeStamp'
+    RankingCharacterVO:
+      allOf:
+        - $ref: '#/components/schemas/CharacterVO'
+        - type: object
+          required:
+            - last_launch_time
+            - member_no
+          properties:
+            member_no:
+              $ref: '#/components/schemas/MemberNo'
+            last_launch_time:
+              $ref: '#/components/schemas/LastLaunchTime'
+    GamePunishmentVO:
+      $ref: '#/components/schemas/NoticeInfo'
+    PunishmentVO:
+      type: object
+      required:
+        - punish_id
+        - title
+        - content
+        - begin_time
+        - end_time
+      properties:
+        punish_id:
+          type: string
+          description: "惩罚标识"
+          example: "T025"
+        title:
+          type: string
+          description: "惩罚标题"
+          example: "标题"
+        content:
+          type: string
+          description: "惩罚描述内容"
+          example: "标题"
+        begin_time:
+          type: integer
+          format: int64
+          description: "惩罚开始时间"
+          example: 1689731731202
+        end_time:
+          type: integer
+          format: int64
+          description: "惩罚结束时间"
+          example: 1689731788469
+    MemberIdentificationStatusVO:
+      type: object
+      required:
+        - identification_status
+      properties:
+        identification_status:
+          $ref: '#/components/schemas/IdentificationStatus'
+    LoginMemberVO:
+      type: object
+      required:
+        - account_info
+        - member_no
+        - nickname
+        - open_id
+        - xk5_open_id
+      properties:
+        account_info:
+          $ref: '#/components/schemas/AccountInfo'
+        extra_data:
+          type: string
+          description: "扩展信息"
+          example: "{}"
+        member_no:
+          $ref: '#/components/schemas/MemberNo'
+        nickname:
+          $ref: '#/components/schemas/Nickname'
+        notice_info:
+          $ref: '#/components/schemas/NoticeInfo'
+        open_id:
+          $ref: '#/components/schemas/OpenId'
+        xk5_open_id:
+          $ref: '#/components/schemas/Xk5OpenId'
+    # request body
+    UpdatePrivilegeLoginRequestBody:
+      type: object
+      required:
+        - privilege_type
+      properties:
+        privilege_type:
+          $ref: '#/components/schemas/PrivilegeType'
+    UpdateOrgMemberRequestBody:
+      type: object
+      required:
+        - role_id
+      properties:
+        role_id:
+          $ref: '#/components/schemas/OrganizationRoleId'
+    OrgMemberRequestBody:
+      type: object
+      required:
+        - member_no
+        - role_id
+      properties:
+        member_no:
+          $ref: '#/components/schemas/MemberNo'
+        role_id:
+          $ref: '#/components/schemas/OrganizationRoleId'
+    UpdateOrganizationRoleRequestBody:
+      type: object
+      required:
+        - role_name
+      properties:
+        role_name:
+          $ref: '#/components/schemas/OrganizationRoleName'
+    UpdateOrganizationRequestBody:
+      type: object
+      required:
+        - organization_name
+      properties:
+        organization_name:
+          $ref: '#/components/schemas/OrganizationName'
+    UpdateChannelRequestBody:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          $ref: '#/components/schemas/ChannelName'
+    UpdateApplicationRequestBody:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          $ref: '#/components/schemas/ApplicationName'
+    AddApplicationRequestBody:
+      type: object
+      required:
+        - name
+        - owner_id
+      properties:
+        name:
+          $ref: '#/components/schemas/ApplicationName'
+        owner_id:
+          $ref: '#/components/schemas/OwnerId'
+    AddOrganizationRoleRequestBody:
+      type: object
+      required:
+        - role_name
+      properties:
+        role_name:
+          $ref: '#/components/schemas/OrganizationRoleName'
+    AddOrganizationRequestBody:
+      type: object
+      required:
+        - organization_name
+      properties:
+        organization_name:
+          $ref: '#/components/schemas/OrganizationName'
+    AddChannelRequestBody:
+      type: object
+      required:
+        - name
+      properties:
+        name:
+          $ref: '#/components/schemas/ChannelName'
+    AddIndividualIdentification:
+      type: object
+      required:
+        - id_card
+        - name
+      properties:
+        id_card:
+          $ref: '#/components/schemas/IdCard'
+        name:
+          $ref: '#/components/schemas/RealName'
+    BaseDeletePunishmentRequestBody:
+      type: object
+      required:
+        - punish_id
+      properties:
+        punish_releaser:
+          $ref: '#/components/schemas/PunishReleaser'
+        punish_id:
+          $ref: '#/components/schemas/PunishId'
+    DeleteMemberPunishmentRequestBody:
+      allOf:
+        - $ref: '#/components/schemas/BaseDeletePunishmentRequestBody'
+        - type: object
+          required:
+            - member_no
+          properties:
+            member_no:
+              $ref: '#/components/schemas/MemberNo'
+    DeleteCharacterPunishmentRequestBody:
+      allOf:
+        - $ref: '#/components/schemas/BaseDeletePunishmentRequestBody'
+        - type: object
+          required:
+            - character_no
+            - world_id
+          properties:
+            character_no:
+              $ref: '#/components/schemas/CharacterNo'
+            world_id:
+              $ref: '#/components/schemas/WorldId'
+    ReduceCharacterPunishmentRequestBody:
+      type: object
+      required:
+        - nicknameNo
+        - memberNo
+        - nickname
+        - profileImage
+        - blockId
+      properties:
+        nicknameNo:
+          $ref: '#/components/schemas/CharacterNo'
+        memberNo:
+          $ref: '#/components/schemas/MemberNo'
+        nickname:
+          $ref: '#/components/schemas/Nickname'
+        profileImage:
+          $ref: '#/components/schemas/ProfileImg'
+        blockId:
+          $ref: '#/components/schemas/PunishId'
+    ResetCharacterPunishmentRequestBody:
+      type: object
+      required:
+        - nicknameNo
+        - memberNo
+        - resetType
+        - duration
+        - title
+        - content
+      properties:
+        nicknameNo:
+          $ref: '#/components/schemas/CharacterNo'
+        memberNo:
+          $ref: '#/components/schemas/MemberNo'
+        resetType:
+          $ref: '#/components/schemas/ResetType'
+        duration:
+          $ref: '#/components/schemas/Duration'
+        title:
+          $ref: '#/components/schemas/PunishTitle'
+        content:
+          $ref: '#/components/schemas/PunishContent'
+    BaseAddPunishmentRequestBody:
+      type: object
+      required:
+        - punish_id
+        - title
+        - content
+        - start_ts
+        - end_ts
+      properties:
+        punish_id:
+          $ref: '#/components/schemas/PunishId'
+        title:
+          $ref: '#/components/schemas/PunishTitle'
+        content:
+          $ref: '#/components/schemas/PunishContent'
+        start_ts:
+          $ref: '#/components/schemas/PunishStartTs'
+        end_ts:
+          $ref: '#/components/schemas/PunishEndTs'
+        punisher:
+          $ref: '#/components/schemas/Punisher'
+    AddMemberPunishmentRequestBody:
+      allOf:
+        - $ref: '#/components/schemas/BaseAddPunishmentRequestBody'
+        - type: object
+          required:
+            - member_no
+          properties:
+            member_no:
+              $ref: '#/components/schemas/MemberNo'
+    AddCharacterPunishmentRequestBody:
+      allOf:
+        - $ref: '#/components/schemas/BaseAddPunishmentRequestBody'
+        - type: object
+          required:
+            - character_no
+            - world_id
+          properties:
+            character_no:
+              $ref: '#/components/schemas/CharacterNo'
+            world_id:
+              $ref: '#/components/schemas/WorldId'
+    UpdateDeviceOsNameRequestBody:
+      type: object
+      required:
+        - device_os_name
+      properties:
+        device_os_name:
+          $ref: '#/components/schemas/DeviceOsName'
+    UpdateCharacterNicknameRequestBody:
+      type: object
+      required:
+        - character_no
+        - nickname
+        - world_id
+      properties:
+        character_no:
+          $ref: '#/components/schemas/CharacterNo'
+        nickname:
+          $ref: '#/components/schemas/Nickname'
+        world_id:
+          $ref: '#/components/schemas/WorldId'
+    InternalAddMemberRequestBody:
+      type: object
+      required:
+        - user_id
+        - open_type
+        - nickname
+      properties:
+        user_id:
+          $ref: '#/components/schemas/UserId'
+        nickname:
+          $ref: '#/components/schemas/Nickname'
+        gender:
+          $ref: '#/components/schemas/Gender'
+        open_type:
+          $ref: '#/components/schemas/OpenType'
+        channel_id:
+          $ref: '#/components/schemas/IntChannelId'
+        device_id:
+          $ref: '#/components/schemas/DeviceId'
+        profile_img:
+          $ref: '#/components/schemas/ProfileImg'
+        birth_date:
+          $ref: '#/components/schemas/BirthDate'
+        reg_ip:
+          $ref: '#/components/schemas/RegisterIp'
+    SocialLimitStatusRequest:
+      type: object
+      required:
+        - characterIdList
+      properties:
+        characterIdList:
+          type: array
+          items:
+            $ref: '#/components/schemas/CharacterNo'
+          maxItems: 15
+    NicknameBody:
+      type: object
+      required:
+        - nickname
+      properties:
+        nickname:
+          $ref: '#/components/schemas/Nickname'
+    NicknameListBody:
+      type: object
+      required:
+        - nickname_list
+      properties:
+        nickname_list:
+          type: array
+          items:
+            $ref: '#/components/schemas/Nickname'
+          maxItems: 15
+    AddCharacterRequestBody:
+      type: object
+      required:
+        - nickname
+        - world_id
+      properties:
+        nickname:
+          $ref: '#/components/schemas/Nickname'
+        world_id:
+          $ref: '#/components/schemas/WorldId'
+    LoginRequestBody:
+      type: object
+      required:
+        - device_info
+        - login_type
+        - user_info
+        - reg_ip
+        - open_id
+        - access_token
+      properties:
+        access_token:
+          $ref: '#/components/schemas/AccessToken'
+        channel_id:
+          $ref: '#/components/schemas/ChannelId'
+        device_info:
+          $ref: '#/components/schemas/DeviceInfo'
+        extra_json:
+          type: string
+          description: "扩展信息"
+          example: "{}"
+        login_type:
+          $ref: '#/components/schemas/AccountType'
+        network_type:
+          $ref: '#/components/schemas/NetworkType'
+        open_id:
+          $ref: '#/components/schemas/OpenId'
+        xk5_open_id:
+          $ref: '#/components/schemas/OpenId'
+        reg_ip:
+          $ref: '#/components/schemas/RegIp'
+        reg_channel_dis:
+          $ref: '#/components/schemas/RegChannelDis'
+        start_way:
+          $ref: '#/components/schemas/StartWay'
+        user_info:
+          $ref: '#/components/schemas/UserInfo'
+        simulator_login:
+          $ref: '#/components/schemas/SimulatorLogin'
+    # properties
+    PunishLimitStatus:
+      type: boolean
+      description: "惩罚限制状态"
+      example: false
+    DeviceOsName:
+      type: string
+      description: "操作系统类型"
+      example: "Android"
+    AccessToken:
+      type: string
+      description: "第三方平台颁发的 Token"
+      example: "123SFA12321"
+    Xk5OpenId:
+      type: string
+      description: "xk5 openId"
+      example: "5266545B00F059C54E220819EDB00508"
+    OpenType:
+      type: integer
+      description: "账号类型"
+      example: 1
+    OpenTypeVO:
+      type: string
+      description: "账号类型"
+      example: "QQ"
+    RegisterTimeStamp:
+      type: integer
+      format: int64
+      description: "创建时的时间戳（Second）"
+      example: 1690424820
+    ProfileImg:
+      type: string
+      description: "用户头像"
+      example: "https://www.xxx.com/asd123213"
+    RegChannelDis:
+      type: string
+      description: "账号首次注册登陆的渠道号"
+      example: "123"
+    RegIp:
+      type: string
+      description: "用户 IP"
+      example: "123.123.123.123"
+    Code:
+      type: integer
+      description: 响应码
+      example: 0
+    Message:
+      type: string
+      description: 响应信息
+      example: "Success"
+    Duration:
+      type: integer
+      format: int64
+      description: "重置时间毫秒数 1000"
+      example: 1000
+    ResetType:
+      type: integer
+      description: "重置类型 1(昵称), 2(头像), 99(昵称/头像)"
+      enum:
+        - 1
+        - 2
+        - 99
+      example: 1
+    CreateTime:
+      type: integer
+      format: int64
+      description: "创建时间"
+      example: 1690424820
+    UpdateTime:
+      type: integer
+      format: int64
+      description: "更新时间"
+      example: 1690424820
+    OwnerId:
+      type: integer
+      format: int64
+      description: 归属人
+      example: 1000000000451704
+    StrMemberNo:
+      type: string
+      description: 用户唯一标识
+      example: "1000000000451704"
+    MemberNo:
+      type: integer
+      format: int64
+      description: 用户唯一标识
+      example: 1000000000451704
+    Punisher:
+      type: string
+      description: 惩罚执行者唯一标识
+      example: "1000000000451704"
+    PunishReleaser:
+      type: string
+      description: 惩罚释放者唯一标识
+      example: "1000000000451704"
+    ExternalUserId:
+      type: string
+      description: 第三方账号用户唯一标识
+      example: "ABBCC46436HJN"
+    PunishId:
+      type: string
+      description: "惩罚 ID"
+      example: "T0100"
+    PunishTipInfo:
+      type: object
+      description: "惩罚提示信息"
+      properties:
+        title:
+          $ref: '#/components/schemas/PunishTitle'
+        reason:
+          $ref: '#/components/schemas/PunishContent'
+    PunishType:
+      type: string
+      description: "惩罚类型"
+      example: "GAME"
+    PunishTitle:
+      type: string
+      description: "惩罚信息的标题"
+      example: "根据相关规定，自 2023/06/28 11:21:47 截至止 2023/06/28 11:24:47，您无法登录游戏。\n请您好好休息"
+    PunishContent:
+      type: string
+      description: "惩罚信息的内容"
+      example: "根据相关规定，自 2023/06/28 11:21:47 截至止 2023/06/28 11:24:47，您无法登录游戏。\n请您好好休息|其他|1687922507000|1687922687000"
+    PunishStartTs:
+      type: integer
+      format: int64
+      description: "惩罚开始的时间戳"
+      example: 1690443977435
+    PunishEndTs:
+      type: integer
+      format: int64
+      description: "惩罚结束的时间戳"
+      example: 1690443999435
+    CharacterId:
+      type: string
+      description: 角色编号
+      example: "1000001"
+    CharacterNo:
+      type: integer
+      format: int64
+      description: 角色编号
+      example: 1000001
+    Available:
+      type: boolean
+      description: "是否可用"
+      example: true
+    CharacterName:
+      type: string
+      description: 角色昵称
+      example: "手工星球大管家"
+    ChannelId:
+      type: string
+      description: 渠道 Id
+      example: "1234"
+    IntChannelId:
+      type: integer
+      format: int32
+      description: 渠道 Id
+      example: 1000002
+    DeviceInfo:
+      type: object
+      properties:
+        device_id:
+          $ref: '#/components/schemas/DeviceId'
+        device_name:
+          $ref: '#/components/schemas/DeviceName'
+        transaction_id:
+          $ref: '#/components/schemas/TransactionId'
+        mnc:
+          $ref: '#/components/schemas/MNC'
+        mcc:
+          $ref: '#/components/schemas/MCC'
+        os_name:
+          $ref: '#/components/schemas/OsName'
+        os_version:
+          $ref: '#/components/schemas/OsVersion'
+        rooting:
+          $ref: '#/components/schemas/Rooting'
+        phone_number:
+          $ref: '#/components/schemas/PhoneNumber'
+        language:
+          $ref: '#/components/schemas/Language'
+        country:
+          $ref: '#/components/schemas/Country'
+        adid:
+          $ref: '#/components/schemas/Adid'
+        idfv:
+          $ref: '#/components/schemas/Idfv'
+    DateTime:
+      type: string
+      description: 中国时间
+      example: "2023-07-31 10:20:36"
+    RegisterDatetime:
+      type: string
+      description: 注册时间
+      example: "2023-07-31 10:20:36"
+    IRegisterDatetime:
+      type: string
+      description: 国际化注册时间
+      example: "2023-07-31T10:20:36.000+08:00"
+    DeviceId:
+      type: string
+      description: "设备 ID"
+      example: "123SD125325"
+    DeviceName:
+      type: string
+      description: "设备名称"
+      example: "小米"
+    TransactionId:
+      type: string
+      description: "事务ID"
+      example: "2193AAA2"
+    MNC:
+      type: string
+      description: "通信公司的信息代码"
+      example: "123"
+    MCC:
+      type: string
+      description: "通讯社的国家代码"
+      example: "123"
+    OsName:
+      type: string
+      description: "登陆设备系统名称"
+      example: "Android"
+    OsVersion:
+      type: string
+      description: "登陆设备的系统版本"
+      example: "1.0.0"
+    OsType:
+      type: string
+      description: "登陆设备的操作系统类型"
+      example: "Android"
+    Rooting:
+      type: string
+      description: "是否 Root"
+      example: "Y"
+      enum:
+        - "Y"
+        - "N"
+    PhoneNumber:
+      type: string
+      description: "手机号码"
+      example: "12345678901"
+    Language:
+      type: string
+      description: "语言代码"
+      example: "zh"
+    Country:
+      type: string
+      description: "国家代码"
+    Adid:
+      type: string
+      description: "android 广告提示符"
+      example: "123456"
+    Idfv:
+      type: string
+      description: "移动终端的独特钥匙"
+      example: "qaz"
+    AccountType:
+      type: integer
+      description: |-
+        * `0` - GUEST
+        * `1` - XK5
+        * `2` - XK5_PHONE
+        * `3` - WECHAT_QR
+        * `4` - WECHAT
+        * `5` - PC_WECHAT
+        * `6` - APPLE_ID
+        * `7` - PC_QQ
+        * `8` - QQ
+        * `9` - TEN_GUEST
+        * `10` - PC_WEGAME
+        * `11` - PLATFORM_ONLINE
+        * `12` - PLATFORM_JOIN
+        * `14` - PLATFORM_EMAIL
+        * `15` - PLATFORM_PHONE
+        * `16` - PLATFORM_ID
+        * `99` - MARKET_CN
+    NetworkType:
+      type: string
+      description: "网络类型"
+      example: "WIFI"
+    OpenId:
+      type: string
+      description: "QQ 或微信账号的 openId"
+      example: "12312ASDAS12321"
+    UserId:
+      type: string
+      description: "用户名（openId、telephone、username ···），用于做幂等性"
+      example: "12312ASDAS12321"
+    StartWay:
+      type: string
+      description: "特权启动方式"
+      example: "WX_GameCenter"
+      enum:
+        - "WX_GameCenter"
+        - "sq_gamecenter"
+    UserInfo:
+      type: object
+      properties:
+        open_id:
+          $ref: '#/components/schemas/OpenId'
+        gender:
+          $ref: '#/components/schemas/Gender'
+        username:
+          $ref: '#/components/schemas/Username'
+        picture_url:
+          $ref: '#/components/schemas/PictureUrl'
+    Gender:
+      type: integer
+      description: |-
+        性别
+        * `0` - 未知
+        * `1` - 男
+        * `2` - 女
+      enum:
+        - 0
+        - 1
+        - 2
+      example: 0
+    RegisterIp:
+      type: string
+      description: "Member 注册时的 IP"
+      example: "0.0.0.0"
+    Address:
+      type: string
+      description: 地址
+      example: 广东省深圳市南山区科兴科学园
+    Birth:
+      type: string
+      description: "生日"
+      example: "2023/07/05"
+    BirthDateTs:
+      type: integer
+      format: int64
+      description: "生日日期"
+      example: 1669625655000
+    BirthDate:
+      type: string
+      description: "生日日期"
+      example: "2023-07-05"
+    Username:
+      type: string
+      description: "角色名"
+      example: "kk"
+    PictureUrl:
+      type: string
+      description: "大头像"
+      example: "https://www.xxx.com/xxx"
+    IdentificationStatus:
+      type: integer
+      description: |
+        认证状态
+        * `0` - "未认证"
+        * `1` - "认证中"
+        * `2` - "已通过"
+      enum:
+        - 0
+        - 1
+        - 2
+      example: 0
+    AccountInfo:
+      type: object
+      properties:
+        account_nickname:
+          $ref: '#/components/schemas/Nickname'
+        account_type:
+          $ref: '#/components/schemas/AccountType'
+        last_launch_time:
+          $ref: '#/components/schemas/LastLaunchTime'
+        member_id:
+          $ref: '#/components/schemas/MemberId'
+        member_no:
+          $ref: '#/components/schemas/MemberNo'
+        picture_url:
+          $ref: '#/components/schemas/PictureUrl'
+        provider_cd:
+          $ref: '#/components/schemas/ProviderCd'
+        rail_id:
+          $ref: '#/components/schemas/RailId'
+        terms_info:
+          $ref: '#/components/schemas/TermsInfo'
+        terms_list:
+          $ref: '#/components/schemas/TermsList'
+    WorldId:
+      type: integer
+      format: int32
+      description: "游戏区服"
+      example: 0
+    Nickname:
+      type: string
+      description: "昵称"
+      example: "kk"
+    LastLaunchTime:
+      type: string
+      description: "最后一次游戏特权启动时间"
+      example: "20230615"
+    LastLaunchTs:
+      type: integer
+      format: int64
+      description: "最后一次游戏特权启动时间"
+      example: 1690424820000
+    MemberId:
+      type: string
+      description: "QQ | WECHAT openid"
+      example: "123ASD214"
+    ProviderCd:
+      type: string
+      description: "账号类型（QQ | WECHAT）"
+      example: "QQ"
+    RailId:
+      type: string
+      description: "Wegame Acoount ID"
+      example: "123123"
+    TermsInfo:
+      type: string
+      description: "协议信息"
+      example: " https://m-static-tsdev0-1255385461.file.myqcloud.com/terms/projectB/terms_projectb.txt"
+    TermsList:
+      type: array
+      items:
+        type: object
+        properties:
+          language:
+            type: string
+            description: "语言"
+            example: "zh"
+          terms_type:
+            type: string
+            description: "协议类型"
+            example: "SERVICE"
+          terms_url:
+            type: string
+            description: "协议地址"
+            example: "https://game.qq.com/tencent_other_contract.shtml"
+    NoticeInfo:
+      type: object
+      required:
+        - notice_code
+        - notice_title
+        - notice_message
+      properties:
+        notice_code:
+          type: integer
+          description: "通知代码"
+          example: 5
+        notice_title:
+          type: string
+          description: "通知标题"
+          example: "title"
+        notice_message:
+          type: string
+          description: "通知内容"
+          example: "content"
+        notice_url:
+          type: string
+          description: "通知链接"
+          example: "www.xxx.com/xxx"
+    LoginType:
+      type: string
+      description: "账号类型"
+      example: "QQ"
+    SimulatorLogin:
+      type: boolean
+      description: "是否是模拟器登陆"
+      example: true
+      enum:
+        - true
+        - false
+    GameId:
+      type: string
+      description: "游戏 ID"
+      example: "SGXQ"
+    PrivilegeLaunch:
+      type: string
+      description: "特权启动方式"
+      example: "WX_GameCenter"
+      enum:
+        - "WX_GameCenter"
+        - "sq_gamecenter"
+    ApplicationName:
+      type: string
+      description: 应用名
+      example: "sgxq"
+    PrivilegeType:
+      type: string
+      description: 特权登录类型
+      example: "sq_gamecenter"
+    OrganizationRoleId:
+      type: integer
+      format: int64
+      description: 组织角色 id
+      example: 1
+    OrganizationId:
+      type: integer
+      format: int64
+      description: 组织 id
+      example: 2
+    OrganizationRoleName:
+      type: string
+      description: 组织角色昵称
+      example: "管理员"
+    OrganizationName:
+      type: string
+      description: 组织名
+      example: "藤蔓"
+    ChannelName:
+      type: string
+      description: 渠道名
+      example: "官方渠道"
+    RealName:
+      type: string
+      description: "真实姓名"
+      example: "陈明勇"
+    PersonalImageUrl:
+      type: string
+      description: 身份证照片 url
+      example: xxx.com
+    Nation:
+      type: string
+      description: 民族
+      example: "汉"
+    Sex:
+      type: string
+      description: 性别
+      example: "男"
+    IdCard:
+      type: string
+      description: "身份证号"
+      example: "123****5678"
+    AppId:
+      type: string
+      description: app id
+      example: "10001"
+    IntAppId:
+      type: integer
+      description: app id
+      example: 10001
+    PageNo:
+      type: integer
+      description: "页码"
+      example: 1
+    PageSize:
+      type: integer
+      description: "每页条数"
+      example: 10
+    Order:
+      type: string
+      description: "排序方式"
+      enum:
+        - "ASC"
+        - "DESC"
+      example: "DESC"
+    IdentificationType:
+      type: string
+      description: |-
+        认证类型
+        * `0` - "个人认证"
+        * `1` - "开发者认证"
+        * `2` - "官方认证"
+        * `3` - "运营认证"
+      enum:
+        - "0"
+        - "1"
+        - "2"
+        - "3"
+      example: 0
+    OrderBy:
+      type: string
+      description: "需要排序的字段"
+      example: "XXX"
+    PageTotal:
+      type: integer
+      description: "记录总和"
+      example: 10
+    TotalPages:
+      type: integer
+      description: "总页数"
+      example: 5
+    PageData:
+      type: object
+      required:
+        - pageNo
+        - pageSize
+        - total
+        - totalPages
+      properties:
+        pageNo:
+          $ref: '#/components/schemas/PageNo'
+        pageSize:
+          $ref: '#/components/schemas/PageSize'
+        order:
+          $ref: '#/components/schemas/Order'
+        orderBy:
+          $ref: '#/components/schemas/OrderBy'
+        total:
+          $ref: '#/components/schemas/PageTotal'
+        totalPages:
+          $ref: '#/components/schemas/TotalPages'
+  parameters:
+    QueryCharacterIdList:
+      name: characterIdList
+      in: query
+      description: 角色编号列表
+      schema:
+        type: array
+        items:
+          $ref: '#/components/schemas/CharacterNo'
+        maxItems: 15
+      required: true
+    QueryIdCardImgUrl:
+      name: imageUrl
+      in: query
+      description: 身份证照片的 url
+      schema:
+        $ref: '#/components/schemas/PersonalImageUrl'
+      required: true
+    PathRealName:
+      name: name
+      in: path
+      description: 真实姓名
+      schema:
+        $ref: '#/components/schemas/RealName'
+    PathIdCard:
+      name: id_card
+      in: path
+      description: 身份证号
+      schema:
+        $ref: '#/components/schemas/IdCard'
+    PathOrganizationRoleId:
+      name: role_id
+      in: path
+      description: 组织下的角色 id
+      schema:
+        $ref: '#/components/schemas/OrganizationRoleId'
+    PathOrganizationId:
+      name: organization_id
+      in: path
+      description: 组织 id
+      schema:
+        $ref: '#/components/schemas/OrganizationId'
+    PathChannelId:
+      name: channel_id
+      in: path
+      description: 渠道 id
+      schema:
+        $ref: '#/components/schemas/IntChannelId'
+      required: true
+    PathAppId:
+      name: app_id
+      in: path
+      description: |-
+        App ID
+        * `SGXQ` - 10001
+      schema:
+        $ref: '#/components/schemas/AppId'
+      required: true
+    QueryNickname:
+      name: nickname
+      in: query
+      description: "角色昵称"
+      schema:
+        $ref: '#/components/schemas/Nickname'
+      required: true
+    PathNickname:
+      name: nickname
+      in: path
+      description: "角色昵称"
+      schema:
+        $ref: '#/components/schemas/Nickname'
+      required: true
+    PathGameId:
+      name: game_id
+      in: path
+      description: "游戏 ID"
+      schema:
+        $ref: '#/components/schemas/GameId'
+      required: true
+    PathOpenId:
+      name: open_id
+      in: path
+      description: "xk5 open id"
+      schema:
+        $ref: '#/components/schemas/Xk5OpenId'
+      required: true
+    PathMemberNo:
+      name: member_no
+      in: path
+      description: "用户的 xk5 唯一编号"
+      schema:
+        $ref: '#/components/schemas/MemberNo'
+      required: true
+    PathPunishId:
+      name: punish_id
+      in: path
+      description: "惩罚 ID"
+      schema:
+        $ref: '#/components/schemas/PunishId'
+      required: true
+    PathCharacterNo:
+      name: character_no
+      in: path
+      description: "角色编号"
+      schema:
+        $ref: '#/components/schemas/CharacterNo'
+      required: true
+    QueryLoginType:
+      name: loginType
+      in: query
+      description: "登陆账号的类型"
+      schema:
+        $ref: '#/components/schemas/LoginType'
+      required: false
+    QueryPunishType:
+      name: punish_type
+      in: query
+      description: "惩罚类型，参数是可选的，不填则不包含该条件"
+      schema:
+        $ref: '#/components/schemas/PunishType'
+    QuerySimulatorLogin:
+      name: simulator_login
+      in: query
+      description: "模拟器登录态"
+      schema:
+        $ref: '#/components/schemas/SimulatorLogin'
+    QueryPrivilegeLaunch:
+      name: privilege_launch
+      in: query
+      description: "游戏启动模式"
+      schema:
+        $ref: '#/components/schemas/PrivilegeLaunch'
+    QueryNicknameList:
+      name: nickname_list
+      in: query
+      description: "角色昵称列表"
+      schema:
+        type: array
+        items:
+          $ref: '#/components/schemas/Nickname'
+        maxItems: 15
+      required: true
+    QueryCharacterNos:
+      name: characterNos
+      in: query
+      description: "角色编号列表"
+      schema:
+        type: array
+        items:
+          $ref: '#/components/schemas/CharacterNo'
+        maxItems: 15
+      required: true
+    QueryMemberNo:
+      name: member_no
+      in: query
+      description: "member_no 参数"
+      schema:
+        $ref: '#/components/schemas/StrMemberNo'
+      required: true
+    QueryWorldId:
+      name: worldId
+      in: query
+      description: 区服编号
+      schema:
+        $ref: '#/components/schemas/WorldId'
+      required: true
+    QueryMemberNos:
+      name: memberNos
+      in: query
+      description: "memberNo 列表"
+      schema:
+        type: array
+        items:
+          $ref: '#/components/schemas/MemberNo'
+        maxItems: 15
+      required: true
+    QueryPageNo:
+      name: pageNo
+      in: query
+      description: "页码"
+      schema:
+        $ref: '#/components/schemas/PageNo'
+      required: true
+    QueryPageSize:
+      name: pageSize
+      in: query
+      description: "每页条数"
+      schema:
+        $ref: '#/components/schemas/PageSize'
+      required: true
+    QueryOrder:
+      name: order
+      in: query
+      description: "排序方式"
+      schema:
+        $ref: '#/components/schemas/Order'
+    QueryIdentificationType:
+      name: identificationType
+      in: query
+      description: "认证类型"
+      schema:
+        $ref: '#/components/schemas/IdentificationType'
+      required: true
+    QueryOrderBy:
+      name: orderBy
+      in: query
+      description: "需要排序的字段"
+      schema:
+        $ref: '#/components/schemas/OrderBy'
+    HeaderOsType:
+      name: OS-Type
+      in: header
+      description: "登陆设备的操作系统类型，Android | iOS"
+      schema:
+        $ref: '#/components/schemas/OsType'
+      required: true
+    HeaderDeviceId:
+      name: Device-Id
+      in: header
+      description: "设备 ID"
+      schema:
+        $ref: '#/components/schemas/DeviceId'
+      required: true

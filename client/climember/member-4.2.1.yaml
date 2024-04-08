@@ -1,0 +1,867 @@
+openapi: 3.0.1
+info:
+  title: Member APIs
+  version: "4.2.1"
+servers:
+  - url: https://api-{env}.xk5.com
+    description: Development & Test Environment
+    variables:
+      env:
+        enum:
+          - sdev0
+          - sdev
+          - dev
+          - dev2
+          - dev3
+          - mod
+          - stg
+        default: sdev0
+        description: "sdev0: 藤蔓开发环境, sdev: 研发开发环境, dev/dev2: 研发测试环境"
+  - url: https://api.xk5.com
+    description: Production Environment
+paths:
+  /member/v4.2/members/punish/member/{memberNo}:
+    get:
+      tags:
+        - "Auth Service"
+      security:
+        - basicAuth: [ ]
+      description: 获取用户的所有惩罚信息
+      parameters:
+        - $ref: "https://doc.xk5.com/specs/externalref/parameters.yaml#/components/parameters/MemberNoInPath"
+        - $ref: "#/components/parameters/PageInQuery"
+        - $ref: "#/components/parameters/PageSizeInQuery"
+      responses:
+        200:
+          description: "OK"
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "https://doc.xk5.com/specs/externalref/schemas.yaml#/components/schemas/BaseResultResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          list:
+                            type: array
+                            items:
+                              $ref: "#/components/schemas/MemberPunishInfo"
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "https://doc.xk5.com/specs/externalref/schemas.yaml#/components/schemas/BaseResultResponse"
+              examples:
+                NotFoundMember:
+                  $ref: "#/components/examples/NotFoundMember"
+  /member/v4.2/members/auth/{loginType}/{loginValue}:
+    get:
+      tags:
+        - "Auth Service"
+      security:
+        - basicAuth: [ ]
+      description: 通过loginType和loginValue查询认证信息
+      parameters:
+        - $ref: "#/components/parameters/LoginTypeInPath"
+        - $ref: "#/components/parameters/LoginValueInPath"
+        - $ref: "#/components/parameters/PasswordInQuery"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "https://doc.xk5.com/specs/externalref/schemas.yaml#/components/schemas/BaseResultResponse"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/MemberInfo"
+        400:
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: "https://doc.xk5.com/specs/externalref/schemas.yaml#/components/schemas/BaseResultResponse"
+              examples:
+                BadRequestInvalidPassword:
+                  value: {"code": 400016, "message": ""}
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "https://doc.xk5.com/specs/externalref/schemas.yaml#/components/schemas/BaseResultResponse"
+              examples:
+                NotFoundMember:
+                  $ref: "#/components/examples/NotFoundMember"
+  /member/v4.2/members/auth/member/{memberNo}:
+    get:
+      tags:
+        - "Auth Service"
+      security:
+        - basicAuth: [ ]
+      description: 通过memberNo查询认证信息
+      parameters:
+        - $ref: "https://doc.xk5.com/specs/externalref/parameters.yaml#/components/parameters/MemberNoInPath"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "https://doc.xk5.com/specs/externalref/schemas.yaml#/components/schemas/BaseResultResponse"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/MemberAuthInfo"
+        404:
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: "https://doc.xk5.com/specs/externalref/schemas.yaml#/components/schemas/BaseResultResponse"
+              examples:
+                NotFoundMember:
+                  $ref: "#/components/examples/NotFoundMember"
+  /member/v4.2/members:
+    post:
+      tags:
+        - "Auth Service"
+      security:
+        - basicAuth: [ ]
+      description: 创建用户信息
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                login_type:
+                  $ref: "#/components/schemas/LoginType"
+                login_value:
+                  $ref: "#/components/schemas/LoginValue"
+                app_id:
+                  type: integer
+                profile_img:
+                  type: string
+                nickname:
+                  $ref: "https://doc.xk5.com/specs/externalref/schemas.yaml#/components/schemas/Nickname"
+                gender:
+                  $ref: "#/components/schemas/Gender"
+              required:
+                - login_type
+                - login_value
+                - app_id
+      responses:
+        200:
+          description: 用户已存在，表示无需创建，并返回用户信息
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "https://doc.xk5.com/specs/externalref/schemas.yaml#/components/schemas/BaseResultResponse"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/MemberInfo"
+              examples:
+                Success:
+                  value: { "code": 0, "message": "OK", "data": { "create_time": 1692608372000, "gender": 1, "member_no": 1000000001231703, "nickname": "", "open_id": "F39364E48F2A4301AED2990AF70685F5", "profile_img": "https://m-static-tsdev0-1255385461.file.myqcloud.com/image/default_profile_135x135.png", "union_id": "1A2163EAB5CAE22884C0B08788AEF74F", "update_time": 1692608372000 } }
+        201:
+          description: 用户不存在，表示已成功创建，并返回用户信息
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "https://doc.xk5.com/specs/externalref/schemas.yaml#/components/schemas/BaseResultResponse"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/MemberInfo"
+              examples:
+                Success:
+                  value: { "code": 0, "message": "OK", "data": { "create_time": 1692608372000, "gender": 1, "member_no": 1000000001231703, "nickname": "", "open_id": "F39364E48F2A4301AED2990AF70685F5", "profile_img": "https://m-static-tsdev0-1255385461.file.myqcloud.com/image/default_profile_135x135.png", "union_id": "1A2163EAB5CAE22884C0B08788AEF74F", "update_time": 1692608372000 } }
+  /member/v4.2/characters:
+    post:
+      tags:
+        - "Character Info"
+      security:
+        - bearerAuth: [ ]
+      description: "游戏新增角色信息接口"
+      requestBody:
+        content:
+          'application/json':
+            schema:
+              type: object
+              required:
+                - nickname
+                - world_id
+              properties:
+                nickname:
+                  $ref: '#/components/schemas/Nickname'
+                world_id:
+                  $ref: '#/components/schemas/WorldId'
+      responses:
+        200:
+          description: "角色已存在，表示无需创建，并返回角色信息"
+          content:
+            'application/json':
+              schema:
+                allOf:
+                  - $ref: "https://doc.xk5.com/specs/externalref/schemas.yaml#/components/schemas/BaseResultResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          character_no:
+                            $ref: "#/components/schemas/CharacterNo"
+        201:
+          description: 角色信息不存在，表示已成功创建，并返回用户信息
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "https://doc.xk5.com/specs/externalref/schemas.yaml#/components/schemas/BaseResultResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          character_no:
+                            $ref: "#/components/schemas/CharacterNo"
+    get:
+      tags:
+        - "Character Info"
+      security:
+        - bearerAuth: [ ]
+      description: "批量查询游戏角色信息接口"
+      parameters:
+        - $ref: "#/components/parameters/NicknamesInQuery"
+        - $ref: "#/components/parameters/CharacterNosInQuery"
+        - $ref: "#/components/parameters/WorldInQuery"
+      responses:
+        200:
+          description: "角色已存在，并返回角色信息"
+          content:
+            'application/json':
+              schema:
+                allOf:
+                  - $ref: "https://doc.xk5.com/specs/externalref/schemas.yaml#/components/schemas/BaseResultResponse"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "#/components/schemas/CharacterInfos"
+              examples:
+                Success:
+                  value: { "code": 0, "message": "OK", "data": { "list": [ { "character_no": 1026762, "game_id": "SGXQ", "last_launch_time": "20220719", "last_privilege_status": false, "member_no": 32000000134, "nickname": "jennie", "personal_data": [ { "is_public": false, "scene": "user_info" }, { "is_public": false, "scene": "platform_nickname" }, { "is_public": false, "scene": "leaderboard" } ], "profile_img": "http://qzapp.qlogo.cn/qzapp/101555218/716CCFD41BC2B52031169198F0BFA26D/100", "provider_cd": "PQ", "provider_id": "716CCFD41BC2B52031169198F0BFA26D", "provider_os": "Android", "reg_dt": "2023-12-06 16:55:47" } ] } }
+        400:
+          $ref: "https://doc.xk5.com/specs/externalref/responses.yaml#/components/responses/BadRequest"
+        401:
+          $ref: "https://doc.xk5.com/specs/externalref/responses.yaml#/components/responses/Unauthorized"
+        404:
+          $ref: "https://doc.xk5.com/specs/externalref/responses.yaml#/components/responses/NotFound"
+        500:
+          $ref: "https://doc.xk5.com/specs/externalref/responses.yaml#/components/responses/InternalServerError"
+  /member/v4.2/characters/{characterNo}:
+    delete:
+      tags:
+        - "Character Info"
+      security:
+        - bearerAuth: []
+      description: "删除游戏角色信息接口"
+      parameters:
+        - $ref: "#/components/parameters/CharacterNoInPath"
+        - $ref: "#/components/parameters/WorldInQuery"
+      responses:
+        200:
+          description: "删除成功"
+          content:
+            'application/json':
+              schema:
+                $ref: "https://doc.xk5.com/specs/externalref/schemas.yaml#/components/schemas/BaseResultResponse"
+        400:
+          $ref: "https://doc.xk5.com/specs/externalref/responses.yaml#/components/responses/BadRequest"
+        401:
+          $ref: "https://doc.xk5.com/specs/externalref/responses.yaml#/components/responses/Unauthorized"
+        404:
+          $ref: "https://doc.xk5.com/specs/externalref/responses.yaml#/components/responses/NotFound"
+        500:
+          $ref: "https://doc.xk5.com/specs/externalref/responses.yaml#/components/responses/InternalServerError"
+    get:
+      tags:
+        - "Character Info"
+      security:
+        - bearerAuth: []
+      description: "查询游戏角色信息接口"
+      parameters:
+        - $ref: "#/components/parameters/CharacterNoInPath"
+        - $ref: "#/components/parameters/WorldInQuery"
+      responses:
+        200:
+          description: "角色已存在，并返回角色信息"
+          content:
+            'application/json':
+              schema:
+                allOf:
+                  - $ref: "https://doc.xk5.com/specs/externalref/schemas.yaml#/components/schemas/BaseResultResponse"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "https://doc.xk5.com/specs/externalref/schemas.yaml#/components/schemas/CharacterInfo"
+              examples:
+                Success:
+                  value: { "code": 0, "message": "OK", "data": { "character_no": 1026762, "game_id": "SGXQ", "last_launch_time": "20220719", "last_privilege_status": false, "member_no": 32000000134, "nickname": "jennie", "profile_img": "http://qzapp.qlogo.cn/qzapp/101555218/716CCFD41BC2B52031169198F0BFA26D/100", "provider_cd": "PQ", "provider_id": "716CCFD41BC2B52031169198F0BFA26D", "provider_os": "Android", "reg_dt": "2023-12-06 16:55:45","personal_data": [ { "is_public": false, "scene": "user_info" }, { "is_public": true, "scene": "platform_nickname" }, { "is_public": true, "scene": "leaderboard" } ] } }
+        400:
+          $ref: "https://doc.xk5.com/specs/externalref/responses.yaml#/components/responses/BadRequest"
+        401:
+          $ref: "https://doc.xk5.com/specs/externalref/responses.yaml#/components/responses/Unauthorized"
+        404:
+          $ref: "https://doc.xk5.com/specs/externalref/responses.yaml#/components/responses/NotFound"
+        500:
+          $ref: "https://doc.xk5.com/specs/externalref/responses.yaml#/components/responses/InternalServerError"
+    put:
+      tags:
+        - "Character Info"
+      security:
+        - bearerAuth: []
+      description: "更新游戏角色信息接口"
+      parameters:
+        - $ref: "#/components/parameters/CharacterNoInPath"
+        - $ref: "#/components/parameters/WorldInQuery"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PutCharacterRequestBody"
+      responses:
+        200:
+          description: "更新成功"
+          content:
+            application/json:
+              schema:
+                $ref: "https://doc.xk5.com/specs/externalref/schemas.yaml#/components/schemas/BaseResultResponse"
+        400:
+          $ref: "https://doc.xk5.com/specs/externalref/responses.yaml#/components/responses/BadRequest"
+        401:
+          $ref: "https://doc.xk5.com/specs/externalref/responses.yaml#/components/responses/Unauthorized"
+        404:
+          $ref: "https://doc.xk5.com/specs/externalref/responses.yaml#/components/responses/NotFound"
+  /member/v4.2/characters/member/{memberNo}:
+    get:
+      tags:
+        - "Character Info"
+      security:
+        - bearerAuth: [ ]
+      description: 通过memberNo查询角色信息
+      parameters:
+        - $ref: "#/components/parameters/MemberNoInPath"
+        - $ref: "#/components/parameters/WorldInQuery"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "https://doc.xk5.com/specs/externalref/schemas.yaml#/components/schemas/BaseResultResponse"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "https://doc.xk5.com/specs/externalref/schemas.yaml#/components/schemas/CharacterInfo"
+              examples:
+                Success:
+                  value: { "code": 0, "message": "OK", "data": { "character_no": 1002401, "game_id": "SGXQ", "last_launch_time": "20220719", "last_privilege_status": false, "member_no": 34100000002679, "nickname": "PJB#34100000002679", "personal_data": [ { "is_public": true, "scene": "user_info" }, { "is_public": false, "scene": "platform_nickname" }, { "is_public": false, "scene": "leaderboard" } ], "profile_img": "https://m-static-tsdev0-1255385461.file.myqcloud.com/image/default_profile_135x135.png", "provider_cd": "", "provider_id": "手工星球", "provider_os": "PC", "reg_dt": "2022-08-05 11:48:31" } }
+        400:
+          $ref: "https://doc.xk5.com/specs/externalref/responses.yaml#/components/responses/BadRequest"
+        401:
+          $ref: "https://doc.xk5.com/specs/externalref/responses.yaml#/components/responses/Unauthorized"
+        404:
+          $ref: "https://doc.xk5.com/specs/externalref/responses.yaml#/components/responses/NotFound"
+        500:
+          $ref: "https://doc.xk5.com/specs/externalref/responses.yaml#/components/responses/InternalServerError"
+  /member/v4.2/characters/nickname/{nickname}:
+    get:
+      tags:
+        - "Character Info"
+      security:
+        - bearerAuth: [ ]
+      description: "通过nickname查询角色信息"
+      parameters:
+        - $ref: "#/components/parameters/NicknameInPath"
+        - $ref: "#/components/parameters/WorldInQuery"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "https://doc.xk5.com/specs/externalref/schemas.yaml#/components/schemas/BaseResultResponse"
+                  - type: object
+                    properties:
+                      data:
+                        $ref: "https://doc.xk5.com/specs/externalref/schemas.yaml#/components/schemas/CharacterInfo"
+              examples:
+                Success:
+                  value: { "code": 0, "message": "OK", "data": { "character_no": 1002401, "game_id": "SGXQ", "last_launch_time": "20220719", "last_privilege_status": false, "member_no": 34100000002679, "nickname": "PJB#34100000002679", "personal_data": [ { "is_public": true, "scene": "user_info" }, { "is_public": false, "scene": "platform_nickname" }, { "is_public": false, "scene": "leaderboard" } ], "profile_img": "https://m-static-tsdev0-1255385461.file.myqcloud.com/image/default_profile_135x135.png", "provider_cd": "", "provider_id": "手工星球", "provider_os": "PC", "reg_dt": "2022-08-05 11:48:31" } }
+        400:
+          $ref: "https://doc.xk5.com/specs/externalref/responses.yaml#/components/responses/BadRequest"
+        401:
+          $ref: "https://doc.xk5.com/specs/externalref/responses.yaml#/components/responses/Unauthorized"
+        404:
+          $ref: "https://doc.xk5.com/specs/externalref/responses.yaml#/components/responses/NotFound"
+        500:
+          $ref: "https://doc.xk5.com/specs/externalref/responses.yaml#/components/responses/InternalServerError"
+  /member/v4.2/members/privilege/launch/member/{memberNo}:
+    get:
+      tags:
+        - "Auth Service"
+      security:
+        - basicAuth: [ ]
+      description: "查询特权登录信息"
+      parameters:
+        - $ref: "#/components/parameters/MemberNoInPath"
+        - name: privilegeType
+          in: query
+          schema:
+            $ref: "#/components/schemas/PrivilegeType"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "https://doc.xk5.com/specs/externalref/schemas.yaml#/components/schemas/BaseResultResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          member_no:
+                            $ref: "https://doc.xk5.com/specs/externalref/schemas.yaml#/components/schemas/MemberNo"
+                          privilege_type:
+                            $ref: "#/components/schemas/PrivilegeType"
+                          privilege_launch_dt:
+                            type: string
+                            example: "20240315"
+  /member/v4.2/members/privilege/launch:
+    post:
+      tags:
+        - "Privilege"
+      security:
+        - bearerAuth: [ ]
+      description: "特权登录"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                privilege_type:
+                  $ref: "#/components/schemas/PrivilegeType"
+              required:
+                - privilege_type
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "https://doc.xk5.com/specs/externalref/schemas.yaml#/components/schemas/BaseResultResponse"
+        400:
+          $ref: "https://doc.xk5.com/specs/externalref/responses.yaml#/components/responses/BadRequest"
+        401:
+          $ref: "https://doc.xk5.com/specs/externalref/responses.yaml#/components/responses/Unauthorized"
+        404:
+          $ref: "https://doc.xk5.com/specs/externalref/responses.yaml#/components/responses/NotFound"
+        500:
+          $ref: "https://doc.xk5.com/specs/externalref/responses.yaml#/components/responses/InternalServerError"
+    delete:
+      tags:
+        - "Privilege Test"
+      security:
+        - bearerAuth: [ ]
+      description: "删除特权登录信息"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                privilege_type:
+                  $ref: "#/components/schemas/PrivilegeType"
+              required:
+                - privilege_type
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "https://doc.xk5.com/specs/externalref/schemas.yaml#/components/schemas/BaseResultResponse"
+        400:
+          $ref: "https://doc.xk5.com/specs/externalref/responses.yaml#/components/responses/BadRequest"
+        401:
+          $ref: "https://doc.xk5.com/specs/externalref/responses.yaml#/components/responses/Unauthorized"
+        404:
+          $ref: "https://doc.xk5.com/specs/externalref/responses.yaml#/components/responses/NotFound"
+        500:
+          $ref: "https://doc.xk5.com/specs/externalref/responses.yaml#/components/responses/InternalServerError"
+components:
+  schemas:
+    PrivilegeType:
+      type: string
+      description: |
+        特权启动类型:
+        * `WxGameCenter` - 微信
+        * `SqGameCenter` - 手Q
+      enum:
+        - WxGameCenter
+        - SqGameCenter
+    Nicknames:
+      type: string
+      description: 多个昵称使用逗号分隔
+      example: "jennie,lisa"
+    CharacterNos:
+      type: string
+      description: 多个ID使用逗号分隔
+      example: "1002301,1002401"
+    PutCharacterRequestBody:
+      type: object
+      description: "需要更新的字段"
+      properties:
+        personal_data:
+          $ref: "#/components/schemas/PersonalData"
+        nickname:
+          $ref: "#/components/schemas/Nickname"
+    PersonalData:
+      type: array
+      items:
+        anyOf:
+          - $ref: "#/components/schemas/SceneIsPublic"
+    SceneIsPublic:
+      type: object
+      properties:
+        scene:
+          type: string
+          enum:
+            - user_info
+            - platform_nickname
+            - leaderboard
+        is_public:
+          type: boolean
+      required:
+        - scene
+        - is_public
+    MemberPunishInfo:
+      type: object
+      properties:
+        member_no:
+          $ref: "https://doc.xk5.com/specs/externalref/schemas.yaml#/components/schemas/MemberNo"
+        punish_id:
+          type: string
+          example: "T025"
+        title:
+          type: string
+          example: "标题"
+        content:
+          type: string
+          example: "内容"
+        begin_time:
+          type: integer
+          format: int64
+          example: 1689731788469
+        end_time:
+          type: integer
+          format: int64
+          example: 1689731788490
+      required:
+        - member_no
+        - punish_id
+        - title
+        - content
+        - begin_time
+        - end_time
+    MemberInfo:
+      type: object
+      properties:
+        create_time:
+          type: integer
+          format: int64
+          description: Unix Milli
+          example: 1692608372000
+        gender:
+          $ref: "#/components/schemas/Gender"
+        member_no:
+          $ref: "https://doc.xk5.com/specs/externalref/schemas.yaml#/components/schemas/MemberNo"
+        nickname:
+          $ref: "https://doc.xk5.com/specs/externalref/schemas.yaml#/components/schemas/Nickname"
+        open_id:
+          type: string
+          description: XK5 OpenID
+          example: "100DC5B75B4AEFC4C0BEF2BBDB61389A"
+        profile_img:
+          type: string
+          description: 头像 URL
+          example: "https://m-static-tsdev0-1255385461.file.myqcloud.com/image/default_profile_135x135.png"
+        union_id:
+          type: string
+          description: XK5 UnionID
+          example: "684D947FCEFB3F3472619D4EE89B3F9B"
+        update_time:
+          type: integer
+          format: int64
+          description: Unix Milli
+          example: 1692608372000
+      required:
+        - member_no
+        - nickname
+        - profile_img
+        - gender
+        - open_id
+        - union_id
+        - create_time
+        - update_time
+    CharacterInfos:
+      type: object
+      properties:
+        list:
+          type: array
+          items:
+            $ref: "https://doc.xk5.com/specs/externalref/schemas.yaml#/components/schemas/CharacterInfo"
+    CharacterNo:
+      type: integer
+      format: int64
+      description: 角色编号
+      example: 1000001
+    Gender:
+      type: integer
+      enum:
+        - 0
+        - 1
+        - 2
+      description: |
+        性别：
+        * `0` - 未定义
+        * `1` - 男
+        * `2` - 女
+      x-enum-varnames:
+        - GenderUnknown
+        - GenderMale
+        - GenderFemale
+    LoginType:
+      type: integer
+      enum:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        - 8
+      description: |
+        * `1` - Qq
+        * `2` - Wx
+        * `3` - Phone
+        * `4` - Pwd
+        * `5` - SgxqMsdkQq
+        * `6` - SgxqMsdkWx
+        * `7` - Wegame
+        * `8` - Apple
+      x-enum-varnames:
+        - LoginTypeQq
+        - LoginTypeWx
+        - LoginTypePhone
+        - LoginTypePwd
+        - LoginTypeSgxqMsdkQq
+        - LoginTypeSgxqMsdkWx
+        - LoginTypeWegame
+        - LoginTypeApple
+    LoginValue:
+      type: string
+    CreateTime:
+      type: integer
+      format: int64
+      description: Unix Time
+      example: 1702632620
+    UpdateTime:
+      type: integer
+      format: int64
+      description: Unix Time
+      example: 1702632620
+    MemberAuthInfo:
+      type: object
+      properties:
+        login_type:
+          $ref: "#/components/schemas/LoginType"
+        login_value:
+          $ref: "#/components/schemas/LoginValue"
+        member_no:
+          $ref: "https://doc.xk5.com/specs/externalref/schemas.yaml#/components/schemas/MemberNo"
+        create_time:
+          $ref: "#/components/schemas/CreateTime"
+        update_time:
+          $ref: "#/components/schemas/UpdateTime"
+      required:
+        - login_type
+        - login_value
+        - member_no
+        - create_time
+        - update_time
+    Password:
+      type: string
+      description: 密码
+    VerificationCode:
+      type: string
+      description: 手机验证码
+    VerificationCodeScene:
+      type: string
+      description: 手机验证码场景
+    OsType:
+      type: string
+      description: "登陆设备的操作系统类型 Android | IOS"
+      example: "Android"
+    DeviceId:
+      type: string
+      description: "设备 ID"
+      example: "123SD125325"
+    WorldId:
+      type: integer
+      format: int32
+      description: "游戏区服"
+      example: 0
+    Nickname:
+      type: string
+      description: "昵称"
+      example: "kk"
+    AppId:
+      type: integer
+      format: int32
+      description: app id
+      example: "10001"
+    Xk5OpenId:
+      type: string
+      description: "xk5 openId"
+      example: "5266545B00F059C54E220819EDB00508"
+    GameId:
+      type: string
+      description: "游戏 ID"
+      example: "SGXQ"
+  parameters:
+    NicknameInPath:
+      name: nickname
+      in: path
+      schema:
+        $ref: "#/components/schemas/Nickname"
+      allowEmptyValue: false
+    MemberNoInPath:
+      name: memberNo
+      in: path
+      schema:
+        $ref: "https://doc.xk5.com/specs/externalref/schemas.yaml#/components/schemas/MemberNo"
+      required: true
+      allowEmptyValue: false
+    CharacterNoInPath:
+      name: characterNo
+      in: path
+      schema:
+        $ref: "#/components/schemas/CharacterNo"
+      required: true
+      allowEmptyValue: false
+    LoginTypeInPath:
+      name: loginType
+      in: path
+      schema:
+        $ref: "#/components/schemas/LoginType"
+      allowEmptyValue: false
+    LoginValueInPath:
+      name: loginValue
+      in: path
+      schema:
+        $ref: "#/components/schemas/LoginValue"
+      allowEmptyValue: false
+    MemberNoInQuery:
+      name: memberNo
+      in: query
+      schema:
+        $ref: "https://doc.xk5.com/specs/externalref/schemas.yaml#/components/schemas/MemberNo"
+    PasswordInQuery:
+      name: password
+      in: query
+      description: 当且仅当，loginType=4时，必填。
+      schema:
+        $ref: "#/components/schemas/Password"
+    VerificationCodeInQuery:
+      name: verificationCode
+      in: query
+      description: 当且仅当，loginType=3时，必填。
+      schema:
+        $ref: "#/components/schemas/VerificationCode"
+    VerificationCodeSceneInQuery:
+      name: scene
+      in: query
+      description: 当且仅当，loginType=3时，必填。
+      schema:
+        $ref: "#/components/schemas/VerificationCodeScene"
+    PageInQuery:
+      name: page
+      in: query
+      description: 页数
+      schema:
+        type: integer
+    PageSizeInQuery:
+      name: pageSize
+      in: query
+      description: 每页数量
+      schema:
+        type: integer
+        maximum: 100
+    OsTypeInHeader:
+      name: OS-Type
+      in: header
+      description: "登陆设备的操作系统类型，Android | iOS"
+      schema:
+        $ref: '#/components/schemas/OsType'
+      required: true
+    DeviceIdInHeader:
+      name: Device-Id
+      in: header
+      description: "设备 ID"
+      schema:
+        $ref: '#/components/schemas/DeviceId'
+      required: true
+    NicknamesInQuery:
+      name: nicknames
+      in: query
+      schema:
+        $ref: "#/components/schemas/Nicknames"
+      allowEmptyValue: false
+    CharacterNosInQuery:
+      name: characterNos
+      in: query
+      schema:
+        $ref: "#/components/schemas/CharacterNos"
+      allowEmptyValue: false
+    WorldInQuery:
+      name: worldId
+      in: query
+      schema:
+        $ref: "#/components/schemas/WorldId"
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    bearerAuth:
+      type: http
+      scheme: bearer
+  examples:
+    NotFoundMember:
+      value: { "code": 404002, "member": "member was not found" }

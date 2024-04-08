@@ -1,0 +1,4 @@
+package: cligdis
+generate:
+  client: true
+  models: true

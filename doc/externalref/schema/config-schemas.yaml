@@ -1,0 +1,8 @@
+package: schema
+generate:
+  models: true
+  embedded-spec: true
+output:
+  schema.gen.go
+output-options:
+  skip-prune: true

@@ -1,0 +1,8 @@
+package: climember
+generate:
+  client: true
+  models: true
+import-mapping:
+  https://doc.xk5.com/specs/externalref/schemas.yaml: github.com/cstcen/gore/doc/externalref/schema
+  https://doc.xk5.com/specs/externalref/responses.yaml: github.com/cstcen/gore/doc/externalref/response
+  https://doc.xk5.com/specs/externalref/parameters.yaml: github.com/cstcen/gore/doc/externalref/parameter

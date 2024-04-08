@@ -1,0 +1,4 @@
+package: cligs
+generate:
+  client: true
+  models: true

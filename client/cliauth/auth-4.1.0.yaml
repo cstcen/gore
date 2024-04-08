@@ -1,0 +1,678 @@
+openapi: 3.0.1
+info:
+  title: Auth - BETA
+  version: "4.1.0"
+servers:
+  - url: https://api-{env}.xk5.com
+    description: Development & Test Environment
+    variables:
+      env:
+        enum:
+          - sdev0
+          - sdev
+          - dev
+          - dev2
+          - dev3
+          - mod
+          - stg
+        default: sdev0
+        description: "sdev0: 藤蔓开发环境, sdev: 研发开发环境, dev/dev2: 研发测试环境"
+  - url: https://api.xk5.com
+    description: Production Environment
+paths:
+  /auth/v4.1/sso/login:
+    post:
+      description: 游戏登录接口
+      tags:
+        - sso
+      security: [ ]
+      parameters:
+        - $ref: '#/components/parameters/ParamDeviceId'
+      requestBody:
+        $ref: "#/components/requestBodies/PostTokenRequestBody"
+      responses:
+        200:
+          $ref: '#/components/responses/V41SsoLoginResponse'
+  /auth/v4.1/sso/logout:
+    post:
+      description: 游戏登出接口
+      tags:
+        - sso
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                client_id:
+                  $ref: "#/components/schemas/ClientId"
+                client_secret:
+                  $ref: "#/components/schemas/ClientSecret"
+                token:
+                  $ref: "#/components/schemas/Token"
+              required:
+                - client_id
+                - client_secret
+                - token
+      responses:
+        200:
+          description: the token has bean revoked successfully.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BaseResultResponse"
+  /auth/v4.1/member_auth_info:
+    get:
+      description: 查询MemberAuthInfo表
+      security:
+        - bearer_auth: [ ]
+        - basic_auth: [ ]
+      parameters:
+        - name: memberNo
+          in: query
+          schema:
+            $ref: "#/components/schemas/MemberNo"
+        - name: loginType
+          in: query
+          schema:
+            type: integer
+        - name: loginValue
+          in: query
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/BaseResultResponse"
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          list:
+                            type: array
+                            items:
+                              $ref: "#/components/schemas/MemberAuthDetail"
+components:
+  securitySchemes:
+    bearer_auth:
+      type: http
+      scheme: bearer
+    basic_auth:
+      type: http
+      scheme: basic
+  schemas:
+    AnyValue: { }
+    V41SsoLoginResponseData:
+      allOf:
+        - $ref: "#/components/schemas/AccessTokenResponse"
+        - type: object
+          properties:
+            member:
+              $ref: '#/components/schemas/JsonWebTokenMember'
+    MemberNo:
+      type: integer
+      format: int64
+    MemberAuthDetail:
+      type: object
+      properties:
+        member_no:
+          $ref: "#/components/schemas/MemberNo"
+        login_type:
+          type: integer
+          description: |
+            * `1` - Qq
+            * `2` - Wx
+            * `3` - Phone
+            * `4` - Pwd
+            * `5` - SgxqMsdkQq
+            * `6` - SgxqMsdkWx
+            * `7` - Wegame
+        login_value:
+          type: string
+        create_time:
+          type: integer
+          format: int64
+          description: Unix Time
+        update_time:
+          type: integer
+          format: int64
+          description: Unix Time
+      required:
+        - member_no
+        - login_type
+        - login_value
+        - create_time
+        - update_time
+    Token:
+      type: string
+      description: The string value of the token.
+    Username:
+      type: string
+      description: The resource owner username.
+    Password:
+      type: string
+      description: The resource owner password.
+    PhoneNo:
+      type: string
+      description: 手机号码
+      example: 17688890868
+    VerificationCode:
+      type: string
+      description: 手机验证码
+      example: 154784
+    PostTokenRequestBodyAuthorizationCode:
+      type: object
+      properties:
+        code:
+          $ref: "#/components/schemas/AuthorizationCode"
+      required:
+        - code
+    PostTokenRequestBodyPassword:
+      type: object
+      properties:
+        username:
+          $ref: "#/components/schemas/Username"
+        password:
+          $ref: "#/components/schemas/Password"
+      required:
+        - username
+        - password
+    PostTokenRequestBodyPhone:
+      type: object
+      properties:
+        phone_no:
+          $ref: "#/components/schemas/PhoneNo"
+        verification_code:
+          $ref: "#/components/schemas/VerificationCode"
+        scene:
+          $ref: "#/components/schemas/VerificationCodeScene"
+      required:
+        - phone_no
+        - verification_code
+    PostTokenRequestBodyQq:
+      type: object
+      properties:
+        qq_code:
+          type: string
+          description: QQ Code
+      required:
+        - qq_code
+    PostTokenRequestBodyWx:
+      type: object
+      properties:
+        wx_code:
+          type: string
+          description: WX Code
+      required:
+        - wx_code
+    PostTokenRequestBodyMsdk:
+      type: object
+      properties:
+        msdk_channel_id:
+          $ref: "#/components/schemas/MsdkChannelId"
+        msdk_os:
+          $ref: "#/components/schemas/MsdkOs"
+        msdk_openid:
+          $ref: "#/components/schemas/OpenId"
+        msdk_token:
+          $ref: "#/components/schemas/Token"
+        msdk_gender:
+          $ref: "#/components/schemas/Gender"
+        msdk_nickname:
+          $ref: "#/components/schemas/NickName"
+        msdk_profile_img:
+          $ref: "#/components/schemas/AvatarUrl"
+        network_type:
+          $ref: '#/components/schemas/NetworkType'
+        is_simulator:
+          $ref: '#/components/schemas/IsSimulator'
+        channel_id:
+          $ref: '#/components/schemas/ChannelId'
+      required:
+        - msdk_channel_id
+        - msdk_os
+        - msdk_openid
+        - msdk_token
+        - msdk_gender
+        - msdk_nickname
+        - msdk_profile_img
+        - network_type
+    PostTokenRequestBodyRefreshToken:
+      type: object
+      properties:
+        refresh_token:
+          type: string
+      required:
+        - refresh_token
+    VerificationCodeScene:
+      type: string
+      enum:
+        - develop_community_login_register
+        - develop_community_bind
+        - sgxq_app_login_register
+        - sgxq_app_bind
+        - xk5_oauth2
+    ClientType:
+      type: integer
+      description: |
+        * `0` - WEB
+        * `1` - ANDROID
+        * `2` - IOS
+        * `3` - PC
+      enum:
+        - 0
+        - 1
+        - 2
+        - 3
+    JsonWebTokenMember:
+      type: object
+      properties:
+        men:
+          type: integer
+          format: int64
+          description: MemberNo
+        opi:
+          type: string
+          description: OpenId
+        apn:
+          type: integer
+          description: ApplicationNo
+        nic:
+          type: string
+          description: Nickname
+        pri:
+          type: string
+          description: ProfileImg
+        lot:
+          type: integer
+          description: |
+            LoginType:
+            * `1` - Qq
+            * `2` - Wx
+            * `3` - Phone
+            * `4` - Pwd
+            * `5` - SgxqMsdkQq
+            * `6` - SgxqMsdkWx
+            * `7` - Wegame
+        lov:
+          type: string
+          description: |
+            LoginValue，根据LoginType不同，而产生不同的LoginValue。
+            LoginType:
+            * `1` - LoginValue=Qq OpenId
+            * `2` - LoginValue=Wx OpenId
+            * `3` - LoginValue=Phone Number
+            * `4` - LoginValue=Username
+            * `5` - LoginValue=SgxqMsdkQq OpenId
+            * `6` - LoginValue=SgxqMsdkWx OpenId
+            * `7` - LoginValue=Wegame RailId
+        ifl:
+          type: boolean
+          description: IsFirstLogin
+        chi:
+          type: string
+          description: ChannelId
+        red:
+          type: integer
+          format: int64
+          description: RegisteredDate
+        lpld:
+          type: string
+          format: YYYYMMdd
+          description: LastPrivilegeLaunchDate
+    AccessToken:
+      type: object
+      description: The access token issued by the authorization server.
+      allOf:
+        - $ref: "#/components/schemas/JsonWebTokenStandard"
+        - $ref: "#/components/schemas/JsonWebTokenMember"
+      example: "a83d7e22559f5b4a9269995311967e89a1b85ea8da3bae7116bf6507541f41d306778c949c26af26789a5d9d2422dc85c43573f712a7ac1892d6994a6c0ddac108d99f9140a4b8fe112ae48e13fe3cb3ebd4dd1b3f"
+    RefreshToken:
+      type: object
+      description: The refresh token, which can be used to obtain new access tokens using the same authorization grant.
+      allOf:
+        - $ref: "#/components/schemas/JsonWebTokenStandard"
+        - $ref: "#/components/schemas/JsonWebTokenMember"
+      example: "e0aca0a308f65d98e32df6dee50cdbd16e15043ef9e11aa2f62d0cd61b6e20444bd450b37d7512c294f28e6b16c02456537e71c4618ea69fda2948869e887a496f81503227c5bbc9d09d032b588e1f7cf40de3398b28"
+    TokenType:
+      type: string
+      enum:
+        - Basic
+        - Bearer
+      description: The type of the token issued.
+      example: Bearer
+    ExpiresIn:
+      type: integer
+      format: int64
+      description: The lifetime in seconds of the access token.
+      example: 3600
+    GrantType:
+      type: string
+      enum:
+        - client_credentials
+        - authorization_code
+        - refresh_token
+        - password
+        - phone
+        - qq
+        - wx
+        - msdk
+    Scope:
+      type: string
+      description: The scope of the access request, comma separation
+      example: xas_login
+    ClientId:
+      type: string
+      description: The client identifier
+      example: xyzqwdaKDjf
+    ClientSecret:
+      type: string
+      description: The client secret
+      example: 7FdacDF54w654f
+    AuthorizationCode:
+      type: string
+      description: |
+        The authorization code generated by the authorization server.
+        It's valid for 10 minutes.
+      example: Splx10BeZQQYbYS6WxSbIA
+    Issuer:
+      type: string
+      description: issuer of the JWT
+      example: https://api.xk5.com
+    Subject:
+      type: string
+      description: Subject of the JWT
+      example: USER_ID
+    Audience:
+      type: array
+      items:
+        type: string
+      description: |
+        audience: Recipient for which the JWT is intended
+      example: https://api.xk5.com
+    expiresAt:
+      type: integer
+      format: int64
+      description: |
+        expiration time: Time after which the JWT expires
+      example: 1490922820
+    JwtId:
+      type: string
+      description: |
+        jwt id
+    DeviceId:
+      type: string
+      description: 设备唯一标识符(e.g. IMEI值)
+      example: 34_W1OLJH8zY-RRRprRBuIMTev_l0TA8FnWSr0_IG8RqKnOB017c0qQiPgQRk8mo-n1hRmhJy8V-Y3r8fKjzNjfNflAVtXYXcaDlJQO4cPF8ZE
+    JsonWebTokenStandard:
+      type: object
+      properties:
+        iss:
+          $ref: "#/components/schemas/Issuer"
+        sub:
+          $ref: "#/components/schemas/Subject"
+        aud:
+          $ref: "#/components/schemas/Audience"
+        exp:
+          $ref: "#/components/schemas/expiresAt"
+        jti:
+          $ref: "#/components/schemas/JwtId"
+        did:
+          $ref: "#/components/schemas/DeviceId"
+        clt:
+          $ref: "#/components/schemas/ClientType"
+        env:
+          $ref: '#/components/schemas/Environment'
+        sim:
+          type: boolean
+          description: Simulator
+    Environment:
+      type: string
+      description: Environment
+      enum:
+        - tdev
+        - sdev0
+        - sdev
+        - dev
+        - dev2
+        - dev3
+        - mod
+        - stg
+        - xk5
+    OpenId:
+      type: string
+      description: 第三方唯一标识
+    ChannelId:
+      type: string
+      description: 渠道ID
+    MsdkChannelId:
+      type: integer
+      description: |
+        Msdk 登录渠道
+        * `1` - 微信
+        * `2` - 手Q
+        * `3` - 游客
+        * `4` - Facebook
+        * `5` - GameCenter
+        * `6` - GooglePlay
+        * `7` - IEGPass
+        * `9` - Twitter
+        * `10` - Garena
+        * `11` - SelfAccount
+        * `12` - EGame
+        * `14` - Line
+        * `15` - Signin with Apple
+        * `17` - Kwai
+      enum:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        - 9
+        - 10
+        - 11
+        - 12
+        - 13
+        - 14
+        - 15
+        - 17
+    MsdkOs:
+      type: integer
+      description: |
+        操作系统标示
+        * `1` - Android
+        * `2` - iOS
+        * `3` - Web
+        * `4` - Linux
+        * `5` - Windows
+      enum:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+    NetworkType:
+      type: integer
+      description: |
+        网络情况类型:
+        * `-1` - unknown 
+        * `0` - no connect 
+        * `1` - WIFI 
+        * `2` - 2G网络
+        * `3` - 3G网络 
+        * `4` - 4G网络 
+        * `5` - 5G网络
+      enum:
+        - -1
+        - 0
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+    IsSimulator:
+      type: boolean
+      description: 是否是模拟器
+    AvatarUrl:
+      type: string
+      description: 头像链接
+      format: uri
+    NickName:
+      type: string
+      description: 用户名称
+    Gender:
+      type: integer
+      description: |
+        性别：
+        * `0` - 未定义
+        * `1` - 男
+        * `2` - 女
+      enum:
+        - 0
+        - 1
+        - 2
+    BaseResultResponse:
+      type: object
+      description: 见公共返回码列表
+      properties:
+        code:
+          type: integer
+        message:
+          type: string
+      required:
+        - code
+        - message
+    AccessTokenResponse:
+      type: object
+      properties:
+        access_token:
+          $ref: "#/components/schemas/AccessToken"
+        token_type:
+          $ref: "#/components/schemas/TokenType"
+        expires_in:
+          $ref: "#/components/schemas/ExpiresIn"
+        refresh_token:
+          $ref: "#/components/schemas/RefreshToken"
+        scope:
+          $ref: "#/components/schemas/Scope"
+      required:
+        - access_token
+        - token_type
+  parameters:
+    ParamDeviceId:
+      name: Device-Id
+      in: header
+      description: 设备唯一标识符(e.g. IMEI值)
+      schema:
+        $ref: "#/components/schemas/DeviceId"
+      example: 34_W1OLJH8zY-RRRprRBuIMTev_l0TA8FnWSr0_IG8RqKnOB017c0qQiPgQRk8mo-n1hRmhJy8V-Y3r8fKjzNjfNflAVtXYXcaDlJQO4cPF8ZE
+      required: false
+  requestBodies:
+    PostTokenRequestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            allOf:
+              - type: object
+                properties:
+                  grant_type:
+                    $ref: "#/components/schemas/GrantType"
+                  client_id:
+                    $ref: "#/components/schemas/ClientId"
+                  client_secret:
+                    $ref: "#/components/schemas/ClientSecret"
+                required:
+                  - grant_type
+                  - client_id
+                  - client_secret
+              - anyOf:
+                  - $ref: "#/components/schemas/PostTokenRequestBodyAuthorizationCode"
+                  - $ref: "#/components/schemas/PostTokenRequestBodyRefreshToken"
+                  - $ref: "#/components/schemas/PostTokenRequestBodyPassword"
+                  - $ref: "#/components/schemas/PostTokenRequestBodyPhone"
+                  - $ref: "#/components/schemas/PostTokenRequestBodyQq"
+                  - $ref: "#/components/schemas/PostTokenRequestBodyWx"
+                  - $ref: "#/components/schemas/PostTokenRequestBodyMsdk"
+                  - $ref: "#/components/schemas/AnyValue"
+          examples:
+            RefreshToken:
+              $ref: "#/components/examples/Oauth2TokenRequestRefreshToken"
+            AuthorizationCode:
+              $ref: "#/components/examples/Oauth2TokenRequestAuthorizationCode"
+  responses:
+    V41SsoLoginResponse:
+      description: OK
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/BaseResultResponse"
+              - type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/V41SsoLoginResponseData'
+          examples:
+            Success:
+              value: { "code": 0, "data": { "access_token": "1eeb081eec94c1b1b45a353542d8d55410869693ebbd0fb6748b690e14df1d66f127dd1329aa5d8f3d6f5c86eb0d3f7f212f22a3f16ce72f90a5fbb14ab327bb1c0abfcaa5d4d9c06b6875e68ccd6d9a422cead3d0fd3a", "expires_in": 21600, "member": { "apn": 10001, "lot": 4, "lov": "123456", "men": 1000000001231703, "opi": "f39364e48f2a4301aed2990af70685f5", "pri": "https://m-static-tsdev0-1255385461.file.myqcloud.com/image/default_profile_135x135.png", "red": 1692637206 }, "refresh_token": "133c4da56c6d76f2e0327655a1262f538bd9a858e8cf02a0c7e09e1389422be989b669b446f535044477f45c18d6917646d02ade6ec9112297147c538e14e2da46059e0d3ae11d0e03a7929606d6e98be2fa5715ad1a3b42", "token_type": "bearer" }, "message": "ok" }
+            Fail:
+              $ref: "#/components/examples/SsoLoginResponseFail"
+            ErrInvalidArgument:
+              $ref: '#/components/examples/ErrInvalidArgument'
+            ErrInvalidClientAuthentication:
+              $ref: '#/components/examples/ErrInvalidClientAuthentication'
+            ErrInvalidGrantType:
+              $ref: '#/components/examples/ErrInvalidGrantType'
+            ErrAccountNotFound:
+              $ref: '#/components/examples/ErrAccountNotFound'
+            ErrAuthSvrSimulatorLogin:
+              $ref: '#/components/examples/ErrAuthSvrSimulatorLogin'
+            ErrAuthSvrNotWhiteMember:
+              $ref: '#/components/examples/ErrAuthSvrNotWhiteMember'
+            ErrAuthSvrChannelWhitelistDisabled:
+              $ref: '#/components/examples/ErrAuthSvrChannelWhitelistDisabled'
+            ErrAuthSvrNotOnChannelWhitelist:
+              $ref: '#/components/examples/ErrAuthSvrNotOnChannelWhitelist'
+            ErrAuthSvrBanMember:
+              $ref: '#/components/examples/ErrAuthSvrBanMember'
+            ErrService:
+              $ref: '#/components/examples/ErrService'
+            ErrAuthSvrRepeatLogin:
+              $ref: '#/components/examples/ErrAuthSvrRepeatLogin'
+  examples:
+    Oauth2TokenRequestRefreshToken:
+      value: { "grant_type": "refresh_token", "client_id": "53475851", "client_secret": "065c99135396c4044c00f1b38f63656d", "refresh_token": "154b849347e34503fb1ebac54794441b120a6e1a20235c0dfaf81b6420d89ecfa2a600991d97de09f970484e715214057d0aa88c20bbb65191d7a4cd2ceaee6a0c794062358f1b8a04fe7193566314daa84b93afa4d9" }
+    Oauth2TokenRequestAuthorizationCode:
+      value: { "grant_type": "authorization_code", "client_id": "53475851", "client_secret": "065c99135396c4044c00f1b38f63656d", "code": "d513b27b5f4a39a2021038402fa6730e" }
+    SsoLoginResponseFail:
+      value: { "code": 41018, "message": "无效的手机验证码" }
+    ErrInvalidArgument:
+      value: { "code": 400, "message": "Invalid argument" }
+    ErrInvalidClientAuthentication:
+      value: { "code": 41009, "message": "无效的客户端，请检查所申请的应用ID" }
+    ErrInvalidGrantType:
+      value: { "code": 41012, "message": "非法的 grant_type" }
+    ErrAccountNotFound:
+      value: { "code": 40001, "message": "Account not found" }
+    ErrAuthSvrSimulatorLogin:
+      value: { "code": 20056, "message": "sorry, the simulator cannot log in" }
+    ErrAuthSvrNotWhiteMember:
+      value: { "code": 20051, "message": "sorry, you are not eligible for testing" }
+    ErrAuthSvrChannelWhitelistDisabled:
+      value: { "code": 20058, "message": "channel whitelist disabled" }
+    ErrAuthSvrNotOnChannelWhitelist:
+      value: { "code": 20059, "message": "not on the channel whitelist" }
+    ErrAuthSvrBanMember:
+      value: { "code": 10122, "message": "this member is a ban member" }
+    ErrService:
+      value: { "code": 500, "message": "service error, please contact us" }
+    ErrAuthSvrRepeatLogin:
+      value: { "code": 20057, "message": "repeat login" }

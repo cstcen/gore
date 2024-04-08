@@ -1,0 +1,4 @@
+package: clixpns
+generate:
+  client: true
+  models: true

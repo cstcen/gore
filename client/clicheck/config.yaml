@@ -1,0 +1,4 @@
+package: clicheck
+generate:
+  client: true
+  models: true

@@ -1,0 +1,10 @@
+package: response
+generate:
+  models: true
+  embedded-spec: true
+output:
+  response.gen.go
+output-options:
+  skip-prune: true
+import-mapping:
+  https://doc.xk5.com/specs/externalref/schemas.yaml: github.com/cstcen/gore/doc/externalref/schema

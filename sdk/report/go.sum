@@ -1,0 +1,4 @@
+github.com/cstcen/gore/errorcode/v2 v2.0.12 h1:m12yqz3uuAoBbJ2aN/I1uwXyEkDct7YpVImJI+atkqo=
+github.com/cstcen/gore/errorcode/v2 v2.0.12/go.mod h1:LHOe83irm7XNhjd4LJETir6JmRO++qs+iCVso9VlBak=
+github.com/cstcen/gore/http v0.11.15 h1:0GB0E75IseLJCHKUOQZ7HlXHd7vfJjw18M00XDcycnk=
+github.com/cstcen/gore/http v0.11.15/go.mod h1:V96hArZJx5KTk3Cq6Oo2TAftjc/wMc16pDy+UJMbKiM=

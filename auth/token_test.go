@@ -1,0 +1,30 @@
+package auth
+
+import (
+	"github.com/auth0-community/go-auth0"
+	"github.com/cstcen/gore/gonfig"
+	"github.com/stretchr/testify/assert"
+	"testing"
+)
+
+const (
+	priString = "-----BEGIN RSA PRIVATE KEY-----\nMIIEpQIBAAKCAQEAvUFARJU3y41/tPmw+/j40PeDR71NEZylQsRh5jwAzDsT399k\neIG0P7NHSjpSs1aoDGEf9v1fgUopTQ+2v6IDQhuh+9sZ3QVHaDjmH6HWAskdfado\nc+8UsRc4NVUhw9y4jVSyRPwrrQ9dhVKAmoZ0PS3k8o5H3Cflcj+eWc1JEYD6e8F/\nue0iwT3/lneicMVApKaYGz1ADcic7QLNesGfdOIIiABowH34yO4TIvM+iyuF+j19\nmJT3RfqlKhDBBXVrOBNmKO9AqZmtLWDgQ2xfD8i14fcW9jWIF78azaV1WIX9tsqg\nBgM6GRE2xK5yLaugCQVXcioDNbAsvJkS6eYbTwIDAQABAoIBADRG7PDE4yeoC2m7\nOycvC9P1Ot87LCm8Qm4h/wTw+Ctx+jhx5bff5CFgbUXUvHlra3oX7hN0w8fb63Ks\n74cZwpqlNWZzjD5gMexZI0ADnTEhyrKl5pV3qhiM2Grq/Cu1MYlgpumlWo8wWl30\nfy+wCjXIEqDpqnHm11tqtVwK968MnuoyLPOBqA2lZ8GSoRVYVqwDt49nZGhKEDOt\nDseuWiep/cSsS1zCPJMDFiTBEyblSYEJgPJRpte6fx3SIJgmJKMKoFFSUQf1ineF\nkLJM88VDJ2VFwzoAtnJ/LZUVEJjvLcQU8YDpALrWCwQheWO+Xg+roxezUX9VBLa6\nwbG4oTkCgYEA5kaA9OVkK+QtgnRT86l8HvyHbLsPCJ1rAKjptwzLzVEKyao1gIQD\nSOJ8+KyV7HVVY3Fll5LbpBEdwkZ8IDR94ne5E/bYgvCHaKTRZqBAXEyGP1e0UZ1V\nqZASn/scGHKnKjGXzOrKiQ5jRwKiJ6ec/gBIIMh9jKamBIwmdnFdHYMCgYEA0mWg\n1A7xs3Y47V+JFKq6eUkO9JOSGWhFKtQCpy8AVIXICZ1vRWJelWj06YkkHtLQix54\n7P8cicIdkh+fAIVM78EHIwj/12KwLXfUsZivHSIbPWrWLDp8Vh646KsZ+fOFGprd\n+5ERYkNGsWgS+PtZOyfXETKcvDWoyyD/rcmEjUUCgYEA3Y++qmNAc56zTw7Aa/SJ\n8YKGhs6g02grOVJMtYyBV0Z/u7OikMn0Ix+QoO/lvMLUar8DwchSvtSdLn0FFzOK\nX+lT0WqzvaDSmJPkyvqrkmMq1C192P0qG+D8mqNQ0BEY2FcpOMg8IY0PZpaZENCM\nFDSPMcPWUQtTN5LluxauQiMCgYEAn5pOhW8MtRmil5cYUuAscuMUAD6N3s41YgbQ\nOGi0NGoD1B9kkFrN60NiPmI1T1iWsGIeU5I24N2rNvTb1jZIpbtlIZOrGIWZpfQ4\nGbz8YfpEdbO84nI/bckCdiWNoAm2V/dRG4vxhvwH/X44nj11dCWFxVsCgNenwue2\nbOvorI0CgYEA2zeLRvQFRE0cpm6EqdTMa3zd3Jq1r/U5NXFYw4ZpupnfHFhbxc/2\n21iUBHWb/cL3UfYp55v8YQcIhHukbHl6c5TqVYZDqJkDXkwxd4gr5r2ZzMBdb25X\n/Y2KfaIv9/vpqGa7hu9DLXouV5H9Su8ai429O6994+z4UA6OWJlFP1E=\n-----END RSA PRIVATE KEY-----"
+	token     = "eyJhbGciOiJSUzI1NiIsImtpZCI6Im9hdXRoMiJ9.eyJzdWIiOiIxMDAwMDAwMDAxMjMxNzAzIiwiYXVkIjpbIjUzNDc1ODUxIl0sImV4cCI6MTcwNjI2ODc3MiwibWVuIjoxMDAwMDAwMDAxMjMxNzAzLCJhcG4iOjEwMDAxLCJvcGkiOiJGMzkzNjRFNDhGMkE0MzAxQUVEMjk5MEFGNzA2ODVGNSIsInByaSI6Imh0dHBzOi8vbS1zdGF0aWMtdHNkZXYwLTEyNTUzODU0NjEuZmlsZS5teXFjbG91ZC5jb20vaW1hZ2UvZGVmYXVsdF9wcm9maWxlXzEzNXgxMzUucG5nIiwibG90Ijo0LCJsb3YiOiIxMjM0NTYiLCJmaWwiOmZhbHNlLCJyZHQiOiIyMDIzLTA4LTIxVDE2OjU5OjMyKzA4OjAwIiwiZGlkIjoiYWJjdGVzdCIsImVudiI6InNkZXYwIiwic2ltIjpmYWxzZX0.angXfeD-76j6vmyXaE8BAP0ML4A2uqwFMvi9K0Q4y-XPSz1UcxAMlb-icDv8xU1-i7acSRWLsxMy_a1tjilPihlDOdER7n6XuryfQYs3SPwxsZAQ7N0o0lMOfxHdyXo2RSQcbHrN8iK_OvYILYnqSHyBrHuaipl6pXi5eDoShkbXitNBIDOtNK9nai5SJGKI5xkthwURrhrYc9gXyA9ASylw4ZQMR3-0BZnfTENEqvMTNPhsPnRrlIxG8huPhqccwytZ5U584QB-Vk5PIiqWpft4XSKag54AiTPrNKtexWSyvszqzh6IECV4dx_1FHn4txZ9DK0h4wZdEGmfsPgD3A"
+)
+
+func TestParseJwt(t *testing.T) {
+	claims, err := ParseJwt(token)
+	assert.NoError(t, err)
+
+	assert.NotEmpty(t, claims)
+	assert.Equal(t, "sdev0", claims.Environment)
+}
+
+func TestValidateToken(t *testing.T) {
+	gonfig.Instance().Set("xk5.auth.jwt.private_key", priString)
+	claims, err := ValidateToken(nil, auth0.RequestTokenExtractorFunc(FromHeader))
+	assert.NoError(t, err)
+
+	assert.NotEmpty(t, claims)
+	assert.Equal(t, "sdev0", claims.Environment)
+}
