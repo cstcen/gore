@@ -2,10 +2,10 @@ package mysql
 
 import (
 	"fmt"
-	"github.com/cstcen/gore/log"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
+	"log"
 	"time"
 )
 
@@ -15,14 +15,6 @@ var (
 
 func SetupGorm() error {
 	var logLvl = logger.Silent
-	switch log.GetLevel() {
-	case log.LevelError:
-		logLvl = logger.Error
-	case log.LevelWarning:
-		logLvl = logger.Warn
-	case log.LevelInfo, log.LevelDebug:
-		logLvl = logger.Info
-	}
 	newLogger := logger.New(log.Default(), logger.Config{
 		SlowThreshold: 200 * time.Millisecond,
 		LogLevel:      logLvl,

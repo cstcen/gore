@@ -3,11 +3,10 @@ module github.com/cstcen/gore/db/mysql
 go 1.21.0
 
 require (
-	github.com/cstcen/gore/gonfig v0.11.5
-	github.com/cstcen/gore/log v0.11.5
-	github.com/go-sql-driver/mysql v1.7.1
-	gorm.io/driver/mysql v1.5.2
-	gorm.io/gorm v1.25.5
+	github.com/cstcen/gore/gonfig v0.12.1
+	github.com/go-sql-driver/mysql v1.8.1
+	gorm.io/driver/mysql v1.5.6
+	gorm.io/gorm v1.25.9
 )
 
 require (
@@ -16,11 +15,12 @@ require (
 	cloud.google.com/go/compute/metadata v0.2.3 // indirect
 	cloud.google.com/go/firestore v1.9.0 // indirect
 	cloud.google.com/go/longrunning v0.3.0 // indirect
-	github.com/cstcen/gore/common v0.11.15 // indirect
+	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/armon/go-metrics v0.4.0 // indirect
 	github.com/bketelsen/crypt v0.0.5 // indirect
 	github.com/coreos/go-semver v0.3.0 // indirect
 	github.com/coreos/go-systemd/v22 v22.3.2 // indirect
+	github.com/cstcen/gore/common v0.12.1 // indirect
 	github.com/fatih/color v1.13.0 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
@@ -47,7 +47,6 @@ require (
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
-	github.com/natefinch/lumberjack v2.0.0+incompatible // indirect
 	github.com/pelletier/go-toml/v2 v2.0.6 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/sagikazarmark/crypt v0.9.0 // indirect
