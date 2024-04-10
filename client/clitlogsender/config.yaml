@@ -1,5 +1,0 @@
-output: api.gen.go
-package: clitlogsender
-generate:
-  client: true
-  models: true

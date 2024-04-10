@@ -1,4 +1,0 @@
-package: clishop
-generate:
-  client: true
-  models: true
