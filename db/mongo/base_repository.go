@@ -2,10 +2,11 @@ package mongo
 
 import (
 	"context"
+	"fmt"
 	"github.com/cstcen/gore/common"
-	"github.com/cstcen/gore/log"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"log/slog"
 	"strings"
 )
 
@@ -129,7 +130,7 @@ func (r *BaseRepo[ID, T]) InsertOne(ctx context.Context, doc *T) error {
 	if err != nil {
 		return err
 	}
-	log.InfoCf(ctx, "inserted %T with ID %v", doc, result.InsertedID)
+	slog.InfoContext(ctx, fmt.Sprintf("inserted %T with ID %v", doc, result.InsertedID))
 	return nil
 }
 
@@ -144,17 +145,17 @@ func (r *BaseRepo[ID, T]) InsertMany(ctx context.Context, docs []*T) error {
 	if err != nil {
 		return err
 	}
-	log.InfoCf(ctx, "inserted %T with IDs %v", docs, result.InsertedIDs)
+	slog.InfoContext(ctx, fmt.Sprintf("inserted %T with IDs %v", docs, result.InsertedIDs))
 	return nil
 }
 
 func (r *BaseRepo[ID, T]) UpdateByIDs(ctx context.Context, ids []ID, update bson.D) error {
 	result, err := r.Collection().UpdateMany(ctx, bson.D{WithFilterID(bson.D{{"$in", ids}})()}, update)
 	if err != nil {
-		log.WarningCf(ctx, "failed to modified documents, err: %s", err)
+		slog.WarnContext(ctx, "failed to modified documents", "err", err)
 		return err
 	}
-	log.InfoCf(ctx, "modified %v documents", result.ModifiedCount)
+	slog.InfoContext(ctx, fmt.Sprintf("modified %v documents", result.ModifiedCount))
 	return nil
 }
 
@@ -164,7 +165,7 @@ func (r *BaseRepo[ID, T]) UpsertOne(ctx context.Context, filter any, update any)
 	if err != nil {
 		return err
 	}
-	log.InfoCf(ctx, "upserted document %v", result.UpsertedID)
+	slog.InfoContext(ctx, fmt.Sprintf("upserted document %v", result.UpsertedID))
 	return nil
 }
 
@@ -174,17 +175,17 @@ func (r *BaseRepo[ID, T]) UpsertByID(ctx context.Context, id ID, update any) err
 	if err != nil {
 		return err
 	}
-	log.InfoCf(ctx, "upserted document with ID %v", result.UpsertedID)
+	slog.InfoContext(ctx, fmt.Sprintf("upserted document with ID %v", result.UpsertedID))
 	return nil
 }
 
 func (r *BaseRepo[ID, T]) UpdateMany(ctx context.Context, filter bson.D, update bson.D) error {
 	result, err := r.Collection().UpdateMany(ctx, filter, update)
 	if err != nil {
-		log.WarningCf(ctx, "failed to modified documents, err: %s", err)
+		slog.WarnContext(ctx, "failed to modified documents", "err", err)
 		return err
 	}
-	log.InfoCf(ctx, "modified %v documents", result.ModifiedCount)
+	slog.InfoContext(ctx, fmt.Sprintf("modified %v documents", result.ModifiedCount))
 	return nil
 }
 
@@ -192,30 +193,30 @@ func (r *BaseRepo[ID, T]) UpsertMany(ctx context.Context, filter bson.D, update 
 	opts := options.Update().SetUpsert(true)
 	result, err := r.Collection().UpdateMany(ctx, filter, update, opts)
 	if err != nil {
-		log.WarningCf(ctx, "failed to upserted documents, err: %s", err)
+		slog.WarnContext(ctx, "failed to upserted documents", "err", err)
 		return err
 	}
-	log.InfoCf(ctx, "upserted %v documents", result.UpsertedCount)
+	slog.InfoContext(ctx, fmt.Sprintf("upserted %v documents", result.UpsertedCount))
 	return nil
 }
 
 func (r *BaseRepo[ID, T]) DeleteMany(ctx context.Context, ids []ID) error {
 	deleteResult, err := r.Collection().DeleteMany(ctx, bson.D{WithFilterID(bson.D{{"$in", ids}})()})
 	if err != nil {
-		log.WarningCf(ctx, "failed to delete documents, err: %s", err)
+		slog.WarnContext(ctx, "failed to delete documents", "err", err)
 		return err
 	}
-	log.InfoCf(ctx, "deleted %v documents", deleteResult.DeletedCount)
+	slog.InfoContext(ctx, fmt.Sprintf("deleted %v documents", deleteResult.DeletedCount))
 	return nil
 }
 
 func (r *BaseRepo[ID, T]) DeleteOne(ctx context.Context, id ID) error {
 	deleteResult, err := r.Collection().DeleteOne(ctx, bson.D{WithFilterID(id)()})
 	if err != nil {
-		log.WarningCf(ctx, "failed to delete document, err: %s", err)
+		slog.WarnContext(ctx, "failed to delete document", "err", err)
 		return err
 	}
-	log.InfoCf(ctx, "deleted %v document", deleteResult.DeletedCount)
+	slog.InfoContext(ctx, fmt.Sprintf("deleted %v document", deleteResult.DeletedCount))
 	return nil
 }
 

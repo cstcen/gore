@@ -2,12 +2,11 @@ package mongo
 
 import (
 	"context"
-	"fmt"
 	"github.com/cstcen/gore/gonfig"
-	"github.com/cstcen/gore/log"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
+	"log/slog"
 	"strings"
 	"time"
 )
@@ -62,19 +61,18 @@ func Setup(cfg *Config) error {
 	}
 
 	var err error
-	logPrefix := fmt.Sprintf("host: %v", cfg.Hosts)
-	log.Infof("[%s] Current mongo dbname: %s", logPrefix, cfg.Dbname)
+	slog.Info("Current mongo", "host", cfg.Hosts, "dbname", cfg.Dbname)
 
 	clientOptions := newOptions(cfg)
 
 	mgo, err = mongo.Connect(context.TODO(), clientOptions)
 	if err != nil {
-		log.Warningf("[%s] failed to connect mongodb [%s|%s]", logPrefix, cfg.Username, cfg.Password)
+		slog.Warn("failed to connect mongodb", "host", cfg.Hosts, "username", cfg.Username, "password", cfg.Password)
 		return err
 	}
 
 	if err = mgo.Ping(context.Background(), readpref.Primary()); err != nil {
-		log.Warningf("[%s] failed to ping mongodb [%s|%s]", logPrefix, cfg.Username, cfg.Password)
+		slog.Warn("failed to ping mongodb", "host", cfg.Hosts, "username", cfg.Username, "password", cfg.Password)
 		return err
 	}
 
@@ -112,9 +110,11 @@ type Sink struct {
 }
 
 func (s *Sink) Info(level int, message string, keysAndValues ...interface{}) {
-	log.Infof(message, keysAndValues...)
+	slog.Info(message, keysAndValues...)
 }
 
 func (s *Sink) Error(err error, message string, keysAndValues ...interface{}) {
-	log.Errorf(fmt.Sprintf("err: %s, message: %s", err, message), keysAndValues...)
+	val := []any{err}
+	val = append(val, keysAndValues...)
+	slog.Warn(message, val...)
 }

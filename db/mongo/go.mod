@@ -1,10 +1,9 @@
 module github.com/cstcen/gore/db/mongo
 
-go 1.20
+go 1.21
 
 require (
-	github.com/cstcen/gore/gonfig v0.11.5
-	github.com/cstcen/gore/log v0.11.5
+	github.com/cstcen/gore/gonfig v0.12.1
 	go.mongodb.org/mongo-driver v1.12.1
 )
 
@@ -14,7 +13,6 @@ require (
 	cloud.google.com/go/compute/metadata v0.2.3 // indirect
 	cloud.google.com/go/firestore v1.9.0 // indirect
 	cloud.google.com/go/longrunning v0.3.0 // indirect
-	github.com/cstcen/gore/common v0.11.15 // indirect
 	github.com/armon/go-metrics v0.4.0 // indirect
 	github.com/bketelsen/crypt v0.0.5 // indirect
 	github.com/coreos/go-semver v0.3.0 // indirect
