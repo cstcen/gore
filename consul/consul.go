@@ -3,8 +3,8 @@ package consul
 import (
 	"github.com/cstcen/gore/gonfig"
 	goreHttp "github.com/cstcen/gore/http"
-	"github.com/cstcen/gore/log"
 	"github.com/hashicorp/consul/api"
+	"log/slog"
 )
 
 var (
@@ -42,7 +42,7 @@ func Register() error {
 		return err
 	}
 
-	log.Infof("consul register service: %s", registration.Name)
+	slog.Info("consul register", "service", registration.Name)
 	return nil
 
 }
@@ -62,7 +62,7 @@ func Deregister() error {
 		return err
 	}
 
-	log.Infof("consul deregister service: %s", appName)
+	slog.Info("consul deregister", "service", appName)
 	return nil
 }
 
