@@ -2,14 +2,10 @@ package auth
 
 import (
 	"context"
-	"github.com/cstcen/gore/auth"
 	"github.com/cstcen/gore/common"
-	"github.com/cstcen/gore/gonfig"
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v5"
+	"github.com/go-jose/go-jose/v3/jwt"
 	"net/http"
-	"strconv"
-	"strings"
 	"time"
 )
 
@@ -47,7 +43,7 @@ func GetClaimsFromContext(c context.Context) *MemberClaims {
 }
 
 type MemberClaims struct {
-	jwt.RegisteredClaims
+	jwt.Claims
 	// MemberNo 星空屋用户唯一标识符
 	MemberNo int64 `json:"men,omitempty"`
 	// CharacterNo 游戏角色ID（目前用于手工星球，因为它是单一角色）
@@ -82,81 +78,4 @@ type MemberClaims struct {
 	Environment string `json:"env,omitempty"`
 	// Simulator 是否是模拟器登录
 	Simulator bool `json:"sim"`
-}
-
-func NewClaimsFromV1Member(m *auth.Member) *MemberClaims {
-	claims := MemberClaims{
-		RegisteredClaims: jwt.RegisteredClaims{
-			Issuer:    "",
-			Subject:   strconv.Itoa(m.MemberNo),
-			Audience:  []string{m.SvrId},
-			ExpiresAt: &jwt.NumericDate{Time: time.UnixMilli(int64(m.ExpireTime))},
-			NotBefore: nil,
-			IssuedAt:  &jwt.NumericDate{Time: time.UnixMilli(int64(m.Timestamp))},
-			ID:        m.SvrId,
-		},
-		MemberNo:           int64(m.MemberNo),
-		CharacterNo:        int64(m.CharacterNo),
-		ApplicationNo:      m.ApplicationNo,
-		GameId:             "SGXQ",
-		OpenId:             "",
-		Nickname:           m.Nickname,
-		ProfileImg:         m.ProfileImg,
-		LoginType:          0,
-		LoginValue:         m.OpenId,
-		FirstLogin:         false,
-		ChannelId:          "",
-		RegisteredDateTime: time.Time{},
-		LastLaunchTime:     m.LastLaunchTime,
-		DeviceId:           m.OsId,
-		DeviceOs:           0,
-		Environment:        gonfig.Instance().GetString("env"),
-		Simulator:          false,
-	}
-	if strings.EqualFold(m.LoginType, "QQ") {
-		claims.LoginType = common.LoginTypeSgxqMsdkQq
-	} else if strings.EqualFold(m.LoginType, "WECHAT") {
-		claims.LoginType = common.LoginTypeSgxqMsdkWx
-	}
-	if strings.EqualFold(m.ProviderOS, "IOS") {
-		claims.DeviceOs = common.ClientTypeIos
-	} else if strings.EqualFold(m.ProviderOS, "ANDROID") {
-		claims.DeviceOs = common.ClientTypeAndroid
-	} else if strings.EqualFold(m.ProviderOS, "PC") {
-		claims.DeviceOs = common.ClientTypePc
-	}
-	return &claims
-}
-
-func (c *MemberClaims) CompatibleV1Member() *auth.Member {
-	m := auth.Member{}
-	if c.MemberNo == 0 {
-		m.Agent = "XK5_SERVER"
-	} else {
-		m.Agent = "USER"
-		m.MemberNo = int(c.MemberNo)
-		m.Nickname = c.Nickname
-		m.CharacterNo = int(c.CharacterNo)
-	}
-	m.ApplicationNo = c.ApplicationNo
-	m.ExpireTime = int(c.ExpiresAt.UnixMilli())
-
-	if c.LoginType.IsWx() {
-		m.LoginType = "WECHAT"
-		m.OpenId = c.LoginValue
-	} else if c.LoginType.IsQq() {
-		m.LoginType = "QQ"
-		m.OpenId = c.LoginValue
-	}
-	m.OsId = c.DeviceId
-	m.ProfileImg = c.ProfileImg
-	if c.DeviceOs == common.ClientTypeIos {
-		m.ProviderOS = "iOS"
-	} else if c.DeviceOs == common.ClientTypeAndroid {
-		m.ProviderOS = "AOS"
-	}
-	if c.IssuedAt != nil {
-		m.Timestamp = int(c.IssuedAt.UnixMilli())
-	}
-	return &m
 }

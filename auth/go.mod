@@ -3,15 +3,14 @@ module github.com/cstcen/gore/auth/v2
 go 1.21.0
 
 require (
-	github.com/cstcen/gore/common v0.11.31
-	github.com/cstcen/gore/gonfig v0.11.5
-	github.com/cstcen/gore/auth v0.11.5
-	github.com/cstcen/gore/http v0.11.14
 	github.com/auth0-community/go-auth0 v1.0.0
+	github.com/cstcen/gore/common v0.12.1
+	github.com/cstcen/gore/gonfig v0.12.1
+	github.com/cstcen/gore/http v0.12.1
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-jose/go-jose/v3 v3.0.1
-	github.com/golang-jwt/jwt/v5 v5.2.0
 	github.com/stretchr/testify v1.8.4
+	gopkg.in/square/go-jose.v2 v2.1.7
 )
 
 require (
@@ -96,6 +95,5 @@ require (
 	google.golang.org/grpc v1.53.0 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
-	gopkg.in/square/go-jose.v2 v2.1.7 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
