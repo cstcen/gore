@@ -2,9 +2,9 @@ package es
 
 import (
 	"github.com/cstcen/gore/gonfig"
-	"github.com/cstcen/gore/log"
 	"github.com/olivere/elastic"
 	"github.com/olivere/elastic/config"
+	"log"
 )
 
 var (
