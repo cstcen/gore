@@ -2,9 +2,9 @@ package cache
 
 import (
 	"github.com/cstcen/gore/gonfig"
-	"github.com/cstcen/gore/log"
 	"github.com/go-redis/cache/v8"
 	"github.com/go-redis/redis/v8"
+	"log/slog"
 	"strconv"
 	"time"
 )
@@ -72,7 +72,7 @@ func newOptions(cfg *Config) *cache.Options {
 		for i, host := range cfg.Hosts {
 			addrs[cfg.AppName+strconv.Itoa(i)] = host
 		}
-		log.Infof("Current redis ring: %+v", addrs)
+		slog.Info("Current redis", "ring", addrs)
 
 		cli = redis.NewRing(&redis.RingOptions{
 			Addrs:    addrs,
@@ -80,7 +80,7 @@ func newOptions(cfg *Config) *cache.Options {
 			Password: cfg.Password,
 		})
 	} else {
-		log.Infof("Current redis cluster: %+v", cfg.Hosts)
+		slog.Info("Current redis", "cluster", cfg.Hosts)
 		cli = redis.NewClusterClient(&redis.ClusterOptions{
 			Addrs:    cfg.Hosts,
 			Username: cfg.Username,
