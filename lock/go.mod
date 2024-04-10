@@ -3,8 +3,8 @@ module github.com/cstcen/gore/lock
 go 1.21.0
 
 require (
-	github.com/cstcen/gore/db/redis v0.11.6
-	github.com/cstcen/gore/gonfig v0.11.5
+	github.com/cstcen/gore/db/redis v0.12.1
+	github.com/cstcen/gore/gonfig v0.12.1
 	github.com/go-redis/redis/v8 v8.11.5
 )
 
@@ -14,12 +14,12 @@ require (
 	cloud.google.com/go/compute/metadata v0.2.3 // indirect
 	cloud.google.com/go/firestore v1.9.0 // indirect
 	cloud.google.com/go/longrunning v0.3.0 // indirect
-	github.com/cstcen/gore/common v0.11.15 // indirect
 	github.com/armon/go-metrics v0.4.0 // indirect
 	github.com/bketelsen/crypt v0.0.5 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/coreos/go-semver v0.3.0 // indirect
 	github.com/coreos/go-systemd/v22 v22.3.2 // indirect
+	github.com/cstcen/gore/common v0.12.1 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/fatih/color v1.13.0 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
