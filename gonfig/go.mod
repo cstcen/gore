@@ -1,10 +1,10 @@
 module github.com/cstcen/gore/gonfig
 
-go 1.21
+go 1.21.0
 
 require (
-	github.com/cstcen/gore/common latest
 	github.com/bketelsen/crypt v0.0.5
+	github.com/cstcen/gore/common v0.12.1
 	github.com/spf13/viper v1.15.0
 	github.com/stretchr/testify v1.8.2
 )
