@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"github.com/Shopify/sarama"
 	"github.com/cstcen/gore/gonfig"
-	"github.com/cstcen/gore/log"
 	"github.com/cstcen/gore/util"
 	"github.com/pkg/errors"
+	"log"
 )
 
 var (

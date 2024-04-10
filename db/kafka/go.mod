@@ -1,11 +1,10 @@
 module github.com/cstcen/gore/db/kafka
 
-go 1.20
+go 1.21
 
 require (
-	github.com/cstcen/gore/gonfig v0.11.1-beta.37
-	github.com/cstcen/gore/log v0.11.1-beta.10
-	github.com/cstcen/gore/util v0.11.1-beta.2
+	github.com/cstcen/gore/gonfig v0.12.1
+	github.com/cstcen/gore/util v0.12.1
 	github.com/Shopify/sarama v1.38.1
 	github.com/pkg/errors v0.9.1
 	github.com/stretchr/testify v1.8.2
@@ -16,7 +15,6 @@ require (
 	cloud.google.com/go/compute v1.12.1 // indirect
 	cloud.google.com/go/compute/metadata v0.2.1 // indirect
 	cloud.google.com/go/firestore v1.8.0 // indirect
-	github.com/cstcen/gore/common v0.11.1-beta.36 // indirect
 	github.com/armon/go-metrics v0.4.0 // indirect
 	github.com/bketelsen/crypt v0.0.5 // indirect
 	github.com/coreos/go-semver v0.3.0 // indirect

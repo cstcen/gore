@@ -2,9 +2,8 @@ package kafka
 
 import (
 	"context"
-	"fmt"
 	"github.com/Shopify/sarama"
-	"github.com/cstcen/gore/log"
+	"log/slog"
 	"sync"
 )
 
@@ -35,8 +34,7 @@ func (c *Consumer) Cleanup(sarama.ConsumerGroupSession) error {
 
 func (c *Consumer) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
 	for message := range claim.Messages() {
-		logPrefix := fmt.Sprintf("topic: %s, timestamp: %v, consumer: %s", message.Topic, message.Timestamp, c.name)
-		log.Infof("[%s] claimed: %s", logPrefix, string(message.Value))
+		slog.Info("claimed", "topic", message.Topic, "timestamp", message.Timestamp, "consumer", c.name, "value", string(message.Value))
 		if c.HandleMessage != nil {
 			if err := c.HandleMessage.HandleConsumerMessage(message); err != nil {
 				return err
@@ -49,8 +47,6 @@ func (c *Consumer) ConsumeClaim(session sarama.ConsumerGroupSession, claim saram
 }
 
 func (c *Consumer) Consume(cfg ConsumerConfig, config *sarama.Config) error {
-	logPrefix := fmt.Sprintf("consumer: %s", c.name)
-
 	ctx, cancel := context.WithCancel(context.Background())
 	c.cancel = cancel
 	client, err := sarama.NewConsumerGroup(cfg.Brokers, cfg.Group, config)
@@ -64,7 +60,7 @@ func (c *Consumer) Consume(cfg ConsumerConfig, config *sarama.Config) error {
 		defer wg.Done()
 		for {
 			if err := client.Consume(ctx, cfg.Topics, c); err != nil {
-				log.Warningf("[%s] Error from consumer: %v", logPrefix, err)
+				slog.Warn("consume failed", "consumer", c.name, "err", err)
 			}
 			if ctx.Err() != nil {
 				return
@@ -76,17 +72,17 @@ func (c *Consumer) Consume(cfg ConsumerConfig, config *sarama.Config) error {
 
 	go func() {
 		<-c.ready
-		log.Infof("[%s] consumer up and running!...", logPrefix)
+		slog.Info("consumer up and running!...", "consumer", c.name)
 		select {
 		case <-ctx.Done():
-			log.Infof("[%s] context cancelled", logPrefix)
+			slog.Info("context cancelled", "consumer", c.name)
 		}
 
 		cancel()
 		wg.Wait()
 
 		if err := client.Close(); err != nil {
-			log.Panicf("Error closing client: %v", err)
+			slog.Warn("closing client failed", "err", err)
 		}
 	}()
 
