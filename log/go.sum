@@ -50,10 +50,6 @@ cloud.google.com/go/storage v1.8.0/go.mod h1:Wv1Oy7z6Yz3DshWRJFhqM/UCfaWIRTdp0RX
 cloud.google.com/go/storage v1.10.0/go.mod h1:FLPqc6j+Ki4BU591ie1oL6qBQGu2Bl/tZ9ullr3+Kg0=
 cloud.google.com/go/storage v1.14.0/go.mod h1:GrKmX003DSIwi9o29oFT7YDnHYwZoctc3fOKtUw0Xmo=
 dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7gZCb22OMCxBHrMx7a5I7Hp++hsVxbQ4BYO7hU=
-github.com/cstcen/gore/common v0.11.15 h1:wL5dYkVjxn/9EuH8OZm77G/LsFR3leimkPCSnFfmczs=
-github.com/cstcen/gore/common v0.11.15/go.mod h1:w4NtDETDz+EPL3TO8izQZOOJk0zPz1OoXu7xEo80XoY=
-github.com/cstcen/gore/gonfig v0.11.5 h1:j7kQNLgdiCHpY9a/0QnKM+ru89jOoUskK0JXq0aKPgY=
-github.com/cstcen/gore/gonfig v0.11.5/go.mod h1:D/pit0h6uPLTLutvCmdWJ2GCVW6Gc3nzea40ZM+GyKo=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/toml v1.2.1 h1:9F2/+DoOYIOksmaJFPw1tGFy1eDnIJXg+UHjuD8lTak=
 github.com/BurntSushi/toml v1.2.1/go.mod h1:CxXYINrC8qIiEnFrOxCa7Jy5BFHlXnUU2pbicEuybxQ=
@@ -97,6 +93,10 @@ github.com/coreos/go-semver v0.3.0/go.mod h1:nnelYz7RCh+5ahJtPPxZlU+153eP4D4r3Ee
 github.com/coreos/go-systemd/v22 v22.3.2 h1:D9/bQk5vlXQFZ6Kwuu6zaiXJ9oTPe68++AzAJc1DzSI=
 github.com/coreos/go-systemd/v22 v22.3.2/go.mod h1:Y58oyj3AT4RCenI/lSvhwexgC+NSVTIJ3seZv2GcEnc=
 github.com/creack/pty v1.1.9/go.mod h1:oKZEueFk5CKHvIhNR5MUki03XCEU+Q6VDXinZuGJ33E=
+github.com/cstcen/gore/common v0.12.1 h1:CaA64yHx3Ehz+sBiRtfp+XJ5Qx6ODHFmPtt21ml/mmc=
+github.com/cstcen/gore/common v0.12.1/go.mod h1:c52jWWbsfxSp0ucPJUYVdUeWks2LNwJiVp2caRGKm4Y=
+github.com/cstcen/gore/gonfig v0.12.1 h1:Pc8jMnKkHLCKtz+J1fvwyO0VcxfEu/E/zoLNeqe9HCo=
+github.com/cstcen/gore/gonfig v0.12.1/go.mod h1:p+rKZGFieWxO+SEghvZLS6pYIduOY/G9yS3vjyKPYVk=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

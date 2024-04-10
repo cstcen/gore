@@ -1,9 +1,9 @@
 module github.com/cstcen/gore/log/v2
 
-go 1.21
+go 1.21.0
 
 require (
-	github.com/cstcen/gore/gonfig v0.11.5
+	github.com/cstcen/gore/gonfig v0.12.1
 	github.com/natefinch/lumberjack v2.0.0+incompatible
 )
 
@@ -13,12 +13,12 @@ require (
 	cloud.google.com/go/compute/metadata v0.2.3 // indirect
 	cloud.google.com/go/firestore v1.9.0 // indirect
 	cloud.google.com/go/longrunning v0.3.0 // indirect
-	github.com/cstcen/gore/common v0.11.15 // indirect
 	github.com/BurntSushi/toml v1.2.1 // indirect
 	github.com/armon/go-metrics v0.4.0 // indirect
 	github.com/bketelsen/crypt v0.0.5 // indirect
 	github.com/coreos/go-semver v0.3.0 // indirect
 	github.com/coreos/go-systemd/v22 v22.3.2 // indirect
+	github.com/cstcen/gore/common v0.12.1 // indirect
 	github.com/fatih/color v1.13.0 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
