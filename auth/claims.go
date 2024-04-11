@@ -44,7 +44,7 @@ func GetClaimsFromContext(c context.Context) *MemberClaims {
 
 type MemberClaims struct {
 	jwt.Claims
-	// MemberNo 星空屋用户唯一标识符
+	// MemberNo 平台用户唯一标识符
 	MemberNo int64 `json:"men,omitempty"`
 	// CharacterNo 游戏角色ID（目前用于手工星球，因为它是单一角色）
 	CharacterNo int64 `json:"chn,omitempty"`
@@ -52,11 +52,11 @@ type MemberClaims struct {
 	ApplicationNo int `json:"apn,omitempty"`
 	// GameId 游戏ID，例如：SGXQ
 	GameId string `json:"gid,omitempty"`
-	// OpenId 星空屋OpenId
+	// OpenId 平台OpenId
 	OpenId string `json:"opi,omitempty"`
-	// Nickname 星空屋昵称
+	// Nickname 平台昵称
 	Nickname string `json:"nic,omitempty"`
-	// ProfileImg 星空屋头像
+	// ProfileImg 平台头像
 	ProfileImg string `json:"pri,omitempty"`
 	// LoginType 登录类型
 	LoginType common.LoginType `json:"lot,omitempty"`
@@ -64,7 +64,7 @@ type MemberClaims struct {
 	LoginValue string `json:"lov,omitempty"`
 	// FirstLogin 是否第一次登录
 	FirstLogin bool `json:"fil"`
-	// ChannelId 登录的星空屋渠道号
+	// ChannelId 登录的平台渠道号
 	ChannelId string `json:"chi,omitempty"`
 	// RegisteredDateTime 账号注册时间
 	RegisteredDateTime time.Time `json:"rdt,omitempty"`
